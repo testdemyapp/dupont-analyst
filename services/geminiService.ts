@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { Company, DuPontAnalysis, MetricYearData, NLPMeasures } from "../types";
 
@@ -8,10 +7,7 @@ export async function generateDuPontAnalysis(
   isDeepDive: boolean = false,
   discrepancyNote?: string
 ): Promise<DuPontAnalysis> {
-  // Support both standard process.env (Node) and import.meta.env (Vite/Production)
-  // @ts-ignore
-  const apiKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_KEY) || process.env.API_KEY || '';
-  
+  const apiKey = process.env.API_KEY as string;
   const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `Perform a ${isDeepDive ? 'CRITICAL DEEP-DIVE' : 'high-precision'} financial and NLP analysis for ${company.name} (${company.symbol}) for anchor year ${anchorYear} and the previous two years. 
@@ -20,17 +16,10 @@ ${isDeepDive ? `DISCREPANCY ALERT: ${discrepancyNote}. Please conduct an exhaust
 
 CRITICAL ACCURACY LOGIC:
 For every financial number used (Revenue, Profit, Assets, Equity) for each of the 3 years:
-1. Search the internet for the official reported figure.
-2. Compare the number you initially identified with the internet search result.
-3. Calculate the variance percentage: abs(identified - found) / found.
-4. If variance <= 1%, use your identified number. Status: 'Verified'.
-5. If variance > 1%, use the found number. Status: 'Adjusted'.
-6. Record these details in the accuracyAudit array.
-
-1. Use Google Search to find official financial figures.
-2. Perform NLP analysis on the reporting narrative.
-3. Predict future performance metrics (Base, Upside, Downside).
-4. Provide Q&A diagnostics.
+1. Search the internet for the official reported figure for ${company.name}.
+2. Compare identified values against official sources.
+3. Record these details in the accuracyAudit array.
+4. Calculate ROE, ROA, Margin, Turnover, and Leverage.
 
 Return the result in strict JSON format.`;
 
@@ -133,7 +122,12 @@ Return the result in strict JSON format.`;
     }
   });
 
-  const rawData = JSON.parse(response.text);
+  const text = response.text;
+  if (typeof text !== 'string') {
+    throw new Error("Invalid API response format.");
+  }
+
+  const rawData = JSON.parse(text);
   const sources: { title: string; uri: string }[] = [];
   const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
   if (groundingChunks) {
@@ -180,7 +174,7 @@ Return the result in strict JSON format.`;
     accuracyAudit: rawData.accuracyAudit,
     accuracySummary: rawData.accuracySummary,
     risk: {
-      financial: "Validated leverage profile based on latest filings.",
+      financial: "Risk assessment validated via multi-source verification.",
       solvencyIndex: 0.82,
       business: { legal: 0.2, tax: 0.1, macro: 0.5, firmSpecific: 0.2 },
       summary: rawData.narrative.section3

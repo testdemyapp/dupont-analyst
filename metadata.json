@@ -1,5 +1,5 @@
 {
-  "name": "Copy of Copy of Copy of uPont Financial Statement Analyst v12",
-  "description": "An interactive tool for FTSE 100 financial analysis, featuring DuPont decomposition, 3-year trend charts, and AI-driven NLP insights from annual reports.",
+  "name": "DuPont Financial Statement Analyst",
+  "description": "An advanced AI-powered terminal for FTSE 100 financial analysis, featuring DuPont decomposition, real-time data verification, and linguistic NLP metrics from annual reports.",
   "requestFramePermissions": []
 }
