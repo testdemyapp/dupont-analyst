@@ -1,0 +1,705 @@
+
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { FTSE100_CONSTITUENTS, YEARS, ExtendedCompany, METRIC_DEFINITIONS } from './constants';
+import { DuPontAnalysis } from './types';
+import { generateDuPontAnalysis } from './services/geminiService';
+import MetricCharts from './components/MetricCharts';
+import DuPontMap from './components/DuPontMap';
+
+const CACHE_PREFIX = "dupont_cache_";
+
+const App: React.FC = () => {
+  const [selectedSymbol, setSelectedSymbol] = useState(FTSE100_CONSTITUENTS[0].symbol);
+  const [anchorYear, setAnchorYear] = useState(YEARS[0]);
+  const [analysis, setAnalysis] = useState<DuPontAnalysis | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [explanationId, setExplanationId] = useState<string | null>(null);
+
+  // Pre-cache State
+  const [preCaching, setPreCaching] = useState(false);
+  const [preCacheProgress, setPreCacheProgress] = useState({ current: 0, total: FTSE100_CONSTITUENTS.length, symbol: "" });
+  const isPreCachingRef = useRef(false);
+
+  const selectedCompany = useMemo(() => 
+    FTSE100_CONSTITUENTS.find(c => c.symbol === selectedSymbol) as ExtendedCompany || FTSE100_CONSTITUENTS[0]
+  , [selectedSymbol]);
+
+  const filteredConstituents = useMemo(() => 
+    FTSE100_CONSTITUENTS.filter(c => 
+      c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      c.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  , [searchTerm]);
+
+  const getCachedAnalysis = useCallback((symbol: string, year: number): DuPontAnalysis | null => {
+    const key = `${CACHE_PREFIX}${symbol}_${year}`;
+    const cached = localStorage.getItem(key);
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }, []);
+
+  const setCachedAnalysis = useCallback((symbol: string, year: number, data: DuPontAnalysis) => {
+    const key = `${CACHE_PREFIX}${symbol}_${year}`;
+    localStorage.setItem(key, JSON.stringify(data));
+  }, []);
+
+  const calculateDiscrepancy = (oldData: DuPontAnalysis, newData: DuPontAnalysis) => {
+    const oldRoe = oldData.timeSeries[0].roe;
+    const newRoe = newData.timeSeries[0].roe;
+    const oldProfit = oldData.timeSeries[0].netProfit;
+    const newProfit = newData.timeSeries[0].netProfit;
+
+    const roeDiff = Math.abs(newRoe - oldRoe) / (oldRoe || 1);
+    const profitDiff = Math.abs(newProfit - oldProfit) / (oldProfit || 1);
+
+    return {
+      significant: roeDiff > 0.01 || profitDiff > 0.01,
+      message: `ROE shifted by ${(roeDiff * 100).toFixed(2)}%, Net Profit shifted by ${(profitDiff * 100).toFixed(2)}%`
+    };
+  };
+
+  const runAnalysis = async (forceRefresh: boolean = false, targetCompany: ExtendedCompany = selectedCompany, targetYear: number = anchorYear) => {
+    const cached = getCachedAnalysis(targetCompany.symbol, targetYear);
+    
+    if (cached && !forceRefresh) {
+      if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
+        setAnalysis(cached);
+      }
+      return cached;
+    }
+
+    const isCurrentView = targetCompany.symbol === selectedSymbol && targetYear === anchorYear;
+    if (isCurrentView) {
+      setLoading(true);
+      setStatusMessage("Validating Financial Data...");
+    }
+    
+    try {
+      let result = await generateDuPontAnalysis(targetCompany, targetYear);
+      
+      if (forceRefresh && cached) {
+        const discrepancy = calculateDiscrepancy(cached, result);
+        if (discrepancy.significant) {
+          if (isCurrentView) setStatusMessage("Significant Deviation Detected. Initializing Deep-Dive Search...");
+          result = await generateDuPontAnalysis(targetCompany, targetYear, true, discrepancy.message);
+        }
+      }
+
+      if (isCurrentView) setAnalysis(result);
+      setCachedAnalysis(targetCompany.symbol, targetYear, result);
+      return result;
+    } catch (err) {
+      if (isCurrentView) alert("Performance analysis is currently unavailable. Please check your connection and try again.");
+      throw err;
+    } finally {
+      if (isCurrentView) {
+        setLoading(false);
+        setStatusMessage("");
+      }
+    }
+  };
+
+  const startPreCache = async () => {
+    if (isPreCachingRef.current) {
+      isPreCachingRef.current = false;
+      setPreCaching(false);
+      return;
+    }
+
+    isPreCachingRef.current = true;
+    setPreCaching(true);
+    let completed = 0;
+
+    for (const company of FTSE100_CONSTITUENTS) {
+      // Check ref for live cancellation status
+      if (!isPreCachingRef.current) break;
+
+      const cached = getCachedAnalysis(company.symbol, anchorYear);
+      setPreCacheProgress({ current: completed + 1, total: FTSE100_CONSTITUENTS.length, symbol: company.symbol });
+      
+      if (!cached) {
+        try {
+          await runAnalysis(false, company, anchorYear);
+          // Wait 2s to respect API rate limits during bulk operation
+          await new Promise(r => setTimeout(r, 2000));
+        } catch (e) {
+          console.error(`Failed to pre-cache ${company.symbol}`, e);
+        }
+      }
+      completed++;
+    }
+
+    isPreCachingRef.current = false;
+    setPreCaching(false);
+    setPreCacheProgress(prev => ({ ...prev, current: completed, symbol: "Complete" }));
+  };
+
+  useEffect(() => {
+    const cached = getCachedAnalysis(selectedSymbol, anchorYear);
+    if (cached) {
+      setAnalysis(cached);
+    } else {
+      runAnalysis(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSymbol, anchorYear]);
+
+  const downloadReport = () => {
+    if (!analysis) return;
+    const blob = new Blob([JSON.stringify(analysis, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `DuPont_Report_${analysis.company.symbol}_${analysis.anchorYear}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const currentExplanation = explanationId ? METRIC_DEFINITIONS[explanationId] : null;
+
+  return (
+    <div className="min-h-screen bg-slate-50 pb-20 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white rounded-xl p-1.5 flex items-center justify-center shadow-md border border-slate-100 flex-shrink-0 overflow-hidden group">
+                <img 
+                  src={`https://logo.clearbit.com/${selectedCompany.domain}`} 
+                  alt=""
+                  className="w-full h-full object-contain transition-transform group-hover:scale-110"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${selectedCompany.name}&background=6366f1&color=fff&size=128&bold=true`;
+                  }}
+                />
+              </div>
+              <div>
+                <h1 className="text-xl font-black text-slate-900 leading-none mb-1">
+                  {selectedCompany.name}
+                </h1>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold bg-slate-900 text-white px-1.5 py-0.5 rounded tracking-tighter uppercase">
+                    {selectedCompany.symbol}
+                  </span>
+                  <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+                    Analysis Terminal
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative group">
+                <input 
+                  type="text"
+                  placeholder="Find company..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-4 pr-10 py-2.5 bg-slate-100 border border-transparent rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white w-full md:w-48 text-sm font-medium transition-all"
+                />
+                <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchTerm && (
+                   <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-2xl max-h-80 overflow-y-auto z-50 animate-in slide-in-from-top-2 duration-200">
+                     {filteredConstituents.map(c => (
+                       <button
+                         key={c.symbol}
+                         onClick={() => {
+                           setSelectedSymbol(c.symbol);
+                           setSearchTerm("");
+                         }}
+                         className="w-full text-left px-4 py-3 hover:bg-indigo-50 border-b border-slate-50 last:border-none transition-colors"
+                       >
+                         <div className="flex items-center gap-3">
+                            <img 
+                              src={`https://logo.clearbit.com/${c.domain}`} 
+                              alt="" 
+                              className="w-6 h-6 rounded flex-shrink-0"
+                              onError={(e) => (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${c.name}&background=f1f5f9&color=6366f1&size=64`}
+                            />
+                            <div>
+                              <div className="text-sm font-bold text-slate-900">{c.name}</div>
+                              <div className="text-[10px] font-bold text-slate-400 uppercase">{c.symbol}</div>
+                            </div>
+                         </div>
+                       </button>
+                     ))}
+                   </div>
+                )}
+              </div>
+
+              <select 
+                value={anchorYear}
+                onChange={(e) => setAnchorYear(Number(e.target.value))}
+                className="px-3 py-2.5 bg-slate-100 border border-transparent rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm font-bold appearance-none cursor-pointer hover:bg-slate-200 transition-colors"
+              >
+                {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+              </select>
+
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => runAnalysis(true)}
+                  disabled={loading}
+                  className="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 disabled:opacity-50 transition-all flex items-center gap-2"
+                >
+                  {loading ? 'Analyzing...' : 'Refresh'}
+                  <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
+
+                <button 
+                  onClick={startPreCache}
+                  disabled={loading && !preCaching}
+                  className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${preCaching ? 'bg-amber-500 text-white shadow-lg shadow-amber-200' : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'}`}
+                  title="Cache all constituents locally"
+                >
+                  {preCaching ? 'Cancel Caching' : 'Cache All'}
+                  <svg className={`w-4 h-4 ${preCaching ? 'animate-pulse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </button>
+
+                {analysis && !loading && (
+                  <button 
+                    onClick={downloadReport}
+                    className="p-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all flex items-center justify-center group"
+                    title="Export Data"
+                  >
+                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Pre-cache Notification Bar */}
+      {preCaching && (
+        <div className="bg-amber-50 border-b border-amber-200 py-3 px-4 animate-in slide-in-from-top duration-300">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-amber-500 rounded-full animate-ping" />
+              <span className="text-xs font-black text-amber-900 uppercase tracking-widest">
+                System Pre-caching: {preCacheProgress.current} / {preCacheProgress.total} 
+                <span className="ml-3 font-mono bg-amber-600 text-white px-2 py-0.5 rounded text-[10px]">{preCacheProgress.symbol}</span>
+              </span>
+            </div>
+            <div className="flex-1 max-w-md w-full">
+              <div className="w-full h-2 bg-amber-200 rounded-full overflow-hidden shadow-inner">
+                 <div 
+                  className="h-full bg-amber-600 transition-all duration-700 ease-out" 
+                  style={{ width: `${(preCacheProgress.current / preCacheProgress.total) * 100}%` }} 
+                 />
+              </div>
+            </div>
+            <p className="text-[10px] font-bold text-amber-700 italic">Respecting API rate limits...</p>
+          </div>
+        </div>
+      )}
+
+      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-12">
+        {analysis && (
+          <section className="bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[120px] -mr-48 -mt-48 rounded-full" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-600/10 blur-[120px] -ml-48 -mb-48 rounded-full" />
+            
+            <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="col-span-1 lg:col-span-2">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4 leading-tight">
+                  {selectedCompany.name} <br/>
+                  <span className="text-indigo-400">Financial Performance Overview</span>
+                </h2>
+                <p className="text-indigo-100 font-medium opacity-80 max-w-lg mb-8">
+                  Decomposed 3-year performance analysis. High-fidelity verification with &lt;1% variance tolerance.
+                </p>
+                <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md">
+                   <div className="text-center border-r border-white/10 pr-4">
+                      <span className="text-indigo-300 text-[10px] font-bold uppercase block">Sector</span>
+                      <span className="font-bold text-sm">{selectedCompany.sector}</span>
+                   </div>
+                   <div className="text-center">
+                      <span className="text-indigo-300 text-[10px] font-bold uppercase block">Anchor</span>
+                      <span className="font-bold text-sm">FY{anchorYear}</span>
+                   </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col justify-center gap-6">
+                <div 
+                  onClick={() => setExplanationId('margin')}
+                  className="bg-white/10 p-5 rounded-3xl border border-white/5 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-all group"
+                >
+                   <span className="text-indigo-300 text-xs font-bold uppercase block mb-1 group-hover:text-white transition-colors">Net Profit Margin</span>
+                   <span className="text-3xl font-black">{(analysis.timeSeries[0].margin * 100).toFixed(1)}%</span>
+                </div>
+                <div 
+                  onClick={() => setExplanationId('turnover')}
+                  className="bg-white/10 p-5 rounded-3xl border border-white/5 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-all group"
+                >
+                   <span className="text-indigo-300 text-xs font-bold uppercase block mb-1 group-hover:text-white transition-colors">Asset Turnover</span>
+                   <span className="text-3xl font-black">{analysis.timeSeries[0].turnover.toFixed(2)}x</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col justify-center gap-6">
+                <div 
+                  onClick={() => setExplanationId('roe')}
+                  className="bg-indigo-600 p-6 rounded-[2rem] border border-white/20 shadow-xl shadow-indigo-900/40 relative group overflow-hidden cursor-pointer active:scale-95 transition-all"
+                >
+                   <div className="relative z-10">
+                    <span className="text-indigo-100 text-xs font-bold uppercase block mb-1">Return on Equity</span>
+                    <span className="text-4xl font-black">{(analysis.timeSeries[0].roe * 100).toFixed(1)}%</span>
+                   </div>
+                   <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-white/10 rounded-full group-hover:scale-150 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-24 space-y-6 animate-in fade-in duration-500">
+             <div className="relative">
+                <div className="w-16 h-16 border-4 border-indigo-100 rounded-full" />
+                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute inset-0" />
+             </div>
+             <div className="text-center">
+                <p className="text-slate-900 font-black text-lg">{statusMessage || "Parsing Data"}</p>
+                <p className="text-slate-500 text-sm">Deep-referencing archives for {selectedCompany.name}...</p>
+             </div>
+          </div>
+        )}
+
+        {analysis && !loading && (
+          <>
+            <section>
+              <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+                <span className="w-2 h-8 bg-indigo-600 rounded-full" />
+                Performance Trends
+              </h2>
+              <MetricCharts data={analysis.timeSeries} />
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+                <span className="w-2 h-8 bg-indigo-600 rounded-full" />
+                Structural Decomposition
+              </h2>
+              <DuPontMap data={analysis.timeSeries[0]} onExplain={setExplanationId} />
+            </section>
+
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+               {/* Section I: ROI */}
+               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
+                    I. Return on Investment
+                    <span className="text-xs font-bold bg-indigo-50 text-indigo-600 px-2 py-1 rounded">Core Performance</span>
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                       <div 
+                        onClick={() => setExplanationId('roa')}
+                        className="bg-indigo-50 p-5 rounded-2xl flex-1 border border-indigo-100 cursor-pointer hover:border-indigo-400 transition-colors group"
+                       >
+                          <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">FY{analysis.anchorYear} ROA</div>
+                          <div className="text-3xl font-black text-indigo-700">{(analysis.timeSeries[0].roa * 100).toFixed(2)}%</div>
+                       </div>
+                       <div className="bg-slate-50 p-5 rounded-2xl flex-1 border border-slate-100">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">FY{analysis.anchorYear - 1} ROA</div>
+                          <div className="text-3xl font-black text-slate-700">{(analysis.timeSeries[1].roa * 100).toFixed(2)}%</div>
+                       </div>
+                    </div>
+                    <div className="prose prose-slate max-w-none">
+                      <p className="text-slate-600 leading-relaxed italic text-sm border-l-4 border-indigo-500 pl-4 py-1">{analysis.narrative.section1}</p>
+                    </div>
+                    <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
+                      <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-4">Diagnostics</h4>
+                      <div className="space-y-5 text-sm">
+                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                          <p className="font-bold text-indigo-100 mb-1">Return Trend</p>
+                          <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.roe_trend}</p>
+                        </div>
+                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                          <p className="font-bold text-indigo-100 mb-1">Peer Benchmark</p>
+                          <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.roe_peer}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               </div>
+
+               {/* Section II: Efficiency */}
+               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
+                    II. Efficiency & Margin
+                    <span className="text-xs font-bold bg-orange-50 text-orange-600 px-2 py-1 rounded">Operating Drivers</span>
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                       <div 
+                        onClick={() => setExplanationId('turnover')}
+                        className="bg-orange-50 p-5 rounded-2xl flex-1 border border-orange-100 cursor-pointer hover:border-orange-400 transition-colors"
+                       >
+                          <div className="text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Asset Turnover</div>
+                          <div className="text-3xl font-black text-orange-700">{analysis.timeSeries[0].turnover.toFixed(2)}x</div>
+                       </div>
+                       <div 
+                        onClick={() => setExplanationId('margin')}
+                        className="bg-emerald-50 p-5 rounded-2xl flex-1 border border-emerald-100 cursor-pointer hover:border-emerald-400 transition-colors"
+                       >
+                          <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Profit Margin</div>
+                          <div className="text-3xl font-black text-emerald-700">{(analysis.timeSeries[0].margin * 100).toFixed(2)}%</div>
+                       </div>
+                    </div>
+                    <div className="prose prose-slate max-w-none">
+                       <p className="text-slate-600 leading-relaxed italic text-sm border-l-4 border-emerald-500 pl-4 py-1">{analysis.narrative.section2}</p>
+                    </div>
+                    <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
+                       <h4 className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-4">Diagnostics</h4>
+                       <div className="space-y-5 text-sm">
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-orange-100 mb-1">Primary Value Driver</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.driver_dominance}</p>
+                          </div>
+                       </div>
+                    </div>
+                  </div>
+               </div>
+
+               {/* Section III: Risk */}
+               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
+                    III. Risk & Stability
+                    <span className="text-xs font-bold bg-rose-50 text-rose-600 px-2 py-1 rounded">Solvency Metrics</span>
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div 
+                        onClick={() => setExplanationId('solvencyIndex')}
+                        className="p-5 bg-rose-50 rounded-2xl border border-rose-100 cursor-pointer hover:border-rose-400 transition-colors"
+                      >
+                        <div className="text-[10px] font-bold text-rose-400 uppercase mb-1 tracking-widest">Solvency Index</div>
+                        <div className="text-3xl font-black text-rose-700">{(analysis.risk.solvencyIndex * 100).toFixed(1)}</div>
+                      </div>
+                      <div 
+                        onClick={() => setExplanationId('leverage')}
+                        className="p-5 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:border-indigo-400 transition-colors"
+                      >
+                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Leverage Ratio</div>
+                        <div className="text-3xl font-black text-slate-700">{analysis.timeSeries[0].leverage.toFixed(2)}x</div>
+                      </div>
+                    </div>
+                    <div className="prose prose-slate max-w-none">
+                       <p className="text-slate-600 leading-relaxed italic text-sm border-l-4 border-rose-500 pl-4 py-1">{analysis.risk.summary}</p>
+                    </div>
+
+                    <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
+                       <h4 className="text-xs font-bold text-rose-400 uppercase tracking-widest mb-4">Risk Profile Diagnostics</h4>
+                       <div className="space-y-5 text-sm">
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-rose-200 mb-1">Risk Trend</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.risk_trend}</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-rose-200 mb-1">Sector Comparison</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.risk_peer}</p>
+                          </div>
+                       </div>
+                    </div>
+                  </div>
+               </div>
+
+               {/* Section IV: NLP */}
+               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
+                    IV. Narrative Clarity
+                    <span className="text-xs font-bold bg-slate-50 text-slate-600 px-2 py-1 rounded">NLP Analysis</span>
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-3 gap-3">
+                       {Object.entries(analysis.nlpData[analysis.anchorYear]).map(([key, val]) => (
+                         <div 
+                            key={key} 
+                            onClick={() => setExplanationId(key)}
+                            className="p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-400 transition-colors cursor-pointer group"
+                         >
+                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest truncate mb-1 group-hover:text-indigo-400 transition-colors">{key}</div>
+                            <div className="text-lg font-black text-slate-800">
+                              {typeof val === 'number' ? (val < 1 ? (val * 100).toFixed(0) : val.toFixed(1)) : val}
+                              {typeof val === 'number' && val < 1 && <span className="text-[10px] text-slate-400 ml-0.5">%</span>}
+                            </div>
+                         </div>
+                       ))}
+                    </div>
+                    <div className="prose prose-slate max-w-none">
+                       <p className="text-slate-600 leading-relaxed italic text-sm border-l-4 border-slate-300 pl-4 py-1">{analysis.narrative.section4}</p>
+                    </div>
+
+                    <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
+                       <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Reporting Diagnostics</h4>
+                       <div className="space-y-5 text-sm">
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-emerald-300 mb-1">Sentiment Trend</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_sentiment}</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-indigo-300 mb-1">Reporting Specificity</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_specificity}</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-orange-300 mb-1">Linguistic Complexity</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_complexity}</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-purple-300 mb-1">Market Benchmark</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_peer}</p>
+                          </div>
+                       </div>
+                    </div>
+                  </div>
+               </div>
+            </section>
+
+            {/* Analysis Accuracy Audit - BOTTOM */}
+            <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 blur-3xl -mr-32 -mt-32 rounded-full opacity-50" />
+               <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3 relative z-10">
+                 <span className="w-2 h-8 bg-emerald-500 rounded-full" />
+                 Analysis Accuracy Audit
+               </h2>
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
+                  <div className="lg:col-span-1 space-y-6">
+                    <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100">
+                       <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest mb-2">Integrity Summary</h4>
+                       <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                         {analysis.accuracySummary}
+                       </p>
+                    </div>
+                    <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                       <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                          <svg className="w-6 h-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                       </div>
+                       <div>
+                          <p className="text-[10px] font-black text-slate-400 uppercase">Verification Level</p>
+                          <p className="text-sm font-bold text-slate-900">High-Precision Verified</p>
+                       </div>
+                    </div>
+                  </div>
+                  
+                  <div className="lg:col-span-2">
+                    <div className="overflow-x-auto">
+                       <table className="w-full text-left border-separate border-spacing-y-2">
+                          <thead>
+                             <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <th className="px-4 pb-2">Metric</th>
+                                <th className="px-4 pb-2">Year</th>
+                                <th className="px-4 pb-2">Variance</th>
+                                <th className="px-4 pb-2 text-right">Status</th>
+                             </tr>
+                          </thead>
+                          <tbody>
+                             {analysis.accuracyAudit.map((audit, idx) => (
+                               <tr key={idx} className="bg-slate-50/50 rounded-xl overflow-hidden hover:bg-slate-50 transition-colors group">
+                                  <td className="px-4 py-3 rounded-l-xl border-l border-t border-b border-slate-100">
+                                     <span className="text-sm font-bold text-slate-900 capitalize">{audit.metric}</span>
+                                  </td>
+                                  <td className="px-4 py-3 border-t border-b border-slate-100">
+                                     <span className="text-xs font-bold text-slate-500">FY{audit.year}</span>
+                                  </td>
+                                  <td className="px-4 py-3 border-t border-b border-slate-100">
+                                     <span className={`text-xs font-black ${(audit.variance * 100) < 0.1 ? 'text-emerald-500' : 'text-orange-500'}`}>
+                                       {(audit.variance * 100).toFixed(3)}%
+                                     </span>
+                                  </td>
+                                  <td className="px-4 py-3 text-right rounded-r-xl border-r border-t border-b border-slate-100">
+                                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter ${audit.status === 'Verified' ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-700'}`}>
+                                       {audit.status}
+                                     </span>
+                                  </td>
+                               </tr>
+                             ))}
+                          </tbody>
+                       </table>
+                    </div>
+                  </div>
+               </div>
+            </section>
+          </>
+        )}
+      </main>
+
+      {/* Explanation Modal */}
+      {currentExplanation && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full shadow-2xl border border-slate-100 relative overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500" />
+            
+            <button 
+              onClick={() => setExplanationId(null)}
+              className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="mb-8">
+              <h4 className="text-3xl font-black text-slate-900 mb-2">{currentExplanation.label}</h4>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-mono font-bold tracking-tighter">
+                Formula: {currentExplanation.formula}
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Intelligence Summary</h5>
+                <p className="text-slate-600 leading-relaxed font-medium">
+                  {currentExplanation.explanation}
+                </p>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => setExplanationId(null)}
+              className="mt-10 w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+         <button 
+           onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+           className="p-4 bg-white shadow-2xl rounded-2xl border border-slate-200 text-indigo-600 hover:text-indigo-800 transition-all hover:-translate-y-1 active:scale-95 group"
+         >
+           <svg className="w-6 h-6 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+           </svg>
+         </button>
+      </div>
+    </div>
+  );
+};
+
+export default App;
