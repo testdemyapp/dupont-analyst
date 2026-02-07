@@ -28,6 +28,14 @@ export interface NLPMeasures {
   unfamiliarity: number;
 }
 
+export interface PeerRiskMetric {
+  metric: string;
+  companyValue: string;
+  peerMedian: string;
+  topQuartile: string;
+  evidence: string;
+}
+
 export interface RiskAnalysis {
   financial: string;
   solvencyIndex: number;
@@ -38,6 +46,7 @@ export interface RiskAnalysis {
     firmSpecific: number;
   };
   summary: string;
+  peerComparison: PeerRiskMetric[];
 }
 
 export interface AccuracyAudit {
