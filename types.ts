@@ -17,6 +17,7 @@ export interface MetricYearData {
   margin: number;
   turnover: number;
   leverage: number;
+  reportUrl?: string;
 }
 
 export interface NLPMeasures {
@@ -34,6 +35,13 @@ export interface PeerRiskMetric {
   peerMedian: string;
   topQuartile: string;
   evidence: string;
+}
+
+export interface PeerROI {
+  peerName: string;
+  peerSymbol: string;
+  roa: number;
+  roe: number;
 }
 
 export interface RiskAnalysis {
@@ -56,6 +64,8 @@ export interface AccuracyAudit {
   verifiedValue: number;
   variance: number;
   status: 'Verified' | 'Adjusted';
+  sourceReference: string;
+  currency: string;
 }
 
 export interface DuPontAnalysis {
@@ -64,9 +74,11 @@ export interface DuPontAnalysis {
   timeSeries: MetricYearData[];
   nlpData: Record<number, NLPMeasures>;
   risk: RiskAnalysis;
+  peerROI: PeerROI;
   sources: { title: string; uri: string }[];
   accuracyAudit: AccuracyAudit[];
   accuracySummary: string;
+  forecastAssumptions: string;
   narrative: {
     section1: string;
     section2: string;

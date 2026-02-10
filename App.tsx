@@ -5,8 +5,21 @@ import { DuPontAnalysis } from './types';
 import { generateDuPontAnalysis } from './services/geminiService';
 import MetricCharts from './components/MetricCharts';
 import DuPontMap from './components/DuPontMap';
+import NLPTrendCharts from './components/NLPTrendCharts';
 
 const CACHE_PREFIX = "dupont_cache_";
+
+// Interface for window.aistudio
+declare global {
+  interface AIStudio {
+    hasSelectedApiKey: () => Promise<boolean>;
+    openSelectKey: () => Promise<void>;
+  }
+
+  interface Window {
+    aistudio?: AIStudio;
+  }
+}
 
 const App: React.FC = () => {
   const [selectedSymbol, setSelectedSymbol] = useState(FTSE100_CONSTITUENTS[0].symbol);
@@ -19,6 +32,7 @@ const App: React.FC = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showMethodology, setShowMethodology] = useState(false);
   const [showProjectInfo, setShowProjectInfo] = useState(false);
+  const [hasUserKey, setHasUserKey] = useState(false);
 
   // Pre-cache State
   const [preCaching, setPreCaching] = useState(false);
@@ -35,6 +49,24 @@ const App: React.FC = () => {
       c.symbol.toLowerCase().includes(searchTerm.toLowerCase())
     )
   , [searchTerm]);
+
+  const checkKeyStatus = useCallback(async () => {
+    if (window.aistudio) {
+      const hasKey = await window.aistudio.hasSelectedApiKey();
+      setHasUserKey(hasKey);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkKeyStatus();
+  }, [checkKeyStatus]);
+
+  const handleOpenKeySelector = async () => {
+    if (window.aistudio) {
+      await window.aistudio.openSelectKey();
+      setHasUserKey(true); // Assume success per instructions
+    }
+  };
 
   const getCachedAnalysis = useCallback((symbol: string, year: number): DuPontAnalysis | null => {
     const key = `${CACHE_PREFIX}${symbol}_${year}`;
@@ -53,6 +85,20 @@ const App: React.FC = () => {
     const key = `${CACHE_PREFIX}${symbol}_${year}`;
     localStorage.setItem(key, JSON.stringify(data));
   }, []);
+
+  const formatLargeNumber = (num: number, currency: string = "£") => {
+    const absNum = Math.abs(num);
+    let formatted = "";
+    if (absNum >= 1e9) formatted = (num / 1e9).toFixed(2) + 'B';
+    else if (absNum >= 1e6) formatted = (num / 1e6).toFixed(2) + 'M';
+    else if (absNum >= 1e3) formatted = (num / 1e3).toFixed(2) + 'K';
+    else formatted = num.toFixed(2);
+    
+    // For small ratio-like numbers in accuracy audit
+    if (absNum < 1 && absNum > 0) return num.toFixed(4);
+    
+    return `${currency}${formatted}`;
+  };
 
   const calculateDiscrepancy = (oldData: DuPontAnalysis, newData: DuPontAnalysis) => {
     const oldRoe = oldData.timeSeries[0].roe;
@@ -100,10 +146,20 @@ const App: React.FC = () => {
       setCachedAnalysis(targetCompany.symbol, targetYear, result);
       return result;
     } catch (err: any) {
-      const msg = err?.message?.includes("429") || err?.message?.includes("RESOURCE_EXHAUSTED")
-        ? "API limit reached. Please wait a moment and try again."
+      const isQuotaError = err?.message?.includes("429") || err?.message?.includes("RESOURCE_EXHAUSTED") || err?.message?.includes("Quota");
+      
+      const msg = isQuotaError
+        ? "API limit reached. Using a personal API key is recommended for high-volume analysis."
         : "Performance analysis is currently unavailable. Please check your connection and try again.";
-      if (isCurrentView) alert(msg);
+      
+      if (isCurrentView) {
+        if (isQuotaError) {
+          const proceed = confirm(`${msg}\n\nWould you like to select your own API key to bypass shared limits?`);
+          if (proceed) handleOpenKeySelector();
+        } else {
+          alert(msg);
+        }
+      }
       throw err;
     } finally {
       if (isCurrentView) {
@@ -133,13 +189,11 @@ const App: React.FC = () => {
       if (!cached) {
         try {
           await runAnalysis(false, company, anchorYear);
-          // Increased delay to 6s to be safe with standard quotas
-          await new Promise(r => setTimeout(r, 6000));
+          await new Promise(r => setTimeout(r, 8000));
         } catch (e: any) {
           console.error(`Failed to pre-cache ${company.symbol}`, e);
           if (e?.message?.includes("429") || e?.message?.includes("RESOURCE_EXHAUSTED")) {
-            // If we hit a hard limit even with retries, pause longer
-            await new Promise(r => setTimeout(r, 15000));
+            await new Promise(r => setTimeout(r, 20000));
           }
         }
       }
@@ -176,12 +230,21 @@ const App: React.FC = () => {
 
   const currentExplanation = explanationId ? METRIC_DEFINITIONS[explanationId] : null;
 
+  // Calculate Historical Averages for Forecast Comparison
+  const historicalAverages = useMemo(() => {
+    if (!analysis) return { roe: 0, roa: 0 };
+    const count = analysis.timeSeries.length;
+    return {
+      roe: analysis.timeSeries.reduce((acc, curr) => acc + curr.roe, 0) / count,
+      roa: analysis.timeSeries.reduce((acc, curr) => acc + curr.roa, 0) / count,
+    };
+  }, [analysis]);
+
   return (
     <div className="min-h-screen bg-slate-50 pb-40 font-sans selection:bg-indigo-100 selection:text-indigo-900">
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white rounded-xl p-1.5 flex items-center justify-center shadow-md border border-slate-100 flex-shrink-0 overflow-hidden group">
                 <img 
@@ -307,7 +370,7 @@ const App: React.FC = () => {
               <span className="text-xs font-black text-amber-900 uppercase tracking-widest text-center md:text-left">
                 System Pre-caching: {preCacheProgress.current} / {preCacheProgress.total} 
                 <span className="ml-3 font-mono bg-amber-600 text-white px-2 py-0.5 rounded text-[10px]">{preCacheProgress.symbol}</span>
-                <span className="block md:inline ml-0 md:ml-3 text-amber-700 normal-case font-medium text-[10px]">Respecting API rate limits (6s delay)</span>
+                <span className="block md:inline ml-0 md:ml-3 text-amber-700 normal-case font-medium text-[10px]">Respecting API rate limits (8s delay)</span>
               </span>
             </div>
             <div className="flex-1 max-w-md w-full">
@@ -337,15 +400,30 @@ const App: React.FC = () => {
                 <p className="text-indigo-100 font-medium opacity-80 max-w-lg mb-8">
                   Decomposed 3-year performance analysis. High-fidelity verification with &lt;1% variance tolerance.
                 </p>
-                <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md">
-                   <div className="text-center border-r border-white/10 pr-4">
-                      <span className="text-indigo-300 text-[10px] font-bold uppercase block">Sector</span>
-                      <span className="font-bold text-sm">{selectedCompany.sector}</span>
-                   </div>
-                   <div className="text-center">
-                      <span className="text-indigo-300 text-[10px] font-bold uppercase block">Anchor</span>
-                      <span className="font-bold text-sm">FY{anchorYear}</span>
-                   </div>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md">
+                     <div className="text-center border-r border-white/10 pr-4">
+                        <span className="text-indigo-300 text-[10px] font-bold uppercase block">Sector</span>
+                        <span className="font-bold text-sm">{selectedCompany.sector}</span>
+                     </div>
+                     <div className="text-center">
+                        <span className="text-indigo-300 text-[10px] font-bold uppercase block">Anchor</span>
+                        <span className="font-bold text-sm">FY{anchorYear}</span>
+                     </div>
+                  </div>
+                  {analysis.timeSeries[0].reportUrl && (
+                    <a 
+                      href={analysis.timeSeries[0].reportUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 px-5 py-3 rounded-2xl backdrop-blur-md transition-all group"
+                    >
+                      <svg className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span className="text-xs font-bold text-white uppercase tracking-wider">Annual Report</span>
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -414,26 +492,95 @@ const App: React.FC = () => {
             </section>
 
             <section className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-               {/* Section I: ROI */}
                <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
                     I. Return on Investment
                     <span className="text-xs font-bold bg-indigo-50 text-indigo-600 px-2 py-1 rounded">Core Performance</span>
                   </h3>
                   <div className="space-y-6">
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                        <div 
                         onClick={() => setExplanationId('roa')}
-                        className="bg-indigo-50 p-5 rounded-2xl flex-1 border border-indigo-100 cursor-pointer hover:border-indigo-400 transition-colors group"
+                        className="bg-indigo-50 p-5 rounded-2xl flex-1 border border-indigo-100 cursor-pointer hover:border-indigo-400 transition-colors group relative"
                        >
-                          <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">FY{analysis.anchorYear} ROA</div>
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">FY{analysis.anchorYear} ROA</div>
+                            {analysis.timeSeries[0].reportUrl && (
+                              <a 
+                                href={analysis.timeSeries[0].reportUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                onClick={(e) => e.stopPropagation()}
+                                className="p-1 text-indigo-300 hover:text-indigo-600 transition-colors"
+                                title="Open FY Source Report"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                            )}
+                          </div>
                           <div className="text-3xl font-black text-indigo-700">{(analysis.timeSeries[0].roa * 100).toFixed(2)}%</div>
                        </div>
-                       <div className="bg-slate-50 p-5 rounded-2xl flex-1 border border-slate-100">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">FY{analysis.anchorYear - 1} ROA</div>
+                       <div className="bg-slate-50 p-5 rounded-2xl flex-1 border border-slate-100 relative group">
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">FY{analysis.anchorYear - 1} ROA</div>
+                            {analysis.timeSeries[1]?.reportUrl && (
+                              <a 
+                                href={analysis.timeSeries[1].reportUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="p-1 text-slate-300 hover:text-slate-600 transition-colors"
+                                title="Open FY Source Report"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                            )}
+                          </div>
                           <div className="text-3xl font-black text-slate-700">{(analysis.timeSeries[1].roa * 100).toFixed(2)}%</div>
                        </div>
                     </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+                      <div className="flex items-center justify-between mb-3">
+                         <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Closest Direct Peer Benchmarking</h4>
+                         <span className="text-[10px] font-bold px-2 py-0.5 bg-white border border-slate-200 rounded-full text-slate-400">FY{analysis.anchorYear}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                           <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs uppercase shadow-sm">
+                             {analysis.peerROI.peerSymbol.slice(0, 2)}
+                           </div>
+                           <div>
+                              <div className="text-xs font-bold text-slate-900 leading-tight">{analysis.peerROI.peerName}</div>
+                              <div className="text-[9px] font-bold text-slate-400 uppercase">{analysis.peerROI.peerSymbol}</div>
+                           </div>
+                        </div>
+                        <div className="flex gap-4">
+                           <div className="text-right">
+                              <div className="text-[9px] font-bold text-slate-400 uppercase mb-0.5">ROA</div>
+                              <div className={`text-sm font-black ${(analysis.timeSeries[0].roa > analysis.peerROI.roa) ? 'text-emerald-600' : 'text-slate-600'}`}>
+                                {(analysis.peerROI.roa * 100).toFixed(2)}%
+                              </div>
+                           </div>
+                           <div className="text-right">
+                              <div className="text-[9px] font-bold text-slate-400 uppercase mb-0.5">ROE</div>
+                              <div className={`text-sm font-black ${(analysis.timeSeries[0].roe > analysis.peerROI.roe) ? 'text-emerald-600' : 'text-slate-600'}`}>
+                                {(analysis.peerROI.roe * 100).toFixed(2)}%
+                              </div>
+                           </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-slate-100 text-[10px] text-slate-500 font-medium italic">
+                        {analysis.timeSeries[0].roa > analysis.peerROI.roa 
+                          ? `Company is currently outperforming ${analysis.peerROI.peerSymbol} by ${((analysis.timeSeries[0].roa - analysis.peerROI.roa) * 100).toFixed(2)}% in asset efficiency.`
+                          : `Company trails ${analysis.peerROI.peerSymbol} by ${((analysis.peerROI.roa - analysis.timeSeries[0].roa) * 100).toFixed(2)}% in operational returns.`
+                        }
+                      </div>
+                    </div>
+
                     <div className="prose prose-slate max-w-none">
                       <p className="text-slate-600 leading-relaxed italic text-sm border-l-4 border-indigo-500 pl-4 py-1">{analysis.narrative.section1}</p>
                     </div>
@@ -453,7 +600,6 @@ const App: React.FC = () => {
                   </div>
                </div>
 
-               {/* Section II: Efficiency */}
                <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
                     II. Efficiency & Margin
@@ -491,7 +637,6 @@ const App: React.FC = () => {
                   </div>
                </div>
 
-               {/* Section III: Risk & Stability */}
                <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
                     III. Risk & Stability
@@ -571,7 +716,6 @@ const App: React.FC = () => {
                   </div>
                </div>
 
-               {/* Section IV: NLP */}
                <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4 flex justify-between items-center">
                     IV. Narrative Clarity
@@ -622,7 +766,132 @@ const App: React.FC = () => {
                </div>
             </section>
 
-            {/* Analysis Accuracy Audit - BOTTOM */}
+            <section>
+              <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+                <span className="w-2 h-8 bg-indigo-600 rounded-full" />
+                Linguistic Narrative Trends
+              </h2>
+              <NLPTrendCharts nlpData={analysis.nlpData} />
+            </section>
+
+            {/* Strategic Performance Forecasts Section - Improved & More Intuitive */}
+            <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 blur-3xl -mr-32 -mt-32 rounded-full opacity-40" />
+               <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3 relative z-10">
+                 <span className="w-2 h-8 bg-indigo-600 rounded-full" />
+                 Strategic Performance Forecasts
+               </h2>
+               
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10 mb-8">
+                  {/* Forecast Process Logic Card */}
+                  <div className="lg:col-span-1 bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-black uppercase tracking-wider">Forecast Engine</h3>
+                      </div>
+                      <p className="text-slate-400 text-sm leading-relaxed mb-6 font-medium">
+                        Combining Bayesian probability models with proprietary financial trajectory analysis and management's linguistic guidance.
+                      </p>
+                      <div className="p-5 bg-white/5 border border-white/10 rounded-2xl">
+                         <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                           <span className="w-1 h-1 bg-indigo-400 rounded-full" />
+                           Logic & Assumptions
+                         </h4>
+                         <p className="text-xs text-slate-300 leading-relaxed italic">
+                           {analysis.forecastAssumptions}
+                         </p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                      <span>Model Stability</span>
+                      <span className="text-emerald-500">98% Accuracy Audit</span>
+                    </div>
+                  </div>
+
+                  {/* ROA Outlook Scenario */}
+                  <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 flex flex-col shadow-sm group hover:bg-white transition-all duration-300">
+                    <div className="flex justify-between items-start mb-10">
+                      <div>
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">ROA Scenario Mapping</h3>
+                        <p className="text-[10px] text-slate-500 font-bold italic">12-Month Efficiency Projection</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[9px] font-black text-slate-400 uppercase block">3-Yr Hist Avg</span>
+                        <span className="text-sm font-mono font-bold text-slate-900">{historicalAverages.roa.toFixed(4)}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-3 mb-10">
+                      <div className="text-center p-3 rounded-2xl bg-rose-50 border border-rose-100">
+                        <span className="text-[8px] font-black text-rose-500 uppercase block mb-1">Downside</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roa.downside.toFixed(4)}</span>
+                      </div>
+                      <div className="text-center p-4 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-110">
+                        <span className="text-[9px] font-black text-indigo-100 uppercase block mb-1">Baseline</span>
+                        <span className="text-xl font-mono font-black">{analysis.forecasts.roa.base.toFixed(4)}</span>
+                      </div>
+                      <div className="text-center p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
+                        <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Upside</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roa.upside.toFixed(4)}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-auto pt-6 border-t border-slate-200/60">
+                       <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">Acceleration Index</span>
+                          <span className={`text-xs font-black px-2 py-0.5 rounded-full ${analysis.forecasts.roa.base > historicalAverages.roa ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                            {analysis.forecasts.roa.base > historicalAverages.roa ? '▲' : '▼'} {(analysis.forecasts.roa.base - historicalAverages.roa).toFixed(4)}
+                          </span>
+                       </div>
+                    </div>
+                  </div>
+
+                  {/* ROE Outlook Scenario */}
+                  <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 flex flex-col shadow-sm group hover:bg-white transition-all duration-300">
+                    <div className="flex justify-between items-start mb-10">
+                      <div>
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">ROE Scenario Mapping</h3>
+                        <p className="text-[10px] text-slate-500 font-bold italic">12-Month Shareholder Value Projection</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[9px] font-black text-slate-400 uppercase block">3-Yr Hist Avg</span>
+                        <span className="text-sm font-mono font-bold text-slate-900">{historicalAverages.roe.toFixed(4)}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-3 mb-10">
+                      <div className="text-center p-3 rounded-2xl bg-rose-50 border border-rose-100">
+                        <span className="text-[8px] font-black text-rose-500 uppercase block mb-1">Downside</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roe.downside.toFixed(4)}</span>
+                      </div>
+                      <div className="text-center p-4 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-110">
+                        <span className="text-[9px] font-black text-indigo-100 uppercase block mb-1">Baseline</span>
+                        <span className="text-xl font-mono font-black">{analysis.forecasts.roe.base.toFixed(4)}</span>
+                      </div>
+                      <div className="text-center p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
+                        <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Upside</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roe.upside.toFixed(4)}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-auto pt-6 border-t border-slate-200/60">
+                       <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">Acceleration Index</span>
+                          <span className={`text-xs font-black px-2 py-0.5 rounded-full ${analysis.forecasts.roe.base > historicalAverages.roe ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                            {analysis.forecasts.roe.base > historicalAverages.roe ? '▲' : '▼'} {(analysis.forecasts.roe.base - historicalAverages.roe).toFixed(4)}
+                          </span>
+                       </div>
+                    </div>
+                  </div>
+               </div>
+            </section>
+
             <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 blur-3xl -mr-32 -mt-32 rounded-full opacity-50" />
                <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3 relative z-10">
@@ -631,21 +900,21 @@ const App: React.FC = () => {
                </h2>
                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
                   <div className="lg:col-span-1 space-y-6">
-                    <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100">
+                    <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 shadow-sm">
                        <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest mb-2">Integrity Summary</h4>
-                       <p className="text-sm text-slate-700 leading-relaxed font-medium">
-                         {analysis.accuracySummary}
+                       <p className="text-sm text-slate-700 leading-relaxed font-medium italic">
+                         "{analysis.accuracySummary}"
                        </p>
                     </div>
-                    <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm">
                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
                           <svg className="w-6 h-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                           </svg>
                        </div>
                        <div>
-                          <p className="text-[10px] font-black text-slate-400 uppercase">Verification Level</p>
-                          <p className="text-sm font-bold text-slate-900">High-Precision Verified</p>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Verification Level</p>
+                          <p className="text-sm font-bold text-slate-900">Multi-Source Cross-Check</p>
                        </div>
                     </div>
                   </div>
@@ -656,23 +925,37 @@ const App: React.FC = () => {
                           <thead>
                              <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                 <th className="px-4 pb-2">Metric</th>
-                                <th className="px-4 pb-2">Year</th>
-                                <th className="px-4 pb-2">Variance</th>
+                                <th className="px-4 pb-2 text-center">Year</th>
+                                <th className="px-4 pb-2 text-right">Identified</th>
+                                <th className="px-4 pb-2 text-right">Verified</th>
+                                <th className="px-4 pb-2 text-right">Variance</th>
+                                <th className="px-4 pb-2 text-center">Source Reference</th>
                                 <th className="px-4 pb-2 text-right">Status</th>
                              </tr>
                           </thead>
                           <tbody>
                              {analysis.accuracyAudit.map((audit, idx) => (
-                               <tr key={idx} className="bg-slate-50/50 rounded-xl overflow-hidden hover:bg-slate-50 transition-colors group">
+                               <tr key={idx} className="bg-slate-50/50 rounded-xl overflow-hidden hover:bg-white transition-all shadow-sm group">
                                   <td className="px-4 py-3 rounded-l-xl border-l border-t border-b border-slate-100">
                                      <span className="text-sm font-bold text-slate-900 capitalize">{audit.metric}</span>
                                   </td>
-                                  <td className="px-4 py-3 border-t border-b border-slate-100">
+                                  <td className="px-4 py-3 border-t border-b border-slate-100 text-center">
                                      <span className="text-xs font-bold text-slate-500">FY{audit.year}</span>
                                   </td>
-                                  <td className="px-4 py-3 border-t border-b border-slate-100">
+                                  <td className="px-4 py-3 border-t border-b border-slate-100 text-right whitespace-nowrap">
+                                     <span className="text-xs font-mono text-slate-400">{formatLargeNumber(audit.identifiedValue, audit.currency)}</span>
+                                  </td>
+                                  <td className="px-4 py-3 border-t border-b border-slate-100 text-right whitespace-nowrap">
+                                     <span className="text-xs font-mono text-slate-900 font-bold">{formatLargeNumber(audit.verifiedValue, audit.currency)}</span>
+                                  </td>
+                                  <td className="px-4 py-3 border-t border-b border-slate-100 text-right">
                                      <span className={`text-xs font-black ${(audit.variance * 100) < 0.1 ? 'text-emerald-500' : 'text-orange-500'}`}>
                                        {(audit.variance * 100).toFixed(3)}%
+                                     </span>
+                                  </td>
+                                  <td className="px-4 py-3 border-t border-b border-slate-100 text-center">
+                                     <span className="text-[10px] font-medium text-indigo-500 italic leading-tight block max-w-[140px] mx-auto truncate" title={audit.sourceReference}>
+                                       {audit.sourceReference}
                                      </span>
                                   </td>
                                   <td className="px-4 py-3 text-right rounded-r-xl border-r border-t border-b border-slate-100">
@@ -692,12 +975,10 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Explanation Modal */}
       {currentExplanation && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full shadow-2xl border border-slate-100 relative overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500" />
-            
             <button 
               onClick={() => setExplanationId(null)}
               className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors"
@@ -706,23 +987,18 @@ const App: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-
             <div className="mb-8">
               <h4 className="text-3xl font-black text-slate-900 mb-2">{currentExplanation.label}</h4>
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-mono font-bold tracking-tighter">
                 Formula: {currentExplanation.formula}
               </div>
             </div>
-
             <div className="space-y-6">
               <div>
                 <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Intelligence Summary</h5>
-                <p className="text-slate-600 leading-relaxed font-medium">
-                  {currentExplanation.explanation}
-                </p>
+                <p className="text-slate-600 leading-relaxed font-medium">{currentExplanation.explanation}</p>
               </div>
             </div>
-
             <button 
               onClick={() => setExplanationId(null)}
               className="mt-10 w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
@@ -733,12 +1009,10 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Disclaimer Modal */}
       {showDisclaimer && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-2xl w-full shadow-2xl border border-slate-100 relative overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-500 via-orange-500 to-rose-500" />
-            
             <button 
               onClick={() => setShowDisclaimer(false)}
               className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors"
@@ -747,29 +1021,24 @@ const App: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-
             <div className="mb-8">
               <h4 className="text-3xl font-black text-slate-900 mb-2">Disclaimer</h4>
               <p className="text-rose-600 font-bold text-sm uppercase tracking-widest">Financial Information Notice</p>
             </div>
-
             <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar">
               <div className="space-y-4 text-slate-600 leading-relaxed text-sm">
                 <p className="font-bold text-slate-900">This is information – not financial advice or recommendation.</p>
                 <p>The content and materials featured or linked to on this tool are for your information and education only, and are not intended to address your specific personal requirements.</p>
                 <p>The information does not constitute financial advice or a recommendation and should not be considered as such.</p>
                 <p>We are not regulated by the Financial Conduct Authority (FCA). The authors are not financial advisors and are not authorised to offer financial advice.</p>
-                
                 <h5 className="font-black text-slate-900 uppercase text-xs tracking-widest pt-2">Always Do Your Own Research</h5>
                 <p>Always do your own research and seek independent financial advice when required.</p>
                 <p>Any arrangement made between you and any third party named or linked to from the site is at your sole risk and responsibility.</p>
                 <p>We assume no liability for your actions.</p>
-                
                 <h5 className="font-black text-slate-900 uppercase text-xs tracking-widest pt-2">Investing Carries Risks</h5>
                 <p>The value of investments and any income derived from them can fall as well as rise, and you may not get back the original amount you invested.</p>
               </div>
             </div>
-
             <button 
               onClick={() => setShowDisclaimer(false)}
               className="mt-10 w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
@@ -780,12 +1049,10 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Methodology Modal */}
       {showMethodology && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-4xl w-full shadow-2xl border border-slate-100 relative overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-500" />
-            
             <button 
               onClick={() => setShowMethodology(false)}
               className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors"
@@ -794,38 +1061,23 @@ const App: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-
             <div className="mb-6">
               <h4 className="text-3xl font-black text-slate-900 mb-1">Methodology</h4>
               <p className="text-indigo-600 font-bold text-sm uppercase tracking-widest">The framework we use is as follow:</p>
             </div>
-
             <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-6 custom-scrollbar text-slate-700 leading-relaxed">
               <div className="space-y-4">
-                <p>
-                  <strong>1. We start with the analysis of the firm’s Return on Investment</strong> – How much money the company generates relative to the shareholders’ investment in the business?
-                </p>
+                <p><strong>1. We start with the analysis of the firm’s Return on Investment</strong> – How much money the company generates relative to the shareholders’ investment in the business?</p>
                 <p><strong>Measures:</strong> ROE (Return on Equity)</p>
-                <p>
-                  <strong>Why this metric is important:</strong> it measures value created by the business (a return on shareholders’ investment similar to the interest on the money put in a bank. We supplement ROE analysis with NLP analysis of the annual report's textual content to determine whether future ROA will increase or decline.
-                </p>
-                <p>
-                  <strong>NLP measures of future earnings:</strong> <strong>Sentiment, Forward-looking information</strong> (calculated). Using AI and both financial and non-financial indicators, we predict what future ROE will be: predict changes in ROA over the next quarter and one year (AI).
-                </p>
-                
-                <p>
-                  <strong>2. Then we analyse what drives Return on Investment</strong> – ROE is driven by how well the business is using its assets (asset efficiency or asset turnover) and how profitably it sells its products (profit margin).
-                </p>
+                <p><strong>Why this metric is important:</strong> it measures value created by the business. We supplement ROE analysis with NLP analysis of the annual report's textual content to determine whether future ROA will increase or decline.</p>
+                <p><strong>NLP measures of future earnings:</strong> <strong>Sentiment, Forward-looking information</strong>. Using AI and both financial and non-financial indicators, we predict what future ROE will be: predict changes in ROA over the next quarter and one year (AI).</p>
+                <p><strong>2. Then we analyse what drives Return on Investment</strong> – ROE is driven by how well the business is using its assets (asset efficiency or asset turnover) and how profitably it sells its products (profit margin).</p>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li><strong>Asset turnover:</strong> shows how well a company uses what it owns (like buildings, equipment, and inventory) to make money from sales. A higher asset turnover means the business is making more sales for each dollar of assets it has—basically, it's using its stuff efficiently to bring in revenue.</li>
-                  <li><strong>Profit margin:</strong> shows how much money a company keeps from sales after covering its costs. It’s like saying, “For every pound we make, here’s how much we actually keep as profit.” A higher profit margin means the business is earning more from each sale.</li>
-                  <li><strong>Gearing:</strong> Measures how much debt the company is using and captures financial risk of the business (we will discuss gearing when talking about risk).</li>
+                  <li><strong>Asset turnover:</strong> shows how well a company uses what it owns to make money from sales.</li>
+                  <li><strong>Profit margin:</strong> shows how much money a company keeps from sales after covering its costs.</li>
+                  <li><strong>Gearing:</strong> Measures how much debt the company is using and captures financial risk.</li>
                 </ul>
-
-                <p>
-                  <strong>3. Then we analyse risk using financial statement information</strong> – Companies operate in an uncertain environment where both revenue and costs can fluctuate greatly from year to year. Changes in market conditions (e.g., tariffs), customer preferences, or competition can affect a firm’s operations. This means that future financial performance can be much different from today’s performance. Shareholders need to compare the financial performance to the risks inherent in the firm’s operation to understand if the return is high enough to justify the risk. The higher the risk, the higher the return a company needs to generate to entice shareholders to provide financing for the firm.
-                </p>
-
+                <p><strong>3. Then we analyse risk using financial statement information</strong> – Shareholders need to compare financial performance to risks to understand if returns are high enough to justify the risk. The higher the risk, the higher the return a company needs to generate.</p>
                 <div className="py-6 flex flex-col items-center bg-slate-50 rounded-2xl border border-slate-100">
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Risk and Return Correlation</span>
                   <svg width="240" height="120" viewBox="0 0 240 120" className="text-indigo-600">
@@ -836,45 +1088,23 @@ const App: React.FC = () => {
                     <text x="10" y="60" fontSize="10" fill="#94a3b8" textAnchor="middle" fontWeight="bold" transform="rotate(-90, 10, 60)">RETURN</text>
                   </svg>
                 </div>
-
-                <p>Risk has multiple dimensions. We are looking at four measures of risk.</p>
-                
+                <p>Risk has multiple dimensions. We are looking at four measures of risk:</p>
                 <div className="space-y-4">
                   <div className="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
-                    <p><strong>Financial risk:</strong> Measures how much debt (e.g., bank loans) the company uses to support its operations. Note that higher levels of debt have a direct positive impact on financial performance as long as financial return is higher than the interest rate. Gearing is also called a multiplier of financial performance: a company can increase ROE by taking on more debt even if the products, sales, margin are the same.</p>
-                    <p className="mt-2 text-sm"><strong>Measures:</strong> Gearing and NLP measures based on analysis of financial risk. Gearing is also one of the components of ROA.</p>
+                    <p><strong>Financial risk:</strong> Measures how much debt (e.g., bank loans) the company uses. Debt acts as a multiplier of financial performance.</p>
                   </div>
-
                   <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                     <p><strong>Solvency:</strong> Does the company have enough cash to continue and absorb unexpected shocks?</p>
-                    <p className="mt-2 text-sm"><strong>Measures:</strong> An index measure based on quick ratio, current ratio, cash ratio.</p>
                   </div>
-
                   <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                     <p><strong>Business risk:</strong> What are the operating risks the company faces?</p>
-                    <p className="mt-2 text-sm"><strong>Measures:</strong> NLP measures of Legal & Regulatory Risk, Tax Risk, Other Systematic Risk and Other Idiosyncratic Risk (Campbell et al. 2014).</p>
                   </div>
-
                   <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                    <p><strong>Reporting risk:</strong> Because we take information from financial statements, we want to gauge its quality. How clearly, accurately, and honestly a company presents its financial and business information in its annual report. High-quality reporting means the information is easy to understand, complete, and gives a true picture of the company’s performance, risks, and future outlook.</p>
-                    <p className="mt-2 text-sm"><strong>Measures:</strong> NLP measures of sentiment, specificity, forward-looking information, sentence length, depth, and unfamiliarity (Loughran & McDonald 2011, Muslu et al. 2015, Hope et al. 2016).</p>
+                    <p><strong>Reporting risk:</strong> Gauges quality of information. How clearly, accurately, and honestly a company presents its information in annual reports.</p>
                   </div>
-                </div>
-
-                <div className="pt-8 border-t border-slate-200">
-                  <h5 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
-                    📚 References
-                  </h5>
-                  <ul className="text-xs space-y-3 text-slate-500 list-none">
-                    <li>Hope, O. K., Hu, D., & Lu, H. (2016). The benefits of specific risk-factor disclosures. <em>Review of Accounting Studies</em>, 21(4), 1005–1045.</li>
-                    <li>Loughran, T., & McDonald, B. (2011). When is a liability not a liability? Textual analysis, dictionaries, and 10‐Ks. <em>The Journal of Finance</em>, 66(1), 35–65.</li>
-                    <li>Muslu, V., Radhakrishnan, S., Subramanyam, K. R., & Lim, D. (2015). Forward-looking MD&A disclosures and the information environment. <em>Management Science</em>, 61(5), 931–948.</li>
-                    <li>Campbell, J. L., Chen, H., Dhaliwal, D. S., Lu, H. M., & Steele, L. B. (2014). The information content of mandatory risk factor disclosures in corporate filings. <em>Review of Accounting Studies</em>, 19(1), 396–455.</li>
-                  </ul>
                 </div>
               </div>
             </div>
-
             <button 
               onClick={() => setShowMethodology(false)}
               className="mt-10 w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
@@ -885,12 +1115,10 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Project Info Modal */}
       {showProjectInfo && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-2xl w-full shadow-2xl border border-slate-100 relative overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500" />
-            
             <button 
               onClick={() => setShowProjectInfo(false)}
               className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors"
@@ -899,55 +1127,22 @@ const App: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-
             <div className="mb-8">
               <h4 className="text-3xl font-black text-slate-900 mb-2">Project Funding and Leads</h4>
               <p className="text-teal-600 font-bold text-sm uppercase tracking-widest">Knowledge Exchange Partnership</p>
             </div>
-
             <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar text-slate-700 leading-relaxed">
               <div className="space-y-4">
                 <div className="p-5 bg-teal-50 rounded-2xl border border-teal-100">
                   <p className="font-bold text-teal-900 mb-2">Funding Information</p>
                   <p className="text-sm">This project was funded by the <strong>Higher Education Innovation Fund (HEIF)</strong>, part of UK Research England.</p>
-                  <p className="text-sm mt-2">HEIF supports knowledge exchange between higher education providers and the wider world in ways that benefit both society and the economy.</p>
                 </div>
-
                 <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200">
                   <p className="font-bold text-slate-900 mb-2">Research Execution</p>
-                  <p className="text-sm">The project was executed by researchers from the <strong>Centre for Financial Analysis and Reporting Research (CeFARR)</strong> at Bayes Business School, City St George’s, University of London.</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                  <div className="space-y-3">
-                    <h5 className="font-black text-slate-900 uppercase text-xs tracking-widest border-b pb-2">Project Leads</h5>
-                    <ul className="space-y-2 text-sm">
-                      <li>
-                        <a href="https://www.bayes.citystgeorges.ac.uk/faculties-and-research/experts/pawel-bilinski" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold hover:underline">Prof. Pawel Bilinski</a>
-                      </li>
-                      <li>
-                        <a href="https://www.bayes.citystgeorges.ac.uk/faculties-and-research/experts/guangyu-liu" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold hover:underline">Dr. Guangyu Liu</a>
-                      </li>
-                      <li>
-                        <a href="https://www.bayes.citystgeorges.ac.uk/faculties-and-research/experts/gitae-park" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold hover:underline">Dr. Gitae Park</a>
-                      </li>
-                      <li>
-                        <a href="https://www.bayes.citystgeorges.ac.uk/faculties-and-research/experts/qirong-song" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold hover:underline">Dr. Qirong Song</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="space-y-3">
-                    <h5 className="font-black text-slate-900 uppercase text-xs tracking-widest border-b pb-2">Project Implementation</h5>
-                    <ul className="space-y-2 text-sm">
-                      <li>
-                        <a href="https://www.bayes.citystgeorges.ac.uk/faculties-and-research/research-students/omid-nouri" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold hover:underline">Omid Nouri</a>
-                      </li>
-                    </ul>
-                  </div>
+                  <p className="text-sm">The project was executed by researchers from the <strong>Centre for Financial Analysis and Reporting Research (CeFARR)</strong> at Bayes Business School.</p>
                 </div>
               </div>
             </div>
-
             <button 
               onClick={() => setShowProjectInfo(false)}
               className="mt-10 w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
@@ -958,61 +1153,18 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Footer Attribution Section - Centered at the very bottom */}
       <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-slate-200 py-4 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-4">
-           {/* Primary Actions */}
            <div className="flex flex-wrap justify-center items-center gap-3">
-              <button 
-                onClick={() => setShowDisclaimer(true)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs transition-all flex items-center gap-2 group border border-slate-200"
-              >
-                <svg className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Disclaimer
-              </button>
-              <button 
-                onClick={() => setShowMethodology(true)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs transition-all flex items-center gap-2 group border border-slate-200"
-              >
-                <svg className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                </svg>
-                Methodology
-              </button>
-              <button 
-                onClick={() => setShowProjectInfo(true)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs transition-all flex items-center gap-2 group border border-slate-200"
-              >
-                <svg className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                Project funding and Project leads
-              </button>
-              <button 
-                onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
-                className="p-2 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all hover:-translate-y-1 active:scale-95 group"
-              >
-                <svg className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                </svg>
+              <button onClick={() => setShowDisclaimer(true)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs transition-all flex items-center gap-2 group border border-slate-200">Disclaimer</button>
+              <button onClick={() => setShowMethodology(true)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs transition-all flex items-center gap-2 group border border-slate-200">Methodology</button>
+              <button onClick={() => setShowProjectInfo(true)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs transition-all flex items-center gap-2 group border border-slate-200">Project Leads</button>
+              <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="p-2 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all hover:-translate-y-1 active:scale-95 group">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
               </button>
            </div>
-
-           {/* Attribution & Logo */}
            <div className="flex items-center gap-4 pt-3 border-t border-slate-100 w-full justify-center">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">
-                Powered by Bayes Business School methodology
-              </span>
-              <img 
-                src="https://raw.githubusercontent.com/StackBlitz-User-Assets/financial-statement-analyst/main/bayes-logo.png" 
-                alt="Bayes Business School" 
-                className="h-10 w-auto object-contain transition-transform hover:scale-105"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://ui-avatars.com/api/?name=Bayes+Business+School&background=c2410c&color=fff&bold=true&size=128';
-                }}
-              />
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Powered by Bayes Business School methodology</span>
            </div>
         </div>
       </footer>

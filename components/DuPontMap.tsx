@@ -13,15 +13,25 @@ interface NodeProps {
 const Node: React.FC<NodeProps> = ({ id, value, onClick, isMain }) => {
   const def = METRIC_DEFINITIONS[id];
   return (
-    <div 
-      onClick={() => onClick(id)}
-      className={`cursor-pointer p-4 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 shadow-sm
-      ${isMain ? 'bg-indigo-600 border-indigo-700 text-white' : 'bg-white border-slate-200 text-slate-800 hover:border-indigo-400'}`}
-    >
-      <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isMain ? 'text-indigo-100' : 'text-slate-500'}`}>
-        {def.label.split(' (')[0]}
+    <div className="group relative">
+      <div 
+        onClick={() => onClick(id)}
+        className={`cursor-pointer p-4 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 shadow-sm
+        ${isMain ? 'bg-indigo-600 border-indigo-700 text-white' : 'bg-white border-slate-200 text-slate-800 hover:border-indigo-400'}`}
+      >
+        <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isMain ? 'text-indigo-100' : 'text-slate-500'}`}>
+          {def.label.split(' (')[0]}
+        </div>
+        <div className="text-2xl font-bold">{value}</div>
       </div>
-      <div className="text-2xl font-bold">{value}</div>
+      
+      {/* Tooltip */}
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-4 bg-slate-900 text-white rounded-xl text-xs shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+        <div className="font-black text-indigo-400 uppercase tracking-widest mb-1">{def.label}</div>
+        <div className="text-slate-300 mb-2 italic">Formula: {def.formula}</div>
+        <div className="text-slate-400 leading-relaxed">{def.explanation}</div>
+        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1.5 border-8 border-transparent border-t-slate-900" />
+      </div>
     </div>
   );
 }
