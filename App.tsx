@@ -926,10 +926,9 @@ const App: React.FC = () => {
                              <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                 <th className="px-4 pb-2">Metric</th>
                                 <th className="px-4 pb-2 text-center">Year</th>
-                                <th className="px-4 pb-2 text-right">Identified</th>
+                                <th className="px-4 pb-2 text-right">Annual report data</th>
                                 <th className="px-4 pb-2 text-right">Verified</th>
                                 <th className="px-4 pb-2 text-right">Variance</th>
-                                <th className="px-4 pb-2 text-center">Source Reference</th>
                                 <th className="px-4 pb-2 text-right">Status</th>
                              </tr>
                           </thead>
@@ -943,7 +942,7 @@ const App: React.FC = () => {
                                      <span className="text-xs font-bold text-slate-500">FY{audit.year}</span>
                                   </td>
                                   <td className="px-4 py-3 border-t border-b border-slate-100 text-right whitespace-nowrap">
-                                     <span className="text-xs font-mono text-slate-400">{formatLargeNumber(audit.identifiedValue, audit.currency)}</span>
+                                     <span className="text-xs font-mono text-slate-400">{formatLargeNumber(audit.annualReportValue, audit.currency)}</span>
                                   </td>
                                   <td className="px-4 py-3 border-t border-b border-slate-100 text-right whitespace-nowrap">
                                      <span className="text-xs font-mono text-slate-900 font-bold">{formatLargeNumber(audit.verifiedValue, audit.currency)}</span>
@@ -951,11 +950,6 @@ const App: React.FC = () => {
                                   <td className="px-4 py-3 border-t border-b border-slate-100 text-right">
                                      <span className={`text-xs font-black ${(audit.variance * 100) < 0.1 ? 'text-emerald-500' : 'text-orange-500'}`}>
                                        {(audit.variance * 100).toFixed(3)}%
-                                     </span>
-                                  </td>
-                                  <td className="px-4 py-3 border-t border-b border-slate-100 text-center">
-                                     <span className="text-[10px] font-medium text-indigo-500 italic leading-tight block max-w-[140px] mx-auto truncate" title={audit.sourceReference}>
-                                       {audit.sourceReference}
                                      </span>
                                   </td>
                                   <td className="px-4 py-3 text-right rounded-r-xl border-r border-t border-b border-slate-100">

@@ -39,26 +39,27 @@ export async function generateDuPontAnalysis(
   
   return fetchWithRetry(async () => {
     const ai = new GoogleGenAI({ apiKey });
-    
-    // Use Flash for standard runs to avoid quota exhaustion, Pro for critical deep dives
-    const selectedModel = isDeepDive ? 'gemini-3-pro-preview' : 'gemini-3-flash-preview';
+    const selectedModel = 'gemini-3-pro-preview';
 
-    const prompt = `Perform a high-precision financial and NLP analysis for ${company.name} (${company.symbol}) for anchor year ${anchorYear} and the previous two years. 
+    const prompt = `Perform a high-precision financial and NLP analysis for ${company.name} (${company.symbol}) for anchor year ${anchorYear} and the previous two years.
 
-${isDeepDive ? `DISCREPANCY ALERT: ${discrepancyNote}. Conduct an exhaustive search to resolve this variance.` : ''}
+CRITICAL INSTRUCTIONS:
+1. USE googleSearch TO FIND THE OFFICIAL FY${anchorYear} ANNUAL REPORT.
+2. EXTRACT EXACT VALUES FOR: Revenue, Net Profit, Total Assets, Total Equity, and Total Debt from the "Primary Financial Statements" (Balance Sheet/Income Statement).
+3. IDENTIFY the official reported ROE, ROA, Margin, and Turnover from the report if available.
+4. CROSS-VERIFY these figures against at least three major financial platforms (FT, Yahoo, Bloomberg).
+5. DO NOT FABRICATE DATA. If a metric cannot be verified, prioritize the Annual Report value.
 
-CRITICAL ACCURACY & CROSS-SOURCE VERIFICATION:
-1. You MUST verify the accuracy of "Net Profit Margin", "Asset Turnover", and "Return on Equity (ROE)" for ${anchorYear} against multiple sources, specifically including 'https://markets.ft.com/data/equities' (search for the company by symbol ${company.symbol}).
-2. For the "Analysis Accuracy Audit", you must include entries for these three computed ratios in addition to raw Revenue, Net Profit, Total Assets, and Total Equity.
-3. Record exactly which source was used for the verification (e.g., "FT Markets / Equities Data" or "Official Annual Report Page X").
-4. Ensure all financial figures are cross-referenced with the official investor relations archives.
+ANALYSIS ACCURACY AUDIT REQUIREMENTS:
+- You must provide audit entries for: ROE, Financial Leverage, Net Profit Margin, Asset Turnover, Return on Assets (ROA), Total Revenue, Total Assets, and Total Debt.
+- For each entry:
+  - 'annualReportValue': The exact value found in the official annual report/IR materials.
+  - 'verifiedValue': The final value used in this analysis after cross-referencing multiple sources.
+  - 'variance': The percentage difference between the annual report value and the verified value.
+  - 'status': 'Verified' if the variance is <0.1%, 'Adjusted' otherwise.
+- DO NOT INCLUDE ANY SOURCE NAMES OR URLS IN THE AUDIT OBJECT FIELDS.
 
-STRATEGIC FORECASTING (12-Month Outlook):
-1. Provide a forward-looking forecast for ROA and ROE in decimal format for Downside, Baseline, and Upside scenarios.
-2. In 'forecastAssumptions', explicitly show your logic, including sector macro-trends, management commentary sentiment, and mean-reversion expectations.
-3. Contrast the Baseline forecast against the 3-year historical average to determine if performance is expected to accelerate or decelerate.
-
-Return the result in strict JSON format matching the provided schema.`;
+Return the result in strict JSON format matching the schema.`;
 
     const response = await ai.models.generateContent({
       model: selectedModel,
@@ -79,9 +80,10 @@ Return the result in strict JSON format matching the provided schema.`;
                   netProfit: { type: Type.NUMBER },
                   totalAssets: { type: Type.NUMBER },
                   totalEquity: { type: Type.NUMBER },
-                  reportUrl: { type: Type.STRING, description: "Direct URL to official annual report" }
+                  totalDebt: { type: Type.NUMBER },
+                  reportUrl: { type: Type.STRING }
                 },
-                required: ["year", "revenue", "netProfit", "totalAssets", "totalEquity"]
+                required: ["year", "revenue", "netProfit", "totalAssets", "totalEquity", "totalDebt"]
               }
             },
             peerROI: {
@@ -101,14 +103,13 @@ Return the result in strict JSON format matching the provided schema.`;
                 properties: {
                   metric: { type: Type.STRING },
                   year: { type: Type.INTEGER },
-                  identifiedValue: { type: Type.NUMBER },
+                  annualReportValue: { type: Type.NUMBER },
                   verifiedValue: { type: Type.NUMBER },
                   variance: { type: Type.NUMBER },
                   status: { type: Type.STRING },
-                  sourceReference: { type: Type.STRING },
                   currency: { type: Type.STRING }
                 },
-                required: ["metric", "year", "identifiedValue", "verifiedValue", "variance", "status", "sourceReference", "currency"]
+                required: ["metric", "year", "annualReportValue", "verifiedValue", "variance", "status", "currency"]
               }
             },
             accuracySummary: { type: Type.STRING },

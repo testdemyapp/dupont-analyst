@@ -11,6 +11,7 @@ export interface MetricYearData {
   netProfit: number;
   totalAssets: number;
   totalEquity: number;
+  totalDebt: number;
   // Computed
   roe: number;
   roa: number;
@@ -60,11 +61,10 @@ export interface RiskAnalysis {
 export interface AccuracyAudit {
   metric: string;
   year: number;
-  identifiedValue: number;
+  annualReportValue: number;
   verifiedValue: number;
   variance: number;
   status: 'Verified' | 'Adjusted';
-  sourceReference: string;
   currency: string;
 }
 
