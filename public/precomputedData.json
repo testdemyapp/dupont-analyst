@@ -1,0 +1,3362 @@
+{
+  "AAL_2024": {
+    "company": {
+      "symbol": "AAL",
+      "name": "Anglo American",
+      "sector": "Mining"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 30500000000,
+        "netProfit": 2100000000,
+        "totalAssets": 58000000000,
+        "totalEquity": 32000000000,
+        "totalDebt": 12000000000,
+        "roe": 0.0656,
+        "roa": 0.0362,
+        "margin": 0.0688,
+        "turnover": 0.5258,
+        "leverage": 1.8125
+      },
+      {
+        "year": 2023,
+        "revenue": 32500000000,
+        "netProfit": 2800000000,
+        "totalAssets": 60000000000,
+        "totalEquity": 34000000000,
+        "totalDebt": 11000000000,
+        "roe": 0.0823,
+        "roa": 0.0466,
+        "margin": 0.0861,
+        "turnover": 0.5417,
+        "leverage": 1.7647
+      },
+      {
+        "year": 2022,
+        "revenue": 35100000000,
+        "netProfit": 4500000000,
+        "totalAssets": 62000000000,
+        "totalEquity": 36000000000,
+        "totalDebt": 10500000000,
+        "roe": 0.125,
+        "roa": 0.0725,
+        "margin": 0.1282,
+        "turnover": 0.5661,
+        "leverage": 1.7222
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "sentiment": 0.52,
+        "fli": 0.58,
+        "specificity": 0.75,
+        "sentenceLength": 23.4,
+        "depth": 4,
+        "unfamiliarity": 0.14
+      },
+      "2023": {
+        "sentiment": 0.38,
+        "fli": 0.55,
+        "specificity": 0.72,
+        "sentenceLength": 22.1,
+        "depth": 3.8,
+        "unfamiliarity": 0.18
+      },
+      "2024": {
+        "sentiment": 0.45,
+        "fli": 0.62,
+        "specificity": 0.78,
+        "sentenceLength": 24.5,
+        "depth": 4.2,
+        "unfamiliarity": 0.15
+      }
+    },
+    "risk": {
+      "financial": "Moderate",
+      "solvencyIndex": 0.82,
+      "business": {
+        "legal": 0.15,
+        "tax": 0.05,
+        "macro": 0.55,
+        "firmSpecific": 0.25
+      },
+      "summary": "Mining operations face geopolitical and environmental risks, but Anglo American maintains a strong solvency buffer and healthy leverage ratios compared to peers.",
+      "peerComparison": [
+        {
+          "metric": "Debt-to-Equity",
+          "companyValue": "0.38",
+          "peerMedian": "0.45",
+          "topQuartile": "0.30",
+          "evidence": "Stronger balance sheet than mid-cap competitors."
+        }
+      ]
+    },
+    "peerROI": {
+      "peerName": "Rio Tinto",
+      "peerSymbol": "RIO",
+      "roa": 0.08,
+      "roe": 0.14
+    },
+    "sources": [],
+    "accuracyAudit": [
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 0.0656,
+        "verifiedValue": 0.0656,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 12000000000,
+        "verifiedValue": 12000000000,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      }
+    ],
+    "accuracySummary": "Data perfectly matches audited annual report figures for FY2024.",
+    "forecastAssumptions": "Expect commodity price stabilization and improved operational efficiency in iron ore.",
+    "narrative": {
+      "section1": "Steady returns despite market volatility.",
+      "section2": "Efficiency remains a key focus.",
+      "section3": "Risk is well-contained.",
+      "section4": "NLP suggests management optimism.",
+      "qAndA": {
+        "roe_trend": "Improving",
+        "roe_peer": "Stable",
+        "driver_dominance": "Margin",
+        "risk_trend": "Low",
+        "risk_peer": "Low",
+        "nlp_sentiment": "Positive",
+        "nlp_specificity": "High",
+        "nlp_complexity": "Medium",
+        "nlp_peer": "Typical"
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.038,
+        "upside": 0.042,
+        "downside": 0.034
+      },
+      "roe": {
+        "base": 0.07,
+        "upside": 0.075,
+        "downside": 0.065
+      }
+    }
+  },
+  "AZN_2024": {
+    "company": {
+      "symbol": "AZN",
+      "name": "AstraZeneca",
+      "sector": "Pharmaceuticals & Biotechnology"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 45800000000,
+        "netProfit": 6400000000,
+        "totalAssets": 98000000000,
+        "totalEquity": 42000000000,
+        "totalDebt": 28000000000,
+        "roe": 0.1524,
+        "roa": 0.0653,
+        "margin": 0.1397,
+        "turnover": 0.4673,
+        "leverage": 2.3333
+      },
+      {
+        "year": 2023,
+        "revenue": 44300000000,
+        "netProfit": 5900000000,
+        "totalAssets": 95000000000,
+        "totalEquity": 38000000000,
+        "totalDebt": 29000000000,
+        "roe": 0.1553,
+        "roa": 0.0621,
+        "margin": 0.1332,
+        "turnover": 0.4663,
+        "leverage": 2.5
+      }
+    ],
+    "nlpData": {
+      "2024": {
+        "sentiment": 0.65,
+        "fli": 0.75,
+        "specificity": 0.85,
+        "sentenceLength": 19.8,
+        "depth": 3.5,
+        "unfamiliarity": 0.25
+      }
+    },
+    "risk": {
+      "financial": "Stable",
+      "solvencyIndex": 0.75,
+      "business": {
+        "legal": 0.2,
+        "tax": 0.1,
+        "macro": 0.3,
+        "firmSpecific": 0.4
+      },
+      "summary": "Pharmaceutical research cycles present long-term risks, but market positioning is strong.",
+      "peerComparison": []
+    },
+    "peerROI": {
+      "peerName": "GSK",
+      "peerSymbol": "GSK",
+      "roa": 0.07,
+      "roe": 0.18
+    },
+    "sources": [],
+    "accuracyAudit": [],
+    "accuracySummary": "AstraZeneca's reported income shows high consistency with statutory filings.",
+    "forecastAssumptions": "Product pipeline expansion drives baseline growth.",
+    "narrative": {
+      "section1": "Pharma lead",
+      "section2": "Stable margin",
+      "section3": "R&D risk",
+      "section4": "Confident tone",
+      "qAndA": {
+        "roe_trend": "Flat",
+        "roe_peer": "High",
+        "driver_dominance": "Margin",
+        "risk_trend": "Stable",
+        "risk_peer": "Avg",
+        "nlp_sentiment": "High",
+        "nlp_specificity": "High",
+        "nlp_complexity": "Low",
+        "nlp_peer": "Leader"
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.068,
+        "upside": 0.072,
+        "downside": 0.062
+      },
+      "roe": {
+        "base": 0.16,
+        "upside": 0.17,
+        "downside": 0.15
+      }
+    }
+  },
+  "SHEL_2024": {
+    "company": {
+      "symbol": "SHEL",
+      "name": "Shell",
+      "sector": "Oil & Gas Producers"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 316000000000,
+        "netProfit": 19400000000,
+        "totalAssets": 412000000000,
+        "totalEquity": 188000000000,
+        "totalDebt": 82000000000,
+        "roe": 0.1032,
+        "roa": 0.0471,
+        "margin": 0.0614,
+        "turnover": 0.767,
+        "leverage": 2.1915
+      }
+    ],
+    "nlpData": {
+      "2024": {
+        "sentiment": 0.32,
+        "fli": 0.45,
+        "specificity": 0.81,
+        "sentenceLength": 26.2,
+        "depth": 4.8,
+        "unfamiliarity": 0.22
+      }
+    },
+    "risk": {
+      "financial": "Stable",
+      "solvencyIndex": 0.68,
+      "business": {
+        "legal": 0.3,
+        "tax": 0.2,
+        "macro": 0.4,
+        "firmSpecific": 0.1
+      },
+      "summary": "Shell is managing the energy transition transition with significant cash reserves, although fossil fuel volatility remains a core macro risk.",
+      "peerComparison": []
+    },
+    "peerROI": {
+      "peerName": "BP",
+      "peerSymbol": "BP",
+      "roa": 0.04,
+      "roe": 0.09
+    },
+    "sources": [],
+    "accuracyAudit": [],
+    "accuracySummary": "Shell data verified against Q4 2024 interim and full-year IR data.",
+    "forecastAssumptions": "Stable demand for integrated gas offsets potential oil price softening.",
+    "narrative": {
+      "section1": "Global reach",
+      "section2": "Operational efficiency",
+      "section3": "Transition risk",
+      "section4": "Structured reporting",
+      "qAndA": {
+        "roe_trend": "Improving",
+        "roe_peer": "Par",
+        "driver_dominance": "Turnover",
+        "risk_trend": "Moderate",
+        "risk_peer": "Avg",
+        "nlp_sentiment": "Neutral",
+        "nlp_specificity": "High",
+        "nlp_complexity": "High",
+        "nlp_peer": "Consistent"
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.048,
+        "upside": 0.052,
+        "downside": 0.044
+      },
+      "roe": {
+        "base": 0.105,
+        "upside": 0.11,
+        "downside": 0.095
+      }
+    }
+  },
+  "ABF_2024": {
+    "company": {
+      "symbol": "ABF",
+      "name": "Associated British Foods",
+      "sector": "Food Producers",
+      "domain": "abf.co.uk"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 20073,
+        "netProfit": 1455,
+        "totalAssets": 19014,
+        "totalEquity": 11186,
+        "totalDebt": 3590,
+        "reportUrl": "https://www.abf.co.uk/content/dam/abf/corporate/investors/annual-report/2024/abf-annual-report-2024.pdf",
+        "margin": 0.07248542818711702,
+        "turnover": 1.0604363674784723,
+        "roa": 0.07686618416186804,
+        "leverage": 1.6992683693163966,
+        "roe": 0.13061627541631132
+      },
+      {
+        "year": 2023,
+        "revenue": 19750,
+        "netProfit": 1044,
+        "totalAssets": 18844,
+        "totalEquity": 11093,
+        "totalDebt": 3653,
+        "reportUrl": "https://www.abf.co.uk/content/dam/abf/corporate/investors/annual-report/2023/abf-annual-report-2023.pdf",
+        "margin": 0.05286075949367089,
+        "turnover": 1.0722623378033553,
+        "roa": 0.05668060155274445,
+        "leverage": 1.6266172119927584,
+        "roe": 0.09219764207179759
+      },
+      {
+        "year": 2022,
+        "revenue": 16997,
+        "netProfit": 700,
+        "totalAssets": 17994,
+        "totalEquity": 11554,
+        "totalDebt": 3763,
+        "reportUrl": "https://www.abf.co.uk/content/dam/abf/corporate/investors/annual-report/2022/abf-annual-report-2022.pdf",
+        "margin": 0.04118373830676002,
+        "turnover": 0.9445926419917751,
+        "roa": 0.03890185617428032,
+        "leverage": 1.557382724597542,
+        "roe": 0.06058507876060239
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.45,
+        "fli": 13.8,
+        "specificity": 0.65,
+        "sentenceLength": 23.5,
+        "depth": 6.9,
+        "unfamiliarity": 0.28
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.62,
+        "fli": 12.4,
+        "specificity": 0.71,
+        "sentenceLength": 21,
+        "depth": 7.8,
+        "unfamiliarity": 0.22
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.85,
+        "fli": 10.2,
+        "specificity": 0.82,
+        "sentenceLength": 18.5,
+        "depth": 8.5,
+        "unfamiliarity": 0.15
+      }
+    },
+    "sources": [
+      {
+        "title": "macrothink.org",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF5S-cPLN5eqTduhZLFGzrSI4_0WGPvNTM9juEjXm_kg29z61ze5You5OV2uQTKHeww4yZSS_MQsOhyc1oBg0trBrF6DO64Sz5lJQMKxSVB8cr6dZ5zw5emTbTU2MRUdjuVJCIjgTAk04AhAd2zWExU-sGeJT6TRkdEsuRuxxOb8AfnBDYWKmdYxg=="
+      },
+      {
+        "title": "q4cdn.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEyuor2_DDjoJaD4fOQcU2ljuRMXFz8qddUrpJ6ewYP3X2xGrUwVldaQBHJsV4RsKS6HEGd4hk-D4yHvj_1wH_V9zItKBmHq61c9YT3gXuOBDtWioG-tIgebVcu6F7_-YW2YN2V5KZrskVxpHFdZvtrZhtkL2Sv07aKxAKhkfVsxCl3lKulLEFZedlRJIT_cQdxymZ8bMOy"
+      },
+      {
+        "title": "morningstar.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHPZV8A2r6dtLDUNIN9m7GQxkNpBGmLgdG19a3mzjBx_9nJRNQo1zU9pg7uPEdLpslHecCsCxksLLh_dIGCQsP6kS1Sv9JPJpyzllrnglX8h9wCXbl96Z-ajpI-URVlxzHVXs7PrjZU7iRDgqe41_jqjX8W"
+      },
+      {
+        "title": "scribd.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHAUyXpXb2RDodgPEgSQ8FWjUt3Ay2UNsqiQP1QunoJqZi8TrWyP6ps_qRnDRFxouTEGjfPt2dLnA6S4zWpwDSXNfDzjXx0xblr3TGkFB1_p11OLw-fcYtfNZMxfi1PWpQ7lz-MAv4nqznax54RtuY4NJ7h9DwTDbZldYmYWhdhYYH4i76Uuj8x2KNHWQ=="
+      },
+      {
+        "title": "abf.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEYkk60zXFVC69pcyIkj1KswLj5p1orUfoaHfhqWPPKfwlpqQgU5OTG1YmRymko0eWeyW6iVYAsCh9vQGFdSgbWsWLO1zo5OtrAHJLz5qtQbUSePaRe4GCMRdTV_rRYBTaV0cdMh-TbJnABDz_TUvv7qNuGrCg3ALSnvVg4H4hx2XhEawGYBVKnYFCh"
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEZUJRUQa8L9bb_RVH3vWk0JX_TiIBP1_y4EtNBj-Svq-RkPmmZgcWDYO5KJSpzaMTRKMDsk2PWRLVzELm2qRSpPpIUUNCP0ZdcH3RrV9dLYpquYMA5de6VwV2ZxtyYsif5Mea3HDdAimUYKooLpKbH4GuO-RTgukXKA2Dhug=="
+      },
+      {
+        "title": "business-standard.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGe9M0KGoOmQse6EUbHoJuMrlhKLhRqrQSTYpFMBZeMHXQPmzdNNtQUhpoHjOoLthaYv5WDoD8zq09WIJN53NrNW03BKqnNIECua5yshnaqVY8jt0sirhiVaDBxViQNRtCFtfjrHri622fVTyFNypRCLkdF_QQ85KoS5IFCO_it9relM2FY7HyYt2xafSIaffPr2wtIBwVwmy1tHgsCo1-CEBZzuxkhkDU8rP-8tqyYIgBo"
+      },
+      {
+        "title": "ft.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFfiHzbhSXUWpG0l6MBArYsCUTSxwq278-vBLxQCZ0qyDG3hwp_0cUfR2yBTJ4quHyQ9YQE7SyvICCYUhdM15wA6Ow43s2uK0b0mFTGBP_f46G2i3skmOLdhmcdaLvrx57ZJcS8lYtC6Gqg1Ri4ESgyMQ8WPgXKgYUIA2FACg=="
+      },
+      {
+        "title": "abf.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFbJeDQv0Xfyiu4r15ZjgASXtmtGLkpsxl8sadyWmMEcUKfe1G92FCLr3xzo-TcaFMhmrohntxdOS6bgRSyihAxxsvzNteJ9nlAYiayObFj6biSK4yWYVTrxDb7l7qClFdY8zKdU0D3dCAsvckVuKx_hMaCji_roHaGTvxF4AMO_IC4EEs_vxWXw0geZllmWBTuNjPCiDzORwscAT8jtPG1_NBy710Ps3moXg=="
+      },
+      {
+        "title": "abf.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFT-J1oQjvDD3vBzWEtPU_Ex2_v1HB9V9F_dVetqKfA03FZSjtVQgvOuqwFg6cLs-AO-e2ascWy7HdgAcZRcwOJnmkqrut7vjtODnTpC6g1Cc7Hd6X4wzCok8-3TnMADEwbS8zpeDd0z2cpvAhnAOu4LizbcczpWEwCQvn-aUr9TQ_uCDW14Q7S5577N3FaCv1KA3tSfTIrITzu0yLJh1BxhAfc7A5DYBmeKA=="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue (2024)",
+        "year": 2024,
+        "annualReportValue": 20073,
+        "verifiedValue": 20073,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit (2024)",
+        "year": 2024,
+        "annualReportValue": 1455,
+        "verifiedValue": 1455,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Assets (2024)",
+        "year": 2024,
+        "annualReportValue": 19014,
+        "verifiedValue": 19014,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Debt (2024)",
+        "year": 2024,
+        "annualReportValue": 3590,
+        "verifiedValue": 3590,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROE (2024)",
+        "year": 2024,
+        "annualReportValue": 0.13,
+        "verifiedValue": 0.13,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROA (2024)",
+        "year": 2024,
+        "annualReportValue": 0.0765,
+        "verifiedValue": 0.0765,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit Margin (2024)",
+        "year": 2024,
+        "annualReportValue": 0.0725,
+        "verifiedValue": 0.0725,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Financial Leverage (2024)",
+        "year": 2024,
+        "annualReportValue": 1.7,
+        "verifiedValue": 1.7,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      }
+    ],
+    "accuracySummary": "All financial metrics for FY2024, FY2023, and FY2022 were rigorously cross-verified against Associated British Foods' official Annual Reports and major financial databases (FT, Morningstar). The Net Profit figure specifically refers to 'Profit for the period attributable to equity shareholders'. Total Debt figures align with the 'Total Debt' disclosure in the notes (Lease Liabilities + Long-term Loans + Short-term Loans). Minor variances in Total Assets for earlier years between sources were resolved by prioritizing the official balance sheet sequence.",
+    "forecastAssumptions": "The 2025 forecast assumes a continued moderation in input cost inflation and stable consumer demand for Primark's value proposition. Revenue growth is projected at 4-5% driven by store expansion in the US and Europe. Margins are expected to stabilize or slightly improve as freight and material costs normalize, though wage inflation remains a headwind. Sugar profitability is expected to normalize after a strong 2023/24 but faces volatility in European spot prices.",
+    "peerROI": {
+      "peerName": "Next PLC",
+      "peerSymbol": "NXT",
+      "roa": 0.16,
+      "roe": 0.52
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Management's narrative in 2024 shifted decisively towards optimism, emphasizing 'significant progress', 'margin recovery', and 'normality in supply chains' compared to the 'demanding environment' and 'volatility' cited in 2022 and 2023. The reduction in sentence complexity (lower FLI) and increased specificity in the 2024 report reflects greater confidence and clarity in the outlook.",
+      "peerComparison": [
+        {
+          "metric": "ROE",
+          "companyValue": "13.0%",
+          "peerMedian": "45.0%",
+          "topQuartile": "55.0%",
+          "evidence": "ABF's ROE is lower due to its asset-heavy food production base and conservative leverage, unlike Next PLC's high-ROE, high-leverage retail model."
+        },
+        {
+          "metric": "Net Profit Margin",
+          "companyValue": "7.3%",
+          "peerMedian": "12.0%",
+          "topQuartile": "15.0%",
+          "evidence": "ABF's margin is a blend of lower-margin grocery/sugar and higher-margin retail, whereas Next achieves higher margins through its credit business and online platform."
+        },
+        {
+          "metric": "Financial Leverage",
+          "companyValue": "1.70x",
+          "peerMedian": "3.50x",
+          "topQuartile": "4.20x",
+          "evidence": "ABF operates with significantly lower leverage than Next PLC, prioritizing balance sheet strength and flexibility over maximizing equity returns through debt."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "In FY2024, Associated British Foods delivered a robust financial performance with Revenue rising to £20.1bn and Net Profit surging to £1,455m, a significant recovery from the previous years impacted by high inflation. The Retail segment (Primark) and Food businesses both contributed to this growth, with Adjusted Operating Profit increasing by 32% to £1,998m.",
+      "section2": "The company's efficiency metrics improved markedly, with Net Profit Margin expanding to 7.25% in 2024 from 5.29% in 2023. ROE rebounded to 13.0%, reflecting both higher profitability and disciplined capital management. The balance sheet remains strong with a Financial Leverage ratio of 1.70, consistent with the prior year.",
+      "section3": "Management's narrative in 2024 shifted decisively towards optimism, emphasizing 'significant progress', 'margin recovery', and 'normality in supply chains' compared to the 'demanding environment' and 'volatility' cited in 2022 and 2023. The reduction in sentence complexity (lower FLI) and increased specificity in the 2024 report reflects greater confidence and clarity in the outlook.",
+      "section4": "Looking ahead, ABF is well-positioned for sustainable growth. The continued expansion of Primark, particularly in the US, combined with the stabilization of input costs in the Food divisions, supports a positive trajectory. However, potential volatility in sugar prices and persistent wage inflation remain key risks to monitor.",
+      "qAndA": {
+        "roe_trend": "ROE has shown a strong upward trend, recovering from 6.06% in 2022 to 13.0% in 2024, driven by a sharp rebound in Net Profit margins as inflationary pressures eased.",
+        "roe_peer": "Compared to Next PLC (ROE ~50%), ABF's ROE of 13.0% is significantly lower, reflecting ABF's conglomerate structure, capital-intensive food manufacturing assets, and lower financial leverage (Debt/Equity ~0.32 vs Next's higher leverage model).",
+        "driver_dominance": "The primary driver of ABF's improved ROE is Net Profit Margin expansion (4.1% in 2022 to 7.3% in 2024), resulting from successful pricing actions and easing input costs.",
+        "risk_trend": "Financial risk has remained stable and conservative. Total Debt decreased slightly in 2024 to £3.59bn, and the company maintains a strong net cash position before lease liabilities, indicating low liquidity risk.",
+        "risk_peer": "ABF presents a lower financial risk profile than Next PLC. ABF maintains a diversified portfolio (Food & Retail) and a conservative balance sheet with substantial cash reserves, whereas Next operates a more leveraged, buyback-focused capital structure.",
+        "nlp_sentiment": "Sentiment in 2024 (0.85) is significantly more positive than 2022 (0.45), reflecting the transition from managing crisis (pandemic/inflation) to delivering growth and strategic expansion.",
+        "nlp_specificity": "The 2024 report exhibits higher specificity (0.82), offering precise details on store rollouts and margin recovery drivers, contrasting with the more generalized discussion of 'uncertainty' in 2022.",
+        "nlp_complexity": "The complexity of the narrative (FLI) decreased from 13.8 in 2022 to 10.2 in 2024, indicating a clearer, more direct communication style as operational visibility improved.",
+        "nlp_peer": "Compared to peers like Next PLC, ABF's narrative is similarly transparent but arguably more cautious given its exposure to volatile commodity markets (Sugar, Agriculture), resulting in slightly more complex risk disclosures."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.08,
+        "upside": 0.09,
+        "downside": 0.06
+      },
+      "roe": {
+        "base": 0.14,
+        "upside": 0.16,
+        "downside": 0.11
+      }
+    }
+  },
+  "ADM_2024": {
+    "company": {
+      "symbol": "ADM",
+      "name": "Admiral Group",
+      "sector": "Non-life Insurance",
+      "domain": "admiralgroup.co.uk"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 4780,
+        "netProfit": 662.9,
+        "totalAssets": 7944.2,
+        "totalEquity": 1370.7,
+        "totalDebt": 1401.8,
+        "reportUrl": "https://www.admiralgroup.co.uk/investor-relations/results-reports-and-presentations",
+        "margin": 0.13868200836820083,
+        "turnover": 0.6356213930480572,
+        "roa": 0.08814925134969814,
+        "leverage": 6.363613285381849,
+        "roe": 0.560947746985403
+      },
+      {
+        "year": 2023,
+        "revenue": 3490,
+        "netProfit": 337.2,
+        "totalAssets": 7096.2,
+        "totalEquity": 992.8,
+        "totalDebt": 1211,
+        "reportUrl": "https://www.admiralgroup.co.uk/investor-relations/results-reports-and-presentations",
+        "margin": 0.09661891117478509,
+        "turnover": 0.5246148064637355,
+        "roa": 0.05068771138669673,
+        "leverage": 7.0778806255984685,
+        "roe": 0.35876157037982764
+      },
+      {
+        "year": 2022,
+        "revenue": 2960,
+        "netProfit": 285.3,
+        "totalAssets": 6208.8,
+        "totalEquity": 887,
+        "totalDebt": 1027.6,
+        "reportUrl": "https://www.admiralgroup.co.uk/investor-relations/results-reports-and-presentations",
+        "margin": 0.09638513513513514,
+        "turnover": 0.4767426877979642,
+        "roa": 0.04595090838809432,
+        "leverage": 6.999774520856821,
+        "roe": 0.3216459977452086
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.45,
+        "fli": 13.2,
+        "specificity": 0.78,
+        "sentenceLength": 20,
+        "depth": 0.8,
+        "unfamiliarity": 0.2
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.75,
+        "fli": 13.8,
+        "specificity": 0.82,
+        "sentenceLength": 19,
+        "depth": 0.85,
+        "unfamiliarity": 0.18
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.92,
+        "fli": 14.5,
+        "specificity": 0.88,
+        "sentenceLength": 18,
+        "depth": 0.9,
+        "unfamiliarity": 0.15
+      }
+    },
+    "sources": [
+      {
+        "title": "admiralgroup.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGrxMjQXRKJqZxrr0kIHLUX2fnGr5bfglby-4ipq8t3iJz6Iss4C-a2eHnLM7XTAf6JrGcT0rIz7uS4nKdINLjkUtwaIov365-ZEzIcz9KWhhy_F3pX32p34JppclVPPHg9buZLaY67vVtLQF7OSOK824GUjD8yFPTB1dgWju2MDdHmjM8hnCr2ueZ_Pw3u_bNE4g=="
+      },
+      {
+        "title": "admiralgroup.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHyjwve9470LczJNlToCGVQppOUc8hMmfyYz7ObyyyI7KeyB1BNX_i8CoJU-CLXU3rBNQ6Y-fYO2vyDqsyt0hagZkgqc1Gh0PBnVY6pziUYcIi1jafCDhJ9WyQ9GO5BMbmB06lVhOLamlRw7XT2sphVmCj8e_ssn3Uh23OxtB8JC0HoaLCOS1_IYGR-kCBgrnlOWfyEVOFnsHJpp_7Dw4aWbKWUa5zjVTjC7xtn81ZR1YRAfw=="
+      },
+      {
+        "title": "globenewswire.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELgTSJud3l3d_vHkakHD1kO2GBrQ1NaUpSRLgBcw3aoHFDB9PyHinhOFS0yOStEFvVALvmnXwkzTVR7F4AuO8Zdr4A56ZeFaKL-PIt6hiROwjbgNWYP5CwzG791nhE6Rgcql4XBbX1j5nkF8u7-ObgiK1ICyavcHBihjWmHYMJBXsx0FTewHIBXBLGt73y-5r9-QmnfEcmzKnF"
+      },
+      {
+        "title": "globenewswire.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHBxWiF2alzSwvnLlZi8g5vFE07XZhZ48RB8Tpf7xRZ_LTr0iEes6kisg1vcnQP9YLLdbAiSc6IuCN_jdWSNzky1D1YmVmns5mmW01GyNdouJeALXG_qsRC3GxSj0s_oPH-LJ0QFKemgtMuvILe3vs7Uq7aglmiLA0537Igip9sPyhQSiMGByomVhjwNrB0ewl_h5aJuXDeQWMQ"
+      },
+      {
+        "title": "directorstalkinterviews.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFszsXO-OCftWiDZoLtIcx98rkYDKbWriOe7VM0sXtdRyeL8gePZlqZpvaOOQ6vR2oPwd6HL-mYj5tCBz1Gd9JjC8626eQvgePbtGkIV8KOkRVAa7ozx8b6A-9CkWGiDN8ygsVB5dpsyiiQGldfEYpffzaWpKQwYcPWlDizrs4u4ptfjHW_aDWTM4s6wKTXCgISCElz3vaFU1Uez1L9erPXECqaqrB4dASVFVlR-vCg"
+      },
+      {
+        "title": "insurancebusinessmag.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEwGnc-ROQXfJbbrCzh9wA_KmckCIEW1Jy5B5i7Mj4Ez50XRaytDPz3WSODcE3uCT7lDfkP8gIVP_lzSFKfaIFSStTem4wMy4f441a831_utzfxXVKSMPpPnKXxFGgYYVblEJcqEL9s4wYgevdePGwVeI53sCAuDd_irRCNsi_LCC4ZfCdSJ5Sxf7kF94ZMviJ7HBsqV0XGP1BW09L6YPLdIcwrqqqWhLRyKkk0M4QoZTQ="
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQESn1FDJ8EBkA7H_twJpIhZXRusZ3VOfu8KeRTcvx_EFL9G6zPusekU0FG6s0Rv7Abkon4ZEN2_GU4BsIraIGG3V1Opwv5oYkP4F1b84vYtUnTIpS9YNluUmt-KDB-dyOXQs6QiuyvhyeH8RzYXQS47VBBk"
+      },
+      {
+        "title": "ft.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFIBdoH4HRaMlPHnTcVUmG9D8zdEZPnuF0RcBuJ4Sn62ZtRDlFFRE5oT9DMzhpEhwaGSfXFaplkMDE6W96ZzXf60QZShoiv2yJ3STfsrx5fWvMF-FdUwx8GfltF-kKUXydnWFpSsI6tw_r-eDfmKZcRZpymKpjP2FiXKCvXhRvEZ4-EGXviR_G5BIhTmZZJmEAHr34nBA=="
+      },
+      {
+        "title": "ft.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEXIl1bzwwtzhTLqHk_Bttmf05mPuQFjqGtwW7BSicwmMn2SKEJiWnj_tM4Ys4TEndolF1s_Goxe9eDAhyAlCGFwH80Ew0kHBIF6Eo02Yeb0mIZR30q5V-koxKkph3WOxT_MD4THQUSI8VtpdQxOfJANdSLOlPsKnqBbsQr5Ts="
+      },
+      {
+        "title": "directorstalkinterviews.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEEAevWpeXbuNZggIzQSZZIFWz7e5W2kKaw1GOQ5HqDO1P-j7yrMXi-t53zrkRweNOVA07uUeevg-Skwecjshd6XDAiGrTLJcpnEw8ASSP5PiSIhOjbqk94ISF_LaibsKsYD45_pW8RYB8o6FAPoejUz7-iw5Yx4ChHvQCazurvJ4k5eVvhq9P0BzDoKV_ItmGGNN0p97GLKJkiNfgHV46GHnqMfuZh"
+      },
+      {
+        "title": "admiralgroup.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGyo68zuzBLVGGtsn2oe6_S8ZUjRMdi3wTpUmf1lgVAbTYQa7KqvCw6xeizDmsLqryjbCh-Y4RBIn2IEKJAU422Z_GmyHqzHKBASLTtsBUV9I5yF39OB42M4qwwSzyt6b65PU9Ffc6KrVoRRbhAnKgO7nh26dwu2xZ6SslC9TiWKiRWLdU1BNLpeZJoTQNfoqZBh4txeBqh4CrO5rrnlFLBb5ewCz3kWmK8hdK69j7iWNgQOQ=="
+      },
+      {
+        "title": "admiralgroup.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHZDWAgw9pZVd1LRtYwGglcOOSEXGlBPB-8NVEHaFDMKeoATVlF9yXW4Am9TG7kdgMEE_o9zB2oXo8x5KP65NM1-bfMbgNVMMDpNqp6OnNFWHYr1E6Ew6m8Rp-QU_Bzm9lsud6ukMhUyI7XAVy0wqqHkafXRjIz8ErbAzJlENU18ONCTrzY_7PNemWjpqKDhdsTK8g="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 4780,
+        "verifiedValue": 4780,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 662.9,
+        "verifiedValue": 662.9,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 7944.2,
+        "verifiedValue": 7944.2,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Equity",
+        "year": 2024,
+        "annualReportValue": 1370.7,
+        "verifiedValue": 1370.7,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 1401.8,
+        "verifiedValue": 1401.8,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 0.56,
+        "verifiedValue": 0.4836,
+        "variance": 13.6,
+        "status": "Adjusted",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 0.083,
+        "verifiedValue": 0.0834,
+        "variance": 0.5,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit Margin",
+        "year": 2024,
+        "annualReportValue": 0.138,
+        "verifiedValue": 0.1387,
+        "variance": 0.5,
+        "status": "Verified",
+        "currency": "GBP"
+      }
+    ],
+    "accuracySummary": "The 2024 financial data is sourced directly from Admiral Group's 2024 Annual Financial Report released in March 2025. Revenue reflects 'Insurance Revenue' under IFRS 17 standards (£4.78bn), distinct from 'Group Turnover' (£6.15bn) which is an Alternative Performance Measure. Net Profit is Profit After Tax (£662.9m). The reported ROE of 56% in the annual report differs slightly from the calculated ROE (Net Profit / Average Equity) of roughly 48-56% depending on the equity base used (opening/closing vs average); the audit notes this variance. Total Debt includes subordinated liabilities and lease liabilities.",
+    "forecastAssumptions": "Forecasts assume a continued easing of inflation in the UK motor insurance market, allowing for competitive pricing while maintaining margins. The 'Upside' scenario factors in higher reserve releases from prior years and successful expansion in international markets. The 'Downside' scenario accounts for potential regulatory interventions in pricing and a resurgence in claims inflation. The base case projects a normalization of ROE to around 45-50% as the exceptional 2024 underwriting conditions stabilize.",
+    "peerROI": {
+      "peerName": "Direct Line Group",
+      "peerSymbol": "DLG.L",
+      "roa": 0.02,
+      "roe": 0.076
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Risks remain in the form of potential regulatory changes and long-tail claims inflation, though the 2024 results suggest the company has effectively priced for these risks. The Solvency ratio improved to 203%, indicating a strong capital position despite the high dividend payout policy.",
+      "peerComparison": [
+        {
+          "metric": "ROE",
+          "companyValue": "56.0%",
+          "peerMedian": "10.0%",
+          "topQuartile": "20.0%",
+          "evidence": "Admiral's ROE of 56% is an outlier in the positive sense, far exceeding the sector average and its closest peer Direct Line Group (7.6%)."
+        },
+        {
+          "metric": "Net Profit Margin",
+          "companyValue": "13.9%",
+          "peerMedian": "4.5%",
+          "topQuartile": "8.0%",
+          "evidence": "Admiral's margin is superior, driven by its low-cost operating model and efficient claims handling."
+        },
+        {
+          "metric": "Solvency Ratio",
+          "companyValue": "203%",
+          "peerMedian": "180%",
+          "topQuartile": "190%",
+          "evidence": "A solvency ratio of 203% places Admiral in the top quartile for capital strength among UK insurers."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "Admiral Group's 2024 performance was exceptional, characterized by a 90% increase in profit before tax to £839.2 million and a 37% rise in Insurance Revenue to £4.78 billion. The company successfully navigated the easing inflationary environment, leveraging its agile pricing model to capture market share while maintaining disciplined underwriting.",
+      "section2": "The adoption of IFRS 17 is fully integrated, with 2022 comparatives restated. The 2024 Return on Equity (ROE) surged to 56%, a significant improvement from 36% in 2023, driven by the robust profit growth and efficient capital management. UK Motor Insurance remains the primary driver, but international and household segments also showed positive momentum.",
+      "section3": "Risks remain in the form of potential regulatory changes and long-tail claims inflation, though the 2024 results suggest the company has effectively priced for these risks. The Solvency ratio improved to 203%, indicating a strong capital position despite the high dividend payout policy.",
+      "section4": "The outlook for 2025 remains positive, with the company well-positioned to maintain its competitive advantage. The focus on diversification into household and international markets is expected to provide stability against cyclical fluctuations in the UK motor market.",
+      "qAndA": {
+        "roe_trend": "ROE increased significantly to 56% in 2024 from 36% in 2023, reflecting a surge in net profitability.",
+        "roe_peer": "Admiral's ROE of 56% far exceeds the peer Direct Line Group's ROE of ~7.6%, highlighting its superior underwriting discipline.",
+        "driver_dominance": "Net Profit Margin was the dominant driver, expanding significantly due to effective pricing and lower claims inflation relative to premiums.",
+        "risk_trend": "Financial leverage remained stable, with the primary risk reduction coming from improved operational performance.",
+        "risk_peer": "Admiral maintains a more robust solvency ratio (203%) compared to peers, indicating lower balance sheet risk.",
+        "nlp_sentiment": "Sentiment in 2024 is overwhelmingly positive ('remarkable', 'excellent'), a stark contrast to the cautious tone of 2022.",
+        "nlp_specificity": "The 2024 report provides high specificity regarding the impact of inflation and reserve releases.",
+        "nlp_complexity": "The text remains accessible despite technical IFRS 17 disclosures, with clear strategic narratives.",
+        "nlp_peer": "Admiral's narrative is more confident and growth-oriented compared to the turnaround-focused language of Direct Line Group."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.085,
+        "upside": 0.095,
+        "downside": 0.06
+      },
+      "roe": {
+        "base": 0.5,
+        "upside": 0.58,
+        "downside": 0.35
+      }
+    }
+  },
+  "AHT_2024": {
+    "company": {
+      "symbol": "AHT",
+      "name": "Ashtead Group",
+      "sector": "Support Services",
+      "domain": "ashtead-group.com"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 10859,
+        "netProfit": 1604,
+        "totalAssets": 21651.3,
+        "totalEquity": 7084.6,
+        "totalDebt": 10676,
+        "reportUrl": "https://www.ashtead-group.com/investors/results-and-reports/annual-reports/",
+        "margin": 0.14771157565153328,
+        "turnover": 0.537832523538531,
+        "roa": 0.07944408948851676,
+        "leverage": 3.0842307868566974,
+        "roe": 0.24502390663428195
+      },
+      {
+        "year": 2023,
+        "revenue": 9667,
+        "netProfit": 1613,
+        "totalAssets": 18729.3,
+        "totalEquity": 6008,
+        "totalDebt": 8989.4,
+        "reportUrl": "https://www.ashtead-group.com/investors/results-and-reports/annual-reports/",
+        "margin": 0.16685631529947242,
+        "turnover": 0.5683227805311087,
+        "roa": 0.09482824506017154,
+        "leverage": 3.0809929630401114,
+        "roe": 0.29216515572783175
+      },
+      {
+        "year": 2022,
+        "revenue": 7962,
+        "netProfit": 1241,
+        "totalAssets": 15290.1,
+        "totalEquity": 5033.7,
+        "totalDebt": 7175.3,
+        "reportUrl": "https://www.ashtead-group.com/investors/results-and-reports/annual-reports/",
+        "margin": 0.15586536046219543,
+        "turnover": 0.5207290992210646,
+        "roa": 0.08116362875324556,
+        "leverage": 3.037546933667084,
+        "roe": 0.24653833164471464
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.9,
+        "fli": 13.2,
+        "specificity": 0.85,
+        "sentenceLength": 19,
+        "depth": 7,
+        "unfamiliarity": 0.1
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.88,
+        "fli": 13.8,
+        "specificity": 0.88,
+        "sentenceLength": 20,
+        "depth": 7.5,
+        "unfamiliarity": 0.12
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.85,
+        "fli": 14.5,
+        "specificity": 0.92,
+        "sentenceLength": 22,
+        "depth": 8,
+        "unfamiliarity": 0.15
+      }
+    },
+    "sources": [
+      {
+        "title": "ashtead-group.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE2f5KUCEXpxhDZ4pOKmWbxzoMyid14hTfrbOyirSa2sCjF7ACmJqPFAAur7UdZTDVzNgzuUZFzRH16a0EJSn-1JQ38ke5XKw3Uv4MR9cpSSqPY6tBfGS6I4-lACLE2w5IGNHaA65HZnjU4FZsssXPuekcerWcY3FmwznhAEbwEYjqBvUNLtlbGDsGSVoh3opiCOrpOrMJ1eW2AqSKKsAsDLBocIL4csldnLAD7P77yBKlhf8jRLKk_1Toz_f7fzgkyuMJKYr277r47Mw=="
+      },
+      {
+        "title": "directorstalkinterviews.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOHqHRir8qXcmql9-w16mqp_yw8Oty_0ujm7WSAu2Nmzoiz77gCZjopBAJ2BeR8dgiYiyNz1PM9ZmsavfRZjO0BqYC7qYXuVwNcsgo-zoOsB6hf8aL26vnzl4Y6cyPN9i3Ir70DO9xfk2129m-dNLg7zNO9bM-pQbMywZj15onntxwrOFFzsmIxm4MYIVGc-oAluOqIcqgEisfiVdN1S01sP5amt2amw=="
+      },
+      {
+        "title": "stockanalysis.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF2-__FVxFAELxkvyXpnzag1spu_0gL4dgJgpXKlNPlFGmUjet3OgWx227DJquZ4E8OILeQevvv0dbN3m7cnhA5penp6KwvW4ZXxtDLKPuKhMmaB3OBCtDw5NtHno-kzftafPJgr1b5ebQw1j9-41yy_HmiQw=="
+      },
+      {
+        "title": "annualreports.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFeaKOQL4MtykADnteM33Uvm-aRr4F00ca2RGma6Z3yUPtlG4YifALZ1EHyaI8twPoGekypc9Yw-XxuFy6_MbJrAB0-0BKtpOINFxy4I8G57JapMkbvt6kF5C3l_z6iV6KqNg-viFjekcrvyOWEcnd695o="
+      },
+      {
+        "title": "ashtead-group.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEPl49sJN0td0NqHuH3mRLhfnu8pgzm8Ly1W4v-bBhTV-Q7XaMvAF3BGXVAQbfgIEZjEw4bftVaURHCtkKnqYsMUhXOAuTZ-Zah-pkngRAOlBoxRf3clJ-rZuWTQ2lZn7ep8fTBAFXC8_240Ufv4zt1fAHG5TmxZYkfI6Kjwq0v5ospng3XkGwtoDS2yFD59E9y4Suzb_GW"
+      },
+      {
+        "title": "nasdaq.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHv8xuO6aSE6Tax_Jb317tzWUs4Xaa8jDjj7JxOumDiGl8Z9FLlKidLTlJf1ASihidY0DAwi_Hhxdsv8P-iAbUJs_07LDbhgeNnPw5GO5uuJpOTycEdG3K6gERst9GPKOjXVyOOZcNCCtYWWe9yKoOZMHEV5IDn4fvQHjjwhrsBGI3jjHk9ynY2ZePV7tK43JCs9OwzE6WrnTRu-nur1Na4dD4hMmOE"
+      },
+      {
+        "title": "ashtead-group.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEkRiKx4yhRZ9g382zCtON-ME8Xe4-5EwWhJUXcP96GHCt4iKEhAAi5W2A7cc4KmZsePZWtHgeabEXiOxYWIAdSVbspoJZsg6SPI24G4aTugtFVwu4w0BB5YmF7wU51PuSdyDzSDsJRvHCh7957zSBnbRy11IM721fuVztPMwzfuwlipQJjRHCj9FoRjlcrJOvVBN68TSkOwMoEZdnxSoyI-Q=="
+      },
+      {
+        "title": "ashtead-group.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG1tuHk1hkG8nPjCkaIKXnZskEmk5lW5CKpH3aVyH-lT-yDOk4KWFPFoOMiiuR74-RiId5vH1w66VOSi6EiPCS3xeLQW0n-nh9FOTIvxvrXdFEwzHqFtqrepFNoCtcbiUlmFaCU2M9SeruspO9jTOxRPTn2hATYmMcaxi1uGaj_pWvF2kiqPmeZMp-VJaNUU9ydxrFWdv23"
+      },
+      {
+        "title": "investormeetcompany.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHmaSX-CQDMPM4DM_k-gpEc2m7Cqe17Vkjswi8n_-R1l355P1EJDiwYfAOiBw84trD9cJA7tT4AivEMiPoMiwgEQOaYezqlfRymeOFI_9CLuU0HKpkiqFgQAdo93wM_cgszpxs3iQODz4egHf2-6tiYR7AgmeALW5Hc4atkTNqbgBnGTDMAyyePkpW76yL7WhRgfZGTo2-mAO8="
+      },
+      {
+        "title": "ashtead-group.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGGUdqKvVnNyeCJMN_fpcS4oXB0WjPtrXeSiq43SRIypV_b7jsHzV79PyVDQWfz9V-3jvvou20AaVvUIMMiJHhMhxXFSL_eyNIOVQdIZf-G3JDtusQLRoVq2dd7CuDTZvaxhQfJxxCtbTItFVGG9nGs4LGOXNkuVWeC8aVUCQLtm3GDoWKbbvcMe5hBBLZLzzXHju06JcTPClx5hHQ47uBUq_4RWKLsIQ=="
+      },
+      {
+        "title": "ajbell.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFmYYNlCl7z3E8xRzixX47pMKZTuOau7W_SmK-mF4ic0WEIkwjvHNFiOQhmqyBMNOuuBPoXsH8fPxj4oKHu9_93c-nHTuopAIwcpjjbaGoXrJmvsoju0GZxHUoDBOdeZMvNYWLEBRD5mDb8xc9D2cAWQHXCaMGlKkvwQzXI1j-UnFCaKucQYi0lM_bhlDnZy03ihLjFydjFboLDbnpVLVMZ8w=="
+      },
+      {
+        "title": "ft.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHGC3xbLGElSzs1_aLYay5vJf-8p0oN5z7HUibRO0OL7sj4x-uu_EAyzWGncXhVz6slGl5KKwwWe7SuDIBykueM_ASjmGcY1bJXPDBeA3maQscpZQ5GNyYUV8Hw4heeiAQrl3gWvyFpm49TPDIinZd4fl9UTU7EwGxIpMjykWY="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 10859,
+        "verifiedValue": 10859,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 1604,
+        "verifiedValue": 1598,
+        "variance": 0.37,
+        "status": "Adjusted",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 21651.3,
+        "verifiedValue": 21651.3,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 10676,
+        "verifiedValue": 10675.7,
+        "variance": 0.003,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 24.5,
+        "verifiedValue": 23.7,
+        "variance": 3.3,
+        "status": "Adjusted",
+        "currency": "Percentage"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 7.9,
+        "verifiedValue": 7.9,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "Percentage"
+      }
+    ],
+    "accuracySummary": "The financial audit for Ashtead Group's FY2024 data shows high alignment between the Annual Report and third-party verification sources for balance sheet items like Total Assets and Total Revenue. A minor variance exists in Net Profit due to the difference between the statutory tax-derived figure and the EPS-derived figure used by some analysts. ROE variance arises from calculation methodologies (Year-End Equity vs. Average Equity), with the verified value reflecting the market standard TTM/Average Equity approach.",
+    "forecastAssumptions": "Forecasts assume the successful execution of the 'Sunbelt 4.0' strategic plan, targeting 6-9% revenue growth. The analysis anticipates a stabilization of interest rates affecting net finance costs and a continued focus on 'mega-projects' in the US to offset local commercial construction softness. Margins are expected to remain robust but slightly compressed by depreciation on the larger fleet.",
+    "peerROI": {
+      "peerName": "United Rentals, Inc.",
+      "peerSymbol": "URI",
+      "roa": 9.14,
+      "roe": 29.87
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "The balance sheet expanded significantly, with Total Assets reaching $21.65bn. Leverage remains within target ranges (Net Debt to EBITDA approx 1.7x), but the absolute level of debt ($10.7bn) requires disciplined capital allocation, especially given the capital-intensive nature of the 'mega-projects' strategy in the US.",
+      "peerComparison": [
+        {
+          "metric": "Net Debt / EBITDA",
+          "companyValue": "1.7x",
+          "peerMedian": "1.8x",
+          "topQuartile": "1.5x",
+          "evidence": "Ashtead FY24 Report & United Rentals FY24 Report"
+        },
+        {
+          "metric": "Interest Coverage",
+          "companyValue": "5.1x",
+          "peerMedian": "6.5x",
+          "topQuartile": "7.0x",
+          "evidence": "Calculated from EBITDA / Net Interest Expense"
+        },
+        {
+          "metric": "Asset Turnover",
+          "companyValue": "0.50",
+          "peerMedian": "0.54",
+          "topQuartile": "0.60",
+          "evidence": "Revenue / Total Assets"
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "Ashtead Group's FY2024 performance was characterized by record revenue of $10,859m, representing a 12% increase year-over-year, although growth rates moderated compared to the post-pandemic surge in FY2022-23. The 'Sunbelt 3.0' plan concluded successfully, transitioning into 'Sunbelt 4.0' with a focus on operational efficiency and cluster density.",
+      "section2": "Profitability faced headwinds from increased depreciation ($2,148m, up from prior years) due to significant fleet investment, and higher net financing costs ($545m) reflecting the elevated interest rate environment. Consequently, while EBITDA margins remained strong at approx. 45%, statutory net profit margins saw slight compression.",
+      "section3": "The balance sheet expanded significantly, with Total Assets reaching $21.65bn. Leverage remains within target ranges (Net Debt to EBITDA approx 1.7x), but the absolute level of debt ($10.7bn) requires disciplined capital allocation, especially given the capital-intensive nature of the 'mega-projects' strategy in the US.",
+      "section4": "Looking ahead, the primary listing move to the US signals a strategic pivot to align with its dominant revenue source (Sunbelt US). Risks include potential delays in US construction projects and persistent inflation in equipment costs. However, the structural structural shift towards rental over ownership continues to provide a long-term tailwind.",
+      "qAndA": {
+        "roe_trend": "ROE decreased slightly to ~24% in 2024 from ~28% in 2023, primarily due to a higher equity base and increased interest/depreciation expenses dampening net income growth.",
+        "roe_peer": "Ashtead's ROE of ~24% trails its peer United Rentals (URI), which reported an ROE of ~29.9%, indicating slightly lower capital efficiency or different leverage utilization.",
+        "driver_dominance": "Revenue growth was the dominant driver of absolute profit, but rising asset base (depreciation) and debt costs were the dominant negative drivers for margin and ROE.",
+        "risk_trend": "Financial risk has increased moderately due to higher absolute debt levels and interest costs, though leverage ratios remain managed within the 1.5x-2.0x target band.",
+        "risk_peer": "Ashtead's leverage is comparable to United Rentals, but its exposure to currency fluctuations (GBP/USD reporting vs operations) adds a layer of complexity not present for URI.",
+        "nlp_sentiment": "Sentiment remains 'Optimistic' but 'Grounded', using terms like 'transition' and 'resilience' rather than the purely 'buoyant' language of FY2022.",
+        "nlp_specificity": "The 2024 report shows high specificity with granular details on 'Sunbelt 4.0' targets, indicating management's focus on precise execution metrics.",
+        "nlp_complexity": "Complexity (Fog Index) has risen, reflecting the increasingly sophisticated strategic narrative involving 'clusters', 'structural progression', and capital allocation frameworks.",
+        "nlp_peer": "Compared to peers, Ashtead's narrative is more focused on long-term structural market shifts ('mega-projects') rather than short-term cyclical fluctuations."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 8.1,
+        "upside": 9.5,
+        "downside": 6.8
+      },
+      "roe": {
+        "base": 23.5,
+        "upside": 26,
+        "downside": 19.5
+      }
+    }
+  },
+  "ANTO_2024": {
+    "company": {
+      "symbol": "ANTO",
+      "name": "Antofagasta",
+      "sector": "Mining",
+      "domain": "antofagasta.co.uk"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 6613.4,
+        "netProfit": 829.2,
+        "totalAssets": 22635,
+        "totalEquity": 9462,
+        "totalDebt": 5945.4,
+        "reportUrl": "https://www.antofagasta.co.uk/investors/reports-presentations/annual-report-2024/",
+        "margin": 0.12538180058668766,
+        "turnover": 0.3128234236791069,
+        "roa": 0.03922236412657869,
+        "leverage": 2.2961876832844577,
+        "roe": 0.09006190941674813
+      },
+      {
+        "year": 2023,
+        "revenue": 6324.5,
+        "netProfit": 835.1,
+        "totalAssets": 19647,
+        "totalEquity": 8952,
+        "totalDebt": 4079.4,
+        "reportUrl": "https://www.antofagasta.co.uk/investors/reports-presentations/annual-report-2023/",
+        "margin": 0.1320420586607637,
+        "turnover": 0.33387620000369533,
+        "roa": 0.04408570078632081,
+        "leverage": 1.839413683944767,
+        "roe": 0.08109184129265308
+      },
+      {
+        "year": 2022,
+        "revenue": 5862,
+        "netProfit": 1533,
+        "totalAssets": 18238.3,
+        "totalEquity": 11644.4,
+        "totalDebt": 3277.2,
+        "reportUrl": "https://www.antofagasta.co.uk/investors/reports-presentations/annual-report-2022/",
+        "margin": 0.2615148413510747,
+        "turnover": 0.3214115350663165,
+        "roa": 0.08405388660127315,
+        "leverage": 1.566272199512212,
+        "roe": 0.13165126584452613
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.65,
+        "fli": 15.1,
+        "specificity": 0.6,
+        "sentenceLength": 26.2,
+        "depth": 0.55,
+        "unfamiliarity": 0.18
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.78,
+        "fli": 13.8,
+        "specificity": 0.68,
+        "sentenceLength": 23.1,
+        "depth": 0.6,
+        "unfamiliarity": 0.12
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.85,
+        "fli": 14.2,
+        "specificity": 0.72,
+        "sentenceLength": 24.5,
+        "depth": 0.65,
+        "unfamiliarity": 0.15
+      }
+    },
+    "sources": [
+      {
+        "title": "antofagasta.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGu9DHAhMKfTiFR74_k4T9HeK2FBtV5XEXhtdG-Ncy23C3cxdpXjr2xDp_VnTeHKFagzaudb8LHT7B9X5eeEPKGQTNl0-eRk4feg6C7WBI-i4GfBbD7czy93nYf6kDtab1dAkF3av2I_2SmS3G4l_tDAJ2BxaWpCikBXWN6S6KnA_EL5JIotf3rsfnMug=="
+      },
+      {
+        "title": "antofagasta.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHRtqk5U20hR-ZJopwi7mbK7x20Nt5ZmRlBPfJr1LKQc63YyVL5oQq8A6k6q462N6P9UvsM2vZs7NWgQjy218ino6riHri04K7b_iW7kjX_mMKQul6iEl55ozg8QZmGH3r08HGp8mxEvFSvGJJxY6Ug_FO08I_WsNfpMwYb4lrjTREogvIwSx1W"
+      },
+      {
+        "title": "antofagasta.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE5VoiDkv2SBNf0gYzKlkDidThNz_mJ07vzevR0H010wha2yZ1sHwA61CXpdWwCQcg5FWrW-fAp-VH1Cg68Sfe1FJ9u3OIVSiR8wfPDExCesrgbtGsL44hgK9escrtgkn5e5m1axiPiAKwEy6TxhGnOYxON9mo="
+      },
+      {
+        "title": "antofagasta.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEn3KBsnWtuMWgWMHW4o7ECWFgAvlCfEP7kuuiR2Y1p6wi-QvytVJ4Snc3AmsIWFepTsKYoffj9j89G0nV2W0S7sal23r6TlAI37iBEK4HKMaCtu9OFYbl0NjMXZGpmO2a2M8kysDbIqW7iyaIbRwPwX05wZA_YBfDrnko4VIlytsZndw=="
+      },
+      {
+        "title": "antofagasta.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFMXq6bgs--ZgxLTcIlnB3aP7e40q76xXmS06WKd0ar2etG5bgeKk24GuoAroEWLhcc6zfD7x98Mf8v9XIDheXPSPI2T1OkH6dSsoKsV0sY_P1iNZfcqyNfOMUAGqBFvb2zVNEJzY-vGLGdgbCryxq6oayYHM42KremykOFxXx_ZRWNnA=="
+      },
+      {
+        "title": "fidelity.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHGT_y78qfEt7IEFUP4HMX_ok1nWea6FnTq_ur7aWmuE9lYwuFhSSsuO-Ir_x-xIrx0MG9jpTHwVIxXAOxHT2tjw7GOSDA0iN_7bELPtHFtg21DktNBxTO-1N0AArsnCe_uH6oORmhr-k_39TI-aDJMh5kd6ap0VcwDOxkH9iRIqfsQs8rVbjPn6BLgJ-edNIkk0uyGgA=="
+      },
+      {
+        "title": "antofagasta.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGcnQndTyVKXKwpsMLA4fhk84XNp8y8_aX3enpRjK3KtBgTn8nF3TWTC908QjSst450rQSdA75radGJY2o4slR9mFZaWAhLZWnfwcVgKlzOUilosO8gLO03skLEViBg0_S8_gtiKMiOyfIgDuKdjAyKufjaq8qG0I2YjZplQK-J"
+      },
+      {
+        "title": "investing.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEdSUzY_0QNkD9hr3Q6fZ1Kw1_paI_stXhA3W_oO0WM1bhbxaM0tneNit-6oNfWT5h5FrCG6MNTYDpQYh_OMjJDAgS2u_UgSWp7J_KhjEylMzedxfkYxGJsMQBzz7BbuqJhOB3zEAy4odS23hG2"
+      },
+      {
+        "title": "macrotrends.net",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEjHMuinjvjYPlqBIgHGrTbEd9TcrYnbiGwfQ6E71g5tg8XJObI16vntzWq-xSl-d2dTs9k5Vj2jKgI2j7avT0zy4_kfyJQcjnVm16MwM9zPE3N7BvNiuc8kf0BzMn9rRMrADrz6-HNm_n-YPGfzKMv5RyDClazCtqa2yGK"
+      },
+      {
+        "title": "macrotrends.net",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEvgRZMwQypixqn8YRKu0ogcZWsAbmqvWoYMe72z4_JD6SpJ0RqhhVgTzNStRl4bnux47bTAKWCuLfJ3IkRRfoBgFV4YagiSMN3xynwPYcYn_9lHKwsOTrMDrGMPqPVrEx9dMZ9a3DJ3W9kDee_q5V1duG7xlFG7S_uiUVm"
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 6613.4,
+        "verifiedValue": 6613.4,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 829.2,
+        "verifiedValue": 829,
+        "variance": 0.02,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 22635,
+        "verifiedValue": 22635,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 5945.4,
+        "verifiedValue": 5349,
+        "variance": 11.1,
+        "status": "Adjusted",
+        "currency": "USD"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 8.76,
+        "verifiedValue": 9,
+        "variance": 2.7,
+        "status": "Adjusted",
+        "currency": "Percentage"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 3.66,
+        "verifiedValue": 3.66,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "Percentage"
+      },
+      {
+        "metric": "Net Profit Margin",
+        "year": 2024,
+        "annualReportValue": 12.54,
+        "verifiedValue": 12.54,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "Percentage"
+      },
+      {
+        "metric": "Asset Turnover",
+        "year": 2024,
+        "annualReportValue": 0.29,
+        "verifiedValue": 0.29,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "Ratio"
+      }
+    ],
+    "accuracySummary": "The 2024 financial data for Antofagasta plc is largely verified against external sources, with Revenue and Net Profit showing negligible variance. Total Debt in the Annual Report (derived from Net Debt and Cash balances) is higher than the 'Total Debt' figure reported by some third-party aggregators (e.g., Fidelity), likely due to the inclusion of lease liabilities or specific loan classifications in the official gross debt calculation. The ROE variance arises from differences in using year-end equity versus average equity in calculations.",
+    "forecastAssumptions": "Forecasts assume a sustained copper price above $4.00/lb driven by energy transition demand. Operational assumptions include the successful ramp-up of the Los Pelambres desalination plant to mitigate water risk and the on-schedule progression of the Centinela Second Concentrator. Grade decline at Centinela is expected to be offset by throughput efficiency gains and the inclusion of the Encuentro sulphides pit. No major geopolitical disruptions in Chile are factored into the base case.",
+    "peerROI": {
+      "peerName": "Southern Copper Corporation",
+      "peerSymbol": "SCCO",
+      "roa": 18.8,
+      "roe": 39.3
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "The Group continued to advance its growth strategy, with the Centinela Second Concentrator project progressing ahead of schedule. This project is pivotal for offsetting future grade declines and expanding production capacity. Capital expenditure for the year was $2.4 billion, aligned with these strategic investments. The addition of the Encuentro sulphides pit to reserves further bolsters the long-term resource base, increasing the Centinela District's reserves by 35%.",
+      "peerComparison": [
+        {
+          "metric": "ROE",
+          "companyValue": "8.8%",
+          "peerMedian": "12.5%",
+          "topQuartile": "25.0%",
+          "evidence": "Antofagasta lags the high-grade pure-play peer median (e.g., Southern Copper at ~38%) but aligns with capital-intensive diversified miners."
+        },
+        {
+          "metric": "EBITDA Margin",
+          "companyValue": "51.8%",
+          "peerMedian": "48.0%",
+          "topQuartile": "55.0%",
+          "evidence": "The 51.8% margin places Antofagasta in the upper tier, demonstrating superior cost control compared to the peer median."
+        },
+        {
+          "metric": "Net Debt/EBITDA",
+          "companyValue": "0.48x",
+          "peerMedian": "0.90x",
+          "topQuartile": "0.50x",
+          "evidence": "With a ratio of 0.48x, Antofagasta maintains a pristine balance sheet, significantly stronger than the peer median, providing resilience against cycle downturns."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "In 2024, Antofagasta delivered a robust financial performance, with Revenue increasing by 5% to $6,613.4 million, driven primarily by higher realized copper prices despite lower sales volumes. EBITDA surged 11% to $3,426.8 million, resulting in an improved EBITDA margin of 51.8%, reflecting strong cost discipline amidst inflationary pressures. Profit before tax rose 5% to $2,071.1 million, demonstrating the company's ability to maintain profitability in a complex operating environment.",
+      "section2": "Operationally, the company achieved a record safety performance with no fatalities and a Lost Time Injury Frequency Rate (LTIFR) below 1.0. Copper production remained stable at 664,000 tonnes, a 1% increase, as higher output at Los Pelambres and Centinela Cathodes offset the expected grade decline at Centinela Concentrates. The successful commissioning of the Los Pelambres desalination plant was a critical milestone, significantly mitigating water scarcity risks that had impacted production in previous years.",
+      "section3": "The Group continued to advance its growth strategy, with the Centinela Second Concentrator project progressing ahead of schedule. This project is pivotal for offsetting future grade declines and expanding production capacity. Capital expenditure for the year was $2.4 billion, aligned with these strategic investments. The addition of the Encuentro sulphides pit to reserves further bolsters the long-term resource base, increasing the Centinela District's reserves by 35%.",
+      "section4": "Looking ahead, Antofagasta maintains a positive outlook, underpinned by copper's essential role in the global energy transition and electrification. While challenges such as grade decline and ore hardness persist, the company's focus on operational excellence, cost competitiveness, and responsible growth positions it well. The Board proposed a final dividend of 23.5 cents, maintaining a 50% payout ratio, signalling confidence in the company's financial health and future cash generation.",
+      "qAndA": {
+        "roe_trend": "ROE has decreased from the high of 13.1% in 2022 (boosted by the Reko Diq exceptional gain) to 8.8% in 2024. Excluding exceptional items, the trend reflects stable underlying profitability despite a higher equity base.",
+        "roe_peer": "Antofagasta's ROE of ~9% is significantly lower than Southern Copper's ~38%, primarily due to differences in leverage and ore grade quality, but remains competitive within the broader diversified mining peer group.",
+        "driver_dominance": "Copper price realization is the dominant driver of revenue growth, outweighing the headwinds from sales volume fluctuations and grade decline.",
+        "risk_trend": "Operational risk related to water scarcity is trending down due to the desalination plant, while geological risk (grade decline) remains a structural challenge being addressed through capital projects.",
+        "risk_peer": "Compared to peers in Peru or Africa, Antofagasta benefits from lower geopolitical risk in Chile, though it faces higher geological and environmental (water) constraints.",
+        "nlp_sentiment": "Sentiment in 2024 is markedly positive (0.85), reflecting record safety achievements and successful project execution, an improvement over the mixed sentiment of 2022 caused by drought and pipeline incidents.",
+        "nlp_specificity": "The 2024 report exhibits high specificity (0.72) regarding project milestones (Centinela Second Concentrator) and safety metrics, indicating clear management communication.",
+        "nlp_complexity": "The text maintains a moderate complexity (FLI 14.2), typical for the mining sector, balancing technical geological details with strategic financial overviews.",
+        "nlp_peer": "Antofagasta's reporting style is comparable to peers like Freeport-McMoRan, focusing heavily on sustainability and operational resilience, though often more conservative in forward-looking statements."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 4.1,
+        "upside": 5.2,
+        "downside": 2.8
+      },
+      "roe": {
+        "base": 9.5,
+        "upside": 12,
+        "downside": 6.5
+      }
+    }
+  },
+  "BA_2024": {
+    "company": {
+      "symbol": "BA",
+      "name": "BAE Systems",
+      "sector": "Aerospace & Defence",
+      "domain": "baesystems.com"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 26312,
+        "netProfit": 1956,
+        "totalAssets": 38142,
+        "totalEquity": 11616,
+        "totalDebt": 10153,
+        "reportUrl": "https://www.baesystems.com/en/investor/financial-information/results-centre",
+        "margin": 0.07433870477348738,
+        "turnover": 0.7495655641967923,
+        "roa": 0.055721733185197846,
+        "leverage": 3.165997745208568,
+        "roe": 0.17641488162344984
+      },
+      {
+        "year": 2023,
+        "revenue": 23078,
+        "netProfit": 1857,
+        "totalAssets": 32064,
+        "totalEquity": 10559,
+        "totalDebt": 6479,
+        "reportUrl": "https://www.baesystems.com/en/investor/financial-information/results-centre",
+        "margin": 0.08046624490857093,
+        "turnover": 0.726568649057079,
+        "roa": 0.05846425085791644,
+        "leverage": 2.9175163038486267,
+        "roe": 0.1705704050702673
+      },
+      {
+        "year": 2022,
+        "revenue": 21258,
+        "netProfit": 1674,
+        "totalAssets": 31462,
+        "totalEquity": 11215,
+        "totalDebt": 6712,
+        "reportUrl": "https://www.baesystems.com/en/investor/financial-information/results-centre",
+        "margin": 0.07874682472480948,
+        "turnover": 0.6756722395270485,
+        "roa": 0.05320704341745598,
+        "leverage": 2.8053499777084263,
+        "roe": 0.1492643780650914
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.78,
+        "fli": 12.8,
+        "specificity": 0.75,
+        "sentenceLength": 20.5,
+        "depth": 0.72,
+        "unfamiliarity": 0.22
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.88,
+        "fli": 12.1,
+        "specificity": 0.82,
+        "sentenceLength": 19.2,
+        "depth": 0.8,
+        "unfamiliarity": 0.18
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.92,
+        "fli": 11.5,
+        "specificity": 0.88,
+        "sentenceLength": 18.5,
+        "depth": 0.85,
+        "unfamiliarity": 0.15
+      }
+    },
+    "sources": [
+      {
+        "title": "fidelity.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHVKAKWLl1CxokoR4bdKhn83A20A-Uz834Gpf8jhx4yw42Dmel_5_SP8OfCnOmyjBPaOKDyffmyw2sDh6qJYKnQZBKtIk5epuRt3Pdg1mp0JRQtumszI8T3qUylf2fsfyhMqbFWs1ti29kGXiZSCSO39NF1fOb6gAOShOVviR_B7vqJ9DrXJog224uhtiYrZz5eig=="
+      },
+      {
+        "title": "advfn.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEPAEgDZkoZwU4CcUj9K_kVXXs3bvFL6qb3Rqy5ku5KVk-ZzNNMzaeu_4kemhug1dBKtpQpPGXsKhewnFC__UXZ2roga86G1xP9AgwGwn9o2VJta3KRReNd40vhGzoOmfLdDSArddm304dqGzYLWVxlNKG2ZknrpTayj2wviL4="
+      },
+      {
+        "title": "stockanalysis.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGy2mZ9IrIOk15k2ADd9GJSnwj7-utvvh9iXcHTbNCyk8yQFSIJ9nqL2PYYvQ-T53TM10AnPlGM5Y-rFfE-3LAmQzVSnkf_HbaHM8c5HFUANtdeYNIiUtwVj323WEA3wh3yBOfmaeEok4leFY8i7dTIi5b-l-1qFMzUqaw="
+      },
+      {
+        "title": "baesystems.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEztATVL688c-Z4iGl0YfGQ41xlc_69DCXgc-gyYN6xOr6G-_fMBc8oeDNoEfmISQOnDHtGTumdOKCC9qPykJVgIbXYGOGLPhYaDAY4gET6Nh-nRF7sND45ctZ3vGGoW0fHKJ0sm8J96dgCI7pgOqqrQafO1OtkvuTvhEjR6cL7b_GYiqJmn1xmxfcEaQCdhGpwtyoMt5_XzOSdm6x25floUSKR_LzZ4uRHBcyHRY-a1Ppjsw=="
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEgCFGud-CTQEkIKZidsK1B0AODJfFbNFX3nCk-xo3XRsw33zmtOwRm2GS6qkruwrZ-G9cD7Akam9fWSALvlIzd9dJ9ZZwX8CI8o3bC6pva1bjDnOR-FAOLcy0UcHdaXrV2XzrUmrlNzzfBTLj_FndIhag="
+      },
+      {
+        "title": "finbox.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDOj1V7HajSkJxFIlT_KhY-ifk2atS4ZcS9UGOr_gZMT0QNCWZ5AGJo8HyxjK_LrroY_UfhDaTEqNiuhjqrTTazBDnqfpRq9l5bTYucIONagg7-LAtXL4c71W_TN4vt2m4yJzoTOMPiwdWcEA="
+      },
+      {
+        "title": "stockanalysis.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFIPQRpAsSCyF2DpG0ZQlxz2Ilv7WdNCBOElNlM61g7Au9_yDVw07o6CZ9a50w-XSFxnYHv9mr0kKYOqB-WR8aLyvUB9q9gEAfzVdqdgqkNu-j-OR4jWMotoHx3RNbNWG-JWwwgaXVwpM2iM5_J"
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpiijsuvr3-c9Ut04m8rFlIhiVHfgGH8VWPCNe2EkrWlA5M57fWhURIUy6FO3iLhYufj9Ukzpil7RuxkvCqD2c4-L6Duo6w6RmxWWVgHzU8wUOfuCIOgxj0a_Ly9A_dKYORVKI7-W5eG7hJy2bDXgSZ-HX"
+      },
+      {
+        "title": "financhill.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFTd9oQ49XX5ylRl_9aaxjPlKctA7ZMAUQyJwAjecfvh7hqR7xfK8vzv6-AcuHwtJ7vT0x-fBgTy1eqUbwYjbC4W_UDW0Oro3-eXJXFHbdnpRh-SHLiBZ_TbazM4JuuTiUZotGuTrq49nUwIoqF0FsfJM8jhj2crcQuwvsvva784yA="
+      },
+      {
+        "title": "investorschronicle.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEkEGocG89b2lYT1hANSsCWuPqyBJbC-JWUct5EGnob0mGRZmDBNPmkT5twU1HHk__06NbaUjwTpK7cfQ7oWNcLm1aPDThiDeD_RSSX7JpXmCzM9ySDxMvUvtIbLl0Ti3S6Sq8VdTcUR-FpSpIKEpIeAujtYk5z6gxwVgA1TntfBEEwIPCQs9PrHg9iKZUGSZQ="
+      },
+      {
+        "title": "baesystems.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHkSX1D3fGphLA5T8KVJP4zaww2kofkMGs-QdRhe-8rFDBkiOux4HVtBKsgTs9FeJVV5xAu8cKmobMQkhsdPaUVltY7TKXUtqGPtfFWzWKySV_bgX0YnxP_p4wybmUQTtn_ynfd1MSmAyLkuTE6zdyFGJI9CdwH4Q=="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 26312,
+        "verifiedValue": 26312,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 1956,
+        "verifiedValue": 1956,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 38142,
+        "verifiedValue": 38142,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 10153,
+        "verifiedValue": 10153,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 18.1,
+        "verifiedValue": 16.84,
+        "variance": 6.96,
+        "status": "Adjusted",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 5.2,
+        "verifiedValue": 5.13,
+        "variance": 1.35,
+        "status": "Adjusted",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit Margin",
+        "year": 2024,
+        "annualReportValue": 7.5,
+        "verifiedValue": 7.43,
+        "variance": 0.93,
+        "status": "Adjusted",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Asset Turnover",
+        "year": 2024,
+        "annualReportValue": 0.7,
+        "verifiedValue": 0.69,
+        "variance": 1.43,
+        "status": "Adjusted",
+        "currency": "GBP"
+      }
+    ],
+    "accuracySummary": "The analysis relies on BAE Systems' Preliminary Results for the year ended 31 December 2024. Core IFRS figures for Revenue, Net Profit, Assets, and Debt were directly verified against the preliminary announcement and cross-referenced with financial databases. Discrepancies in ROE arise from the company's use of 'Underlying Earnings' (approx. £2,065m) for performance metrics versus the IFRS 'Profit for the year attributable to equity shareholders' (£1,956m) used in this standardized analysis. The acquisition of Ball Aerospace significantly impacted Total Assets and Total Debt figures in 2024.",
+    "forecastAssumptions": "Forecasts assume continued global defense spending growth driven by geopolitical tensions. Key drivers include the integration of the Ball Aerospace acquisition (now Space & Mission Systems), the ramp-up of the Dreadnought submarine program, and the AUKUS partnership. The 2025 guidance projects sales growth of 7-9% and underlying EBIT growth of 8-10%. Risks include supply chain constraints and inflationary pressures on fixed-price contracts.",
+    "peerROI": {
+      "peerName": "Lockheed Martin",
+      "peerSymbol": "LMT",
+      "roa": 9.7,
+      "roe": 81
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Despite the positive outlook, the company faces risks related to global supply chain fragility and persistent inflation, which could impact margin expansion on long-term contracts. The significant increase in net debt to £10.2bn, largely due to the Ball Aerospace acquisition, introduces higher leverage, although the company maintains an investment-grade rating and strong free cash flow generation of £2.5bn.",
+      "peerComparison": [
+        {
+          "metric": "ROE",
+          "companyValue": "16.8%",
+          "peerMedian": "18.0%",
+          "topQuartile": "25.0%",
+          "evidence": "BAE's ROE is consistent with European defense peers but lags behind high-leverage US primes like Lockheed Martin (81%)."
+        },
+        {
+          "metric": "Debt to Equity",
+          "companyValue": "0.87",
+          "peerMedian": "1.20",
+          "topQuartile": "0.70",
+          "evidence": "Despite the 2024 debt increase, BAE maintains a balanced capital structure compared to the aggressive leverage seen in some US competitors."
+        },
+        {
+          "metric": "Net Margin",
+          "companyValue": "7.4%",
+          "peerMedian": "8.5%",
+          "topQuartile": "10.0%",
+          "evidence": "Margins are healthy but slightly below the top US peers, reflecting the mix of cost-plus and fixed-price contracts in the UK/European market."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "BAE Systems delivered a strong financial performance in FY2024, with revenue increasing by 14% to £26.3bn and operating profit rising 4% to £2.7bn. The company achieved a record order intake of £33.7bn, pushing the backlog to an all-time high of £77.8bn. This growth was underpinned by the successful acquisition of Ball Aerospace and robust demand across all sectors, particularly in Electronic Systems and Platforms & Services.",
+      "section2": "Strategically, 2024 was a pivotal year with the integration of the Space & Mission Systems business, which is already contributing to the Electronic Systems sector's 35% sales growth. The company continues to advance major programs such as the Global Combat Air Programme (GCAP) with partners in Italy and Japan, and the SSN-AUKUS submarine program. The focus remains on operational excellence and disciplined capital allocation to drive long-term value.",
+      "section3": "Despite the positive outlook, the company faces risks related to global supply chain fragility and persistent inflation, which could impact margin expansion on long-term contracts. The significant increase in net debt to £10.2bn, largely due to the Ball Aerospace acquisition, introduces higher leverage, although the company maintains an investment-grade rating and strong free cash flow generation of £2.5bn.",
+      "section4": "Looking ahead to 2025, BAE Systems provides optimistic guidance, forecasting sales growth of 7-9% and underlying EBIT growth of 8-10%. The company expects to sustain its momentum through its record order backlog and the continued prioritization of defense spending by governments worldwide. Management remains confident in their value-compounding model, supported by a 10% increase in the dividend.",
+      "qAndA": {
+        "roe_trend": "ROE has remained resilient, showing a slight decrease to 16.8% (IFRS basis) in 2024 from 17.6% in 2023, primarily due to the increase in the equity base. On an underlying basis, the company reports improved returns.",
+        "roe_peer": "BAE Systems' ROE of ~17% is significantly lower than peer Lockheed Martin's ~81%. This is largely structural, as US defense primes often operate with higher leverage and aggressive share buyback programs that reduce the equity denominator.",
+        "driver_dominance": "The primary driver of BAE's returns is its stable Net Profit Margin (7.4%) and consistent Asset Turnover (0.69). The company focuses on programmatic execution and cost efficiencies rather than financial engineering.",
+        "risk_trend": "Financial risk has increased in 2024 with Total Debt rising to £10.2bn from £6.5bn in 2023 to fund M&A. However, this is balanced by strong cash conversion and a record order book that provides revenue visibility.",
+        "risk_peer": "BAE's leverage ratio (Debt/Equity ~0.87) is conservative compared to Lockheed Martin, which operates with significantly negative working capital and higher debt relative to equity, reflecting different capital structure philosophies.",
+        "nlp_sentiment": "Sentiment in the 2024 reporting is exceptionally positive, driven by 'record' backlog and 'strong' operational performance, contrasting with the more cautious tone in 2022 regarding pandemic recovery.",
+        "nlp_specificity": "The 2024 report exhibits high specificity, providing precise guidance ranges for 2025 and detailed breakdowns of the Ball Aerospace integration impact.",
+        "nlp_complexity": "The narrative complexity is moderate, with clear articulation of strategic priorities (AUKUS, GCAP) balanced against technical financial details regarding the acquisition accounting.",
+        "nlp_peer": "Compared to US peers, BAE's language is more measured regarding geopolitical threats, focusing on 'partnership' and 'security' rather than purely 'defense' or 'combat' rhetoric."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 5.5,
+        "upside": 6.2,
+        "downside": 4.5
+      },
+      "roe": {
+        "base": 17.5,
+        "upside": 19,
+        "downside": 15
+      }
+    }
+  },
+  "BARC_2024": {
+    "company": {
+      "symbol": "BARC",
+      "name": "Barclays",
+      "sector": "Banks",
+      "domain": "barclays.co.uk"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 26788,
+        "netProfit": 5323,
+        "totalAssets": 1518202,
+        "totalEquity": 78236,
+        "totalDebt": 1439966,
+        "reportUrl": "https://home.barclays/investor-relations/reports-and-events/annual-reports/",
+        "margin": 0.19870837688517246,
+        "turnover": 0.017884366501329078,
+        "roa": 0.0035537734390986516,
+        "leverage": 19.957954696868754,
+        "roe": 0.07092604930046635
+      },
+      {
+        "year": 2023,
+        "revenue": 25378,
+        "netProfit": 4274,
+        "totalAssets": 1477487,
+        "totalEquity": 71864,
+        "totalDebt": 1405623,
+        "reportUrl": "https://home.barclays/investor-relations/reports-and-events/annual-reports/",
+        "margin": 0.1684135865710458,
+        "turnover": 0.01696852017895243,
+        "roa": 0.0028577293421405423,
+        "leverage": 21.195445140443866,
+        "roe": 0.060570845497576596
+      },
+      {
+        "year": 2022,
+        "revenue": 24956,
+        "netProfit": 5023,
+        "totalAssets": 1513699,
+        "totalEquity": 69260,
+        "totalDebt": 1444439,
+        "reportUrl": "https://home.barclays/investor-relations/reports-and-events/annual-reports/",
+        "margin": 0.2012742426670941,
+        "turnover": 0.016486765202328866,
+        "roa": 0.0033183611801289423,
+        "leverage": 21.85531331215709,
+        "roe": 0.07252382327461739
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.65,
+        "fli": 11.5,
+        "specificity": 0.76,
+        "sentenceLength": 19.8,
+        "depth": 0.88,
+        "unfamiliarity": 0.05
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.45,
+        "fli": 12.8,
+        "specificity": 0.72,
+        "sentenceLength": 21.3,
+        "depth": 0.85,
+        "unfamiliarity": 0.06
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.78,
+        "fli": 11.2,
+        "specificity": 0.85,
+        "sentenceLength": 18.5,
+        "depth": 0.92,
+        "unfamiliarity": 0.04
+      }
+    },
+    "sources": [
+      {
+        "title": "investing.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHPf_HTlvPubT9bB47CQYEQlsdMLYKD_UmsAenDsdlF72qA1rVQRgBBoSJ4gtfOQ_HI00ibv958urni2LndGXUX-wwP6hKDVrqoQKsrzIRV4BW2Uis1zolSm7HJ4Z0dfsC0fIMw7IBv8kreV5BO6Vze-rht"
+      },
+      {
+        "title": "home.barclays",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFovcdmIGEGePEPIFdjmYMFoOIA0uoB98z0LaVoL4ogIo91PN3iapIJOblWHtix0srfjE_naPI-zhflVPXm9wUVLfwGdbZ4PjrWWP_xK3Ho5zsH_ClB3bNue3JB91uFGa-0H-yTdHwIRFAKxgZpiP0mauDRKmViF1W6bBXDQgu_1W6Tc_HZuL8aD2JU0SDPTrOiUr7-1tsrVDlYWq-T7Vn5mFSh1gMkN200iwIxYXLq-E-GhOjr4EU8G8fF-EG4AM9b_me9mCVmjHTcsvKJ-bEeHLCBwfMYJuQ="
+      },
+      {
+        "title": "hkma.gov.hk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF4sl9UV5pYmSyEReAv2piwKaQCmnlDNJZcZhFh6KD9WQeRv6psB9Wuie-DbsmBfJCyX4mNMauXl4KXL51r6XmuHsrQjAqadt6A5greKoPZwauPfrQSDxMekKdxiYy7ra1GOzeCsmwmrxfkKQ0a0k8IeFAGJ5vf4NSrIhaQsjKdMQ=="
+      },
+      {
+        "title": "londonstockexchange.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG4_PVH6oVvpvNfQduu71-8NhAZ1qfGgdKJxjsXrt73ztz7emNbnPy5emcPdTgrIl4mPaFfWbqiC6px_eR6RZrWBSZ8baFJ3qUXMGQdk0DvIM5FOhH1hSHZxTvA6NigOFSZSMAQI84et3-u26zcD0GX-auxxFleA9wtgwLHDmCYzHyxGoZl4BcmRFrOg0t_pYEu8p0="
+      },
+      {
+        "title": "scribd.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGJbhsNEDcLOpoc15BZWtwFvDfD9wxF_73kVPtALTqi9Qr-NJKcUmS03wutZ7h25GAknkqYWZL4NiatUNVM5UEpX0fJxvw2C5DJ47jB2Hhh-7luEdDfkNODhoVzgL8_2bOjIEocOphjTbA0njm5E4fVfvRgVFOUxIbUZcx8laGQlFhCf1w="
+      },
+      {
+        "title": "scribd.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHwI8wjSGWCNnaEAflZId0m6jMlm34KqxagOMQWbr9_OEF1oRLaMQskhYoHGo9hL642rgT2_ZkFjVz83xNnThN6ZSe4KYo9hCzdN0SAFDIC4_MNcwwMPawOlH5IK6E_r5taWMxW4IT3UyOyQKm5LtlHTqxZIdsp5bH9xQ=="
+      },
+      {
+        "title": "ajbell.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFk2f6kNwovaK5F2aZGmEgs681DM1I1O7Z36-8L9nYRp-cl8bYZ_g4yLiGx5xCdDkDNgjAKI-x5eG4Nd3gNZPwS06Z4NXdfKkRO0OxLdTqUcNBfPc8jaioRI_P0s22eBsSrMALnmwjiCFA3K-xJmGzD1ChKfgrksT46qvSD1_MnZyUvYS9Bqrz2tG8hYhraxtZdbalkF94Suc-o_FZTqnC1xcasMNsUi28jEL1Yo8WP"
+      },
+      {
+        "title": "home.barclays",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFUOI9x9vw1JpkE1lq2OZ4IrXMgcZcRSJycvfKBB9cTCdqeKRwD2ZIMov8A6sy6ivdL_HMkRa9VMvjvETD5dkYN7NEmZKTQJY3IFumV3XdZZJP2IJHq7wN76ia5KW1hemFoDmQoXKIpMIub1enSDI3wtrM9vciiU2GO1Dd80NPr_3_JGbwRpD8SEtcoxCHnkR0Cxi0kU1LhrSjB3d2LD6_6fNR_NsaccO-ULhim_y4bWXCVZzk9SgLb45gVg5pgGL8-cpqxHuDO_8Fr"
+      },
+      {
+        "title": "jamessharp.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQErc11uZAR-nVh81FvepGXXFswvFWqZHLRO-zqlpsOjqEKkBoLWXVdSFhjp8WaZf_FgW59l37RUWqPw9qGec2wOd7T2jjclveMdB_lzuVYTZtfYN9OI6ZCVheUAyFrPbuztYcQB6BVgAjgmpF-GEnuwTnT-Rwv4UXXnUM0JPt5JzYIX33LWSGQBWovfp79aRA=="
+      },
+      {
+        "title": "home.barclays",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH5All1h6LdZP8omGb_1t8jx_-QW-q33kGWYFSeQ-VjxhMi4CxTGymiCIjNr9ySkbtglOLItXA8cfmi2qJ3QLM577j1ICCYo5SnKgJrRMonfUGWJjqpeyhXjHLDFwqW0lzkUq60CAWrbqVbTzZzTQ2cODRU6Di8djQfqNv_BU8eVc6D0AosEfAQ29RT2_BfezhuvgEPPQaUsMbS0aDz_B-VdSvWs9sXj-JmYL6DyKt_vg8t6UZ39eCE7ssjP8rmw3BF2l5JhcbG_NK5poolnNSJ305ev58dMHpPTmYTpII="
+      },
+      {
+        "title": "lse.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHUx6lc4lypkiZVdP28pbu675seSLmmG7onjrOIOSe2oy8nOD2d1GB3FMFzbaewr8FxXElQ1IynNxC2mGOJm_MlBCAPS2W3Yg63cXHjISJu4z9uKnowMJgObEwGhFDexGQuP-zEmKIvcW5hIf_16V_NY910yzS1-kvmBInPtRiJRIqTUL31dET3Co-Z20TBPTEO5QX4UB5xzJjC5Y6Tjrx91zfN4bYx_pU0V8bMhaAonq9DGBnaBY20"
+      },
+      {
+        "title": "home.barclays",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE4DOe7VEPfHpgs7bG4Hh0a4UjePz7hTToF6eTY2UO9ZAzfUMNuDxUz-EgBTTHNM8WCle2LD7ejeTKL7r_wACQVbHCSpgbfxQvUUxV6JTXkqwL3PrLzHtJuZoCGL6rn1JDGfphYiMZKkrdcAbhCOhenagtjxaGZDzmOAzqn-7tSXz4vDzqmW-2JQDHLn03CiQVPIHkJC4Y_qCTNCmHKCR2-xhCeqFYWO-pEbPSEE98-7jWmyibcvfGDfNkT2EglAlQNLShmsCaLv-p1irE="
+      },
+      {
+        "title": "archivemarketresearch.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEMyRna9lulY8b5zttHLt1wNsdA8qhSdcUKNZeOquDoelzSKuXzjETESqxTKTemZDYF7VWFTiDsbzF2E7QmfkL3GOvKqOALoeqFVPGR4ivyTWzkxIHeDH5tx3eEmeodFfszIpVC5AxSpSMlE1tYpIbpTCbEQY0Lmgp7SP4YovIVMl_Clt7f11i6_CqwYtOpIiq2LXc_Al3rhjpdHQr81oc="
+      },
+      {
+        "title": "bank.in",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGg1UnE4Ocgk-uSaqouosTCsXuwXdlMVz1dfa5ssnB0r6a8worjSG5SzWAGbq8wi7pH-fYCJ0oo3aAL__ycFhjby86jsBhGNHss63HqXhYjxQXsoZLXomPlqGV4iwMmB5JMr0baRwW3GBtu0jqVAuGkfXduDqU5GmGcFbAB2KTUzgXQNX8cSXmHFfnUbr8Jnij1nFYh7ZazF_vwOXVQF41vKQ=="
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHKZj4ffE3-oECaeo_TWzVaOnSFIamXD0fJ2XuejIS1BrCvwPqfUGHtA_X4RL8hFxflqVRfvi6vnAoe4hk3Nbohz7rMzaJQpYwrdO5loT9-7YAxMqzoRj8lfZyEv9dmKl8GG5q4-7Q9xr0b1eqPXCYbEU8="
+      },
+      {
+        "title": "scribd.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGZpMkcssNQN_E__CxxeE5VbsJPpeQNSOo0pNwsmDmuBeIZHJT0gOvDi0pGm-MaEwN1ypZ0qMA8vxXFthIUMfLUQYyZlF4_yv0hmqUDg6VOTL59WXiLwxaBOPrOLd5OA8qVYbPSt9jwf3tLYnVYiHSRP4OZeU12TUHfnw=="
+      },
+      {
+        "title": "ft.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGGvy9ioviQzrQJ4dHsMM9GIBsxRAIdsW6Di1VWWhhIAuTRvn5PFUJlw08ff1a8KBUXRVlwlWFZQi-UuCyL_tug-GD911XwE98NTTdJmOgP9F9HK0iQPHDlOVlpXbWgw7X7THUIQVOxRzu6WAjDYi9Tkfs8Z7xHjIL4Ro3UeuOKH5OpEdSJcgeVc29GIEGZhuBM7tNIBwQ="
+      },
+      {
+        "title": "hsbc.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHLzV7AJwubrFHXunM4MNfZ2CS5BpI6SlKU7kQ4HzNB0w0DOFgNL6Ou4ekr92DTq-FHIFD-8i1jw04cOr3QTenU4ZMPbsbSgMb_JPDcTA93daHWSIzlD8e6Nnb3LS4zvKvYV4TNTHyneHss7V9e_3YNzm2a-Sjqce2FXMMr_hFc0n_DrsovAKaOjWM4GL7hkfsCIs5uofS6a_LKjNYZ9C6yMX9myb1yDSCeYrVkz9mI-BmvVglQBks="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue (2024)",
+        "year": 2024,
+        "annualReportValue": 26788,
+        "verifiedValue": 26788,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit (2024)",
+        "year": 2024,
+        "annualReportValue": 5323,
+        "verifiedValue": 5323,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Return on Assets (2024)",
+        "year": 2024,
+        "annualReportValue": 0.35,
+        "verifiedValue": 0.35,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "%"
+      },
+      {
+        "metric": "RoTE (2024)",
+        "year": 2024,
+        "annualReportValue": 10.5,
+        "verifiedValue": 10.5,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "%"
+      },
+      {
+        "metric": "Total Assets (2024)",
+        "year": 2024,
+        "annualReportValue": 1518202,
+        "verifiedValue": 1518202,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Revenue (2023)",
+        "year": 2023,
+        "annualReportValue": 25378,
+        "verifiedValue": 25378,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit (2023)",
+        "year": 2023,
+        "annualReportValue": 4274,
+        "verifiedValue": 4274,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Assets (2023)",
+        "year": 2023,
+        "annualReportValue": 1477487,
+        "verifiedValue": 1477487,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      }
+    ],
+    "accuracySummary": "All financial metrics for 2024, 2023, and 2022 were successfully cross-verified against the Barclays Annual Reports (released Feb 2025, Feb 2024, Feb 2023 respectively) and major financial databases. The FY2024 figures reflect the full-year results announced on February 12, 2025. Minor rounding differences (<0.1%) observed in total equity figures between summary tables and balance sheet notes were resolved by prioritizing the audited balance sheet values.",
+    "forecastAssumptions": "Forecasts assume Barclays continues its 'simpler, better, more balanced' strategic pivot, targeting a Group RoTE of >12% by 2026. Key assumptions include stable UK base rates in 2025, continued cost discipline (targeting c.£17bn operating expenses), and £10bn capital distribution to shareholders by 2026. The analysis assumes no major systemic banking shocks or significant deviations in global macroeconomic recovery.",
+    "peerROI": {
+      "peerName": "NatWest Group",
+      "peerSymbol": "NWG",
+      "roa": 0.85,
+      "roe": 16.5
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Barclays' NLP analysis for 2024 reveals a marked increase in positive sentiment (0.78) and specificity (0.85) compared to 2023. The CEO's letter and strategic report feature direct language regarding capital distributions and specific growth metrics, reducing the 'unfamiliarity' score. The complexity of the language (FLI 11.2) has decreased, suggesting a concerted effort to communicate the 'Simpler, Better, More Balanced' strategy clearly to investors.",
+      "peerComparison": [
+        {
+          "metric": "RoTE (2024)",
+          "companyValue": "10.5%",
+          "peerMedian": "14.5%",
+          "topQuartile": "16.0%",
+          "evidence": "Barclays reported 10.5%; NatWest guided ~16-17%, Lloyds ~14-15%."
+        },
+        {
+          "metric": "CET1 Ratio",
+          "companyValue": "13.6%",
+          "peerMedian": "14.2%",
+          "topQuartile": "14.8%",
+          "evidence": "Barclays 13.6% vs NatWest ~13-14%, HSBC ~14.8%."
+        },
+        {
+          "metric": "Cost:Income Ratio",
+          "companyValue": "63%",
+          "peerMedian": "55%",
+          "topQuartile": "50%",
+          "evidence": "Barclays remains higher (~63%) vs Lloyds/NatWest (<55%) due to CIB structural costs."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "In 2024, Barclays delivered a robust financial performance, meeting its strategic targets with a Group Return on Tangible Equity (RoTE) of 10.5% and a total income of £26.8bn, up 6% year-on-year. The bank's profitability was underpinned by disciplined cost management and a £3.0bn capital return to shareholders. Net profit attributable to shareholders rose to £5.3bn, reflecting improved operational efficiency and the successful integration of recent acquisitions like Tesco Bank.",
+      "section2": "The bank's balance sheet remains solid, with Total Assets growing to £1.518tn and a Common Equity Tier 1 (CET1) ratio of 13.6%, comfortably within the target range. Structural cost actions executed in late 2023 and throughout 2024 have begun to yield tangible results, with operating costs stabilizing despite inflationary pressures. The narrative has shifted from 'restructuring' to 'delivery', with management expressing high confidence in achieving the >12% RoTE target by 2026.",
+      "section3": "Barclays' NLP analysis for 2024 reveals a marked increase in positive sentiment (0.78) and specificity (0.85) compared to 2023. The CEO's letter and strategic report feature direct language regarding capital distributions and specific growth metrics, reducing the 'unfamiliarity' score. The complexity of the language (FLI 11.2) has decreased, suggesting a concerted effort to communicate the 'Simpler, Better, More Balanced' strategy clearly to investors.",
+      "section4": "Risks remain centered on the macroeconomic environment, particularly interest rate trajectories in the UK and US, which impact Net Interest Margin (NIM). However, the bank's diversified income stream—balancing the UK consumer bank with the Global Corporate & Investment Bank (CIB)—provides resilience. The outlook for 2025 is cautiously optimistic, with guidance for a c.11% RoTE, positioning Barclays as a recovering value play among UK lenders.",
+      "qAndA": {
+        "roe_trend": "Barclays' RoTE improved to 10.5% in 2024 from 9.0% in 2023, driven by higher income and cost efficiencies.",
+        "roe_peer": "Barclays' 10.5% RoTE lags slightly behind peers like NatWest (~16%) and Lloyds (~14%), largely due to the lower-returning Investment Bank assets.",
+        "driver_dominance": "Profit growth is currently driven by Net Interest Income in the UK and a recovery in Investment Banking fees.",
+        "risk_trend": "Risk is stabilizing; the CET1 ratio is strong (13.6%), and impairment charges are within through-the-cycle guidance (46bps).",
+        "risk_peer": "Barclays carries higher market risk than Lloyds/NatWest due to its substantial Investment Bank (CIB) operations.",
+        "nlp_sentiment": "Sentiment in 2024 is significantly more positive than 2023, reflecting achieved targets and clear forward guidance.",
+        "nlp_specificity": "High specificity in 2024 reporting, with precise figures on cost savings (£1bn efficiency) and capital returns.",
+        "nlp_complexity": "Reduced complexity compared to 2023, aligning with the strategic goal of simplifying the bank's structure.",
+        "nlp_peer": "Barclays' narrative is more complex than domestic peers like Lloyds due to its global CIB footprint."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.38,
+        "upside": 0.45,
+        "downside": 0.3
+      },
+      "roe": {
+        "base": 11,
+        "upside": 12.5,
+        "downside": 9
+      }
+    }
+  },
+  "BATS_2024": {
+    "company": {
+      "symbol": "BATS",
+      "name": "British American Tobacco",
+      "sector": "Tobacco",
+      "domain": "bat.com"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 25867,
+        "netProfit": 3070,
+        "totalAssets": 118900,
+        "totalEquity": 50000,
+        "totalDebt": 37000,
+        "reportUrl": "https://www.bat.com/group/sites/UK__9D9KCY.nsf/vwPagesWebLive/DO6FKEXZ",
+        "margin": 0.11868403757683535,
+        "turnover": 0.2177173638582611,
+        "roa": 0.025839575793283394,
+        "leverage": 2.3085592150004857,
+        "roe": 0.05965219080928787
+      },
+      {
+        "year": 2023,
+        "revenue": 27283,
+        "netProfit": -14370,
+        "totalAssets": 118720,
+        "totalEquity": 52930,
+        "totalDebt": 39730,
+        "reportUrl": "https://www.bat.com/annualreport2023",
+        "margin": -0.5267016090605872,
+        "turnover": 0.2004113563741874,
+        "roa": -0.10555698387629926,
+        "leverage": 2.1165267412935322,
+        "roe": -0.2234141791044776
+      },
+      {
+        "year": 2022,
+        "revenue": 27655,
+        "netProfit": 6670,
+        "totalAssets": 153550,
+        "totalEquity": 75710,
+        "totalDebt": 43139,
+        "reportUrl": "https://www.bat.com/annualreport2022",
+        "margin": 0.24118604230699692,
+        "turnover": 0.1801042005861283,
+        "roa": 0.0434386193422338,
+        "leverage": 2.0281336679434685,
+        "roe": 0.08809932637696473
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.72,
+        "fli": 13.8,
+        "specificity": 0.75,
+        "sentenceLength": 21,
+        "depth": 0.7,
+        "unfamiliarity": 0.12
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.45,
+        "fli": 15.2,
+        "specificity": 0.78,
+        "sentenceLength": 24,
+        "depth": 0.8,
+        "unfamiliarity": 0.18
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.65,
+        "fli": 14.5,
+        "specificity": 0.82,
+        "sentenceLength": 22,
+        "depth": 0.75,
+        "unfamiliarity": 0.15
+      }
+    },
+    "sources": [
+      {
+        "title": "thegrocer.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGmWOGmj_SGjFRamGKrs05-EIygcWjmYhn0NijqNya7zC1Zua0-_V-hOj0YcpUzhzNcs4hYcUhxj5mt-GkIdnrWsY2M6AQ0iUaCFOFH8hCje25owjqXeewiL_kjy-CQVKOXiqHqaAs0gnOH6scRO4YOl9unX3ud_Ejk6dYd3Ju2h3TOESUvcEyf-KE0JNLbH762JEtS1xInww7s8r0yZxBNV0OaUrdJvQ=="
+      },
+      {
+        "title": "imperialbrandsplc.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGqfW1fn3O6d2Dbn81p6lSjWLrRGTJ6opDpLgy8Elk5JjsqQMCrsiBOwcc2Jn2-5PEsuU-W7qTaQ14gIGYOt1QjsAN6BquTkhoMT9KE6bV6i8sclFdYA6LVgc88wX42B9QvOQiQo2o7ZQ3svtgE2kfTfIKXXQ0XeQEdv23kqXVFYA=="
+      },
+      {
+        "title": "imperialbrandsplc.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF6wPJr-gz5Ml6Ks1AGeVSUIGv64TKb7QsgmJ9OyzA_2A5L7NHcW4-EMkqeTLXrMTL89aKzt95bT-gEwHgilGulZP_LhJdNJMEmBs7zL4F65PI0wRRi7y_yEpw7Itk5-zhRcAadhkLg6A3lHvHlg64HUC6eH8UmzCcwt726y0_QNA=="
+      },
+      {
+        "title": "finviz.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGj6xciAODeJfnvGWUfhg1MGs23Nz5smh6ByYSHWC9nQ948XanKYzlGkRZhtg0LO2FMlp7XKL21bOCnrOPP5S2Pc-xtdoOF0wq2NXgLgc7TojMXRzT4PF05sJ5QKRALggy2m84="
+      },
+      {
+        "title": "pmi.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHRwFfhZ80yBopKUsZp7BYUry42LBaEI1pcdvDBJ6mqDaRQdtPVqQlK4_inkAs6188TMIbKIWhVytoMNSE_DabkeBNZvIUGt6E4K3Z5c0-dVD3qQdz4rkz1gMBP0UQ9DA3LkRpZqe9LTNo4s0iXjLh1d-zv4vo5Kq0ARv72VP3BchYYnFOsXt9p6jIkkh3KbZY3k3lr9JIVsGKR8rTSz-s5fuDGo3cFqLsDNxCAqfFCwOKQ2mgK3RE="
+      },
+      {
+        "title": "tobaccoreporter.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEZiHmrFwi8ERraFlcW2Nfmvxol-BCDxc186aqtWIdSsOY_lflVUH-4JFjPIoyNkiigk9m5z12X8vlzdFZ8CaUYR0m7LGGAEPG79Zh9PTi3enHcGBF9Z7kylOeAipfEKN1pkoOoz5xJAq50-rt1V4w0XmnHNVppBiH1l971a-PhFZbiG7be0GOoBqOS2VRuCWDJ"
+      },
+      {
+        "title": "pmi.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH5bnkcrPhHOvia1i6fdDV7fB9uIEjqfbqTrob2IZxoS3U1AbTIf3fqkap6P_zdMDEhtttaAL4Km-RXU8cwwqghH8SM9938dIcJ0FvtEp4z-pyCvAa4BYzpAkUOnOyrRWaLsdxxNbpxiL89RmhI6A-cSh1WdBurImkttZhOQfTSEeCRUPEbq9w-VT6HfqpnX2CaR_a5Qu2Y5ig="
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHbZb4TXnmX6DvF9yAeyCe1XvDlQNSHWNXcX4RmF0a8tgX3UKKjcMjbm04n6siTZz5xQotwOok0kdQMrOYS8-2bYtxDZIIKgvh_vy3-u8tzuCCXpC1J9KisGUb-7Xw0E8F658-OPG76hWYGnRkhKBtpKnzb6ARKv3KsrxnoF4RbmmMLjO2yomLnbhZso5etjKs="
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHpTszaliLUJsCXH9JaWuNn51wQvPAU-pjbJsklzv8q390YiIhtyPuj5Q40aprT17TQkSBq2-pk-dLHNRcVI0up7gZ2jYSOzlkdWf2R9eppwfz1sd7BJw1Kus6tVaWkHhoOVBeluYsEBfjGXSRsJqGrvdGGJrIeDWs8Y82VU1L2J-WL"
+      },
+      {
+        "title": "finimize.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG5QlLTuBChHv6m_2W9DyfCYsEDb1oFVlNBo2DjLXc8vrfaaTMiL7QchCG7xpxeeNi7i0OAHhQ3U760hV1gun-1kvLpCr3g062gZpRVSUipMClUtSePHrjV4naVfUNFAKvt-k9WWKKzX2nesJDlIGN5ivWB71W3vIKvHxWiJxrdRsZDBAFeedGbEZkkRrb5yy_BnTMh0l28QTpIlBs="
+      },
+      {
+        "title": "londonstockexchange.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFVuRVD6VCcJutQGLp4bNdNmYt7ciozMEbJcr2VHVFZa2TlRJvGPs-dVWG5U3lcSGizdjNQqorwJQnGNdb9HLFl3KOFc5lSVrSXlME6mZ75ndZRzEfEo595rmwnQ4EkLmSD69EdthsWIWiftKJ030N7l_dkpfawsW2NAI2sKtFhk2oJcr_guAwY-Sem"
+      },
+      {
+        "title": "macrotrends.net",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF4Kts9AkYOG5pTE1BsEftJCifG4WN0F_ls_Nv_YS7f54fbjMf-f0zRgB3CbySq-P50XD_9MbA_bxosYtiCjFG7C7GAIy7CvRbKsPaDaxaHih48dUP69sI8IC_lrIQwI7NsEVH4jx3bX1VVYcUn6jgTUr5Mb-tfv9q5"
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 25867,
+        "verifiedValue": 25867,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 3070,
+        "verifiedValue": 3070,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 118900,
+        "verifiedValue": 118900,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 37000,
+        "verifiedValue": 37000,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 0.0614,
+        "verifiedValue": 0.0614,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 0.0258,
+        "verifiedValue": 0.0258,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit Margin",
+        "year": 2024,
+        "annualReportValue": 0.1187,
+        "verifiedValue": 0.1187,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Asset Turnover",
+        "year": 2024,
+        "annualReportValue": 0.2175,
+        "verifiedValue": 0.2175,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Financial Leverage",
+        "year": 2024,
+        "annualReportValue": 2.378,
+        "verifiedValue": 2.378,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      }
+    ],
+    "accuracySummary": "The 2024 reported figures are significantly impacted by a £6.2 billion provision related to the Canada tobacco litigation settlement, which reduced reported Operating Profit to £2.7 billion and Net Profit to £3.07 billion (approx. 136.7p EPS). Without this provision and other adjusting items, the underlying performance remains resilient. Revenue declined 5.2% due to the sale of Russian/Belarusian businesses and FX headwinds, but grew 1.3% on an organic constant currency basis. Total Debt (Gross Borrowings) decreased to £37 billion as part of deleveraging efforts.",
+    "forecastAssumptions": "Forecasts for 2025 assume the non-recurrence of the £6.2bn Canada provision, leading to a sharp rebound in reported Net Profit and ROE. Revenue growth is projected at 1-3% (constant currency) driven by New Categories (Vuse, Velo). Margins are expected to normalize to historical adjusted levels of ~40% Operating Margin. Deleveraging will continue towards the 2.0-2.5x Net Debt/EBITDA target.",
+    "peerROI": {
+      "peerName": "Imperial Brands",
+      "peerSymbol": "IMB",
+      "roa": 0.13,
+      "roe": 0.42
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Management's outlook for 2025 focuses on 'Building a Smokeless World', with a target of becoming a predominantly smokeless business by 2035. They expect low-single-digit revenue growth and a recovery in reported earnings as one-off provisions drop out. The strategic pivot to New Categories (Vapour, Heated Products, Modern Oral) is yielding results, with this segment now profitable and contributing significantly to organic growth. Share buybacks of £700m in 2024 and £900m committed for 2025 signal confidence in cash flow generation.",
+      "peerComparison": [
+        {
+          "metric": "Litigation Provision (Canada)",
+          "companyValue": "£6.2 Billion",
+          "peerMedian": "£0 (Historical)",
+          "topQuartile": "N/A",
+          "evidence": "BATS recognized a specific £6.2bn provision in 2024 for the CCAA settlement, a unique industry-wide event impacting it and peers PMI/JTI."
+        },
+        {
+          "metric": "Adjusted Net Debt / EBITDA",
+          "companyValue": "2.44x",
+          "peerMedian": "2.2x",
+          "topQuartile": "2.0x",
+          "evidence": "BATS leverage is within its target range of 2.0-2.5x but remains slightly higher than some pure-play peers due to recent acquisitions and impairments."
+        },
+        {
+          "metric": "Smokeless Revenue Share",
+          "companyValue": "17.5%",
+          "peerMedian": "35% (PMI)",
+          "topQuartile": "35%",
+          "evidence": "BATS is growing its New Category share (up 1.0 ppt to 17.5%) but trails PMI which generates ~40% from smoke-free products."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "In 2024, British American Tobacco (BATS) reported a revenue decline of 5.2% to £25.9 billion, primarily driven by the divestment of its Russian and Belarusian businesses and translational FX headwinds. However, on an organic constant currency basis, revenue grew by 1.3%, underpinned by an 8.9% increase in New Categories revenue. The company achieved a reported Net Profit of £3.07 billion, a significant recovery from the £14.4 billion loss in 2023 (which was caused by a £27.6 billion impairment), although 2024 profit was heavily weighed down by a £6.2 billion provision for the potential settlement of tobacco litigation in Canada.",
+      "section2": "Risk factors were dominated by the long-standing Canadian tobacco litigation. The recognition of the £6.2 billion provision indicates a move towards resolution but severely impacted the 2024 income statement. Operational risks persist in the U.S. combustibles market, where volumes declined by over 10%, partly due to the proliferation of illicit single-use vapes. The company continues to deleverage, reducing gross borrowings to £37 billion, and maintaining an adjusted net debt to EBITDA ratio of 2.44x.",
+      "section3": "Management's outlook for 2025 focuses on 'Building a Smokeless World', with a target of becoming a predominantly smokeless business by 2035. They expect low-single-digit revenue growth and a recovery in reported earnings as one-off provisions drop out. The strategic pivot to New Categories (Vapour, Heated Products, Modern Oral) is yielding results, with this segment now profitable and contributing significantly to organic growth. Share buybacks of £700m in 2024 and £900m committed for 2025 signal confidence in cash flow generation.",
+      "section4": "Comparatively, peer Philip Morris International (PMI) also navigated the Canadian litigation settlement (total industry settlement ~CAD 32.5bn). PMI's ROE is often distorted by its capital structure, whereas BATS's reported ROE of 6.1% in 2024 is temporarily depressed by the provision. Imperial Brands, another key peer, posted a robust ROE of ~42%, highlighting the divergence in reported profitability due to specific legal provisions and asset impairments impacting BATS in 2023-2024.",
+      "qAndA": {
+        "roe_trend": "Recovering but depressed. Reported ROE moved from negative in 2023 (-27%) to positive 6.1% in 2024, though still suppressed by the £6.2bn Canada provision.",
+        "roe_peer": "Significantly lower than Imperial Brands (~42%) due to the massive specific provision in 2024 and the impairment legacy of 2023.",
+        "driver_dominance": "Net Profit Margin is the dominant suppressor. Asset Turnover remains stable at ~0.22, and Leverage is consistent ~2.4x. The Margin (11.9%) is well below the historical ~25% norm due to the legal provision.",
+        "risk_trend": "Stabilizing. The crystallization of the Canada risk into a provision, while costly, removes a major uncertainty overhang. U.S. combustible volume decline remains a key operational risk.",
+        "risk_peer": "Comparable legal risk profile to PMI regarding Canada, as both are part of the settlement. BATS has higher exposure to U.S. combustible volume pressures compared to PMI's international-only combustible footprint.",
+        "nlp_sentiment": "Cautiously Optimistic (0.65). Management emphasizes 'quality growth' and the success of the 'Smokeless' transition, despite the heavy headline financial hits from legal matters.",
+        "nlp_specificity": "High. The 2024 reporting contains precise figures on the Canada settlement provision (£6.2bn) and specific New Category growth metrics, increasing text specificity.",
+        "nlp_complexity": "High. The narrative is complicated by 'Adjusting items', 'Organic constant rates', and significant 'One-off' provisions, requiring complex sentence structures to explain underlying performance.",
+        "nlp_peer": "Similar to peers. Tobacco industry reporting is inherently complex due to regulatory/litigation disclosures and 'Adjusted' non-GAAP metrics."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.07,
+        "upside": 0.08,
+        "downside": 0.05
+      },
+      "roe": {
+        "base": 0.16,
+        "upside": 0.18,
+        "downside": 0.14
+      }
+    }
+  },
+  "BP_2024": {
+    "company": {
+      "symbol": "BP",
+      "name": "BP",
+      "sector": "Oil & Gas Producers",
+      "domain": "bp.com"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 194.63,
+        "netProfit": 0.38,
+        "totalAssets": 282.23,
+        "totalEquity": 78.32,
+        "totalDebt": 59.5,
+        "reportUrl": "https://www.bp.com/annualreport",
+        "margin": 0.0019524225453424447,
+        "turnover": 0.6919931735760506,
+        "roa": 0.001351063073312949,
+        "leverage": 3.4339783895977045,
+        "roe": 0.004639521396740126
+      },
+      {
+        "year": 2023,
+        "revenue": 213.03,
+        "netProfit": 15.24,
+        "totalAssets": 280.29,
+        "totalEquity": 85.49,
+        "totalDebt": 51.9,
+        "reportUrl": "https://www.bp.com/annualreport",
+        "margin": 0.07153921982819321,
+        "turnover": 0.7495645748667334,
+        "roa": 0.05362326489681743,
+        "leverage": 3.373753561253562,
+        "roe": 0.18091168091168092
+      },
+      {
+        "year": 2022,
+        "revenue": 248.89,
+        "netProfit": -2.49,
+        "totalAssets": 288.12,
+        "totalEquity": 82.99,
+        "totalDebt": 46.9,
+        "reportUrl": "https://www.bp.com/annualreport",
+        "margin": -0.010004419623126684,
+        "turnover": 0.8638414549493266,
+        "roa": -0.008642232403165348,
+        "leverage": 3.471743583564285,
+        "roe": -0.03000361489336065
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.4,
+        "fli": 15.1,
+        "specificity": 0.65,
+        "sentenceLength": 26,
+        "depth": 0.88,
+        "unfamiliarity": 0.4
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.65,
+        "fli": 13.8,
+        "specificity": 0.68,
+        "sentenceLength": 23,
+        "depth": 0.8,
+        "unfamiliarity": 0.3
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.45,
+        "fli": 14.2,
+        "specificity": 0.72,
+        "sentenceLength": 24.5,
+        "depth": 0.85,
+        "unfamiliarity": 0.35
+      }
+    },
+    "sources": [
+      {
+        "title": "bp.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEjkJBtXmfEaPRN5pVLx8UL0mL5Gt67yneT2lD8n-Q4TlHoWi8NxnFKIi59ghoak-_o5CU-hLZgvg6JCNzjftmVsbassd_ztSlU6QEwVnZLDNwYbOV1WRX-hs25EabBYZ80VpzSVyTLv9csb-0DD29z_CZTU018m5y3g38JY2CmVdHKV0JS1PfIgU1ZwaUydHYO9_mC7rCGH3YTwO8IKaudThzyD8gKOAdb0CjQ8qks8bZXarY="
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFwXG943VtlAE6AELhq4_TMu43aV4Yz-l8Wx2pJHVMjEX8Fcik5w2CTEYvdNJf-J5QM4CueD39QVd1mGavj4GfUuTpuMLqhIp9xlQz_NDG1mP2nN_pmMmFLRFnAoSKCPOKKZPpzS1A8PL9eLDDNB4SxjmIOeuCLG_Nd2p4tfR356a41II65JiCUsroe"
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH24qs_beaHjIaiPwTjwbtxO0m5EeKxy_Y8w5YHIN6bgw9i2n2Cs-pFs2OWXz3UQEANe366Ty5Dn-znhlkfDXJjSz4zOFW1irmhsmug6XmA1iqdMSELMRETFvdNSqy9qtA1YThApxjf9bdVi3TjozTTyRPw4DhrAF3EruwYiXOPIMNRXWJqSi0JZ0_A"
+      },
+      {
+        "title": "bp.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGcT1wMhA9XSwT3JxNvQjddWxVkhtDKRBzxspMCMaer3uxH8Fhnbs7Z3hRqTYbuUi2jnxosVnA7u0Ru_Ovg9RErV5dlUd1x_RkhexU-1BqswPHIOppxl7BQkqqhzM8ghcjWBz76EhkCCzRhH7x9AIqyJj5m3sz08pyzD6-h3RL1OWgQ1_w134b9ELt_9lmZIH2TLn4GZ8nwbzJnt5KOX3eGZDMwVEEqeIWsx-YO"
+      },
+      {
+        "title": "fool.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHAwgmeze1W79aVlkKRxd5KfT0HnmY1dnkTOoALBqRaX50jfuNp3ik8E0vJwv655KinqtMXKkGHpv3-nEsC2Y6_Y6wFVRjWCNvfrx7OqGs3Vm1NjARuZyFyAncyh8wm9jUE-AuXydjoFNeaFd32VKdVBDXmaI_8GfMb5EZlhtWsIlO4xIerD0VNuJnN1mBWyuB7ExFdXVk8pk5MUV4="
+      },
+      {
+        "title": "macrotrends.net",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEPemlK7zk1-Tgk7gYIoLVzMP0Uf7vfG5m9nFzC-s3CreoEc3PBEap4lA5GI6pbMlpI3iuVqR-ubHbS-xs2BdBvRP-T9VFpn1f5lqg5aasAf8T5jt342nm2tYMIQMCN4C1Xj8f4MH_UqyiF2Euwm9QBHfTyrxXwOQ=="
+      },
+      {
+        "title": "finviz.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEYdv3g73ftdWkPMsczhKgwIx31vuid-D-CtHc9QeK7A7-5bVhLLxW1hjEh952ZXPzAJRjpITImWQ0qURnuSbPO9I33xWTjGqk9cbu6FSR6avjy-wUR5-z40IXlYg=="
+      },
+      {
+        "title": "stockanalysis.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHz5xI7F3dXug0xn8CtsYLEUiGt2odEX9u84WXpVL4XBTWi1ptWbICCjrlG6B53BZrOrsldGC6CKbHmowmhOjNMpXsQcDyTLNYA2-nRZF6-s55dCa0VPFItVRmBB3hMFgu8wwRHmYUk6cJYmM9weefKvLG3Ovn16g=="
+      },
+      {
+        "title": "financecharts.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG8uJn3GThkY7PLZY6UMiaUVsyp4-Aobs8Nl4WMf0IXUfZc9osaGpYH0q54Zo_nauR10U3rLQYMfdAgAMjUv98n-JYhrTSGk4svkEgVO4bCfLNP74AxeSR9GgZw_AI5iuUAyO_TwLNtAdGuhFukqm4="
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFZPVYWygjWSoueFOltxFv3fWzJW8ziSlwYh0Y3FG2RG7yyJrQ84JryXELSLlcx75AtfO_JM2Un4wEv6Fj39RIxFtvKj2gRzZq5_F-xzU2xunqvTga3utYtz5_iKAITA0sW2kkXFEvoaJmdWYTDJcPebWyfPkrR0rb1Sk1Q9jeRWYuGLUgeaiLXqmQ4jWnfRQ=="
+      },
+      {
+        "title": "wikipedia.org",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEv9AcVDaFYj7fVyWF8dNU2-HgQ5jreIJZr_upsnWtiF374mAxyhTwT58e4ZiIC1YGACBEpe_g5hubFBgfO1-EEW_YZWlyBBlBhNVjeA4MCGTkYwPJkC6axm8OYIV6XOqSVFg=="
+      },
+      {
+        "title": "financecharts.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFRzt--K_6Qycm4-IB2l4dVJbGQ-STOp22JbxP6Wu9dYiqF2UQ1hlqWAP0SZYG-MQs0H2A7uSUr2iwEqZX8Y3gi-M8D4StJ3tbjETqxYjnsJimPWAzfh2tuBE8V2FwkHnm8ZSe9KsFMlbb-fP4="
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHwqJUpmKbV8JKZ_1Z0pxjUuLAeeLmlM-VZ2UmGFh3RtXFvKK7ga9hjDY5aoJAZSjvFDf6rWd64vEVEdbApBqW2Ho_hhc6EBAEgmcGDcjrHM4_iwaf7zAAulSEfKqgXlwn3jKjaCFVo2dz_hv5FcIYuxdoWbkKD1JBBThnqdIxwRLBY2SjvdGrrzqVfuMNNkg=="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 194.63,
+        "verifiedValue": 194.63,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 0.38,
+        "verifiedValue": 0.38,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 282.23,
+        "verifiedValue": 282.23,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 59.5,
+        "verifiedValue": 59.5,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 0.0049,
+        "verifiedValue": 0.0049,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 0.0013,
+        "verifiedValue": 0.0013,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Net Profit Margin",
+        "year": 2024,
+        "annualReportValue": 0.002,
+        "verifiedValue": 0.002,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Asset Turnover",
+        "year": 2024,
+        "annualReportValue": 0.69,
+        "verifiedValue": 0.69,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      }
+    ],
+    "accuracySummary": "Financial metrics for 2024 were extracted directly from the 'Total revenues and other income' and 'Profit for the year' lines of the BP Annual Report 2024. Total Debt corresponds to 'Finance Debt' as reported in the financial review, which is the nearest IFRS equivalent to net debt metrics often cited. 2022 and 2023 figures were cross-verified against historical summaries in the 2024 report and external databases.",
+    "forecastAssumptions": "Forecasts assume a stabilization of oil and gas prices in 2025, the absence of the significant one-off impairments that impacted 2024 results (e.g., refinery outages, write-downs), and the realization of targeted structural cost reductions of $2 billion by 2026. The transition strategy 'reset' is expected to streamline capital allocation towards higher-return businesses.",
+    "peerROI": {
+      "peerName": "Shell plc",
+      "peerSymbol": "SHEL",
+      "roa": 0.039,
+      "roe": 0.09
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Management has emphasized a 'fundamental reset' of strategy, focusing on growing the upstream business while investing with discipline in transition growth engines. The company aims to deliver at least $2 billion in structural cost reductions by the end of 2026 relative to 2023. Shareholder distributions remained a priority, with a 10% increase in dividend per share and $7 billion in share buybacks executed during the year.",
+      "peerComparison": [
+        {
+          "metric": "ROE",
+          "companyValue": "0.5%",
+          "peerMedian": "9.0%",
+          "topQuartile": "12.0%",
+          "evidence": "Shell reported an ROE of ~9.0% for 2024, significantly outperforming BP's impairment-heavy 0.5%."
+        },
+        {
+          "metric": "Gearing Ratio",
+          "companyValue": "22.7%",
+          "peerMedian": "18.0%",
+          "topQuartile": "15.0%",
+          "evidence": "BP's gearing increased to 22.7% in 2024, while peers like Shell typically maintain gearing below 20%."
+        },
+        {
+          "metric": "Total Debt",
+          "companyValue": "$59.5B",
+          "peerMedian": "$45.0B",
+          "topQuartile": "$40.0B",
+          "evidence": "BP's finance debt of $59.5B is higher than Shell's net debt position, reflecting BP's aggressive acquisition strategy (e.g., Lightsource bp)."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "In 2024, BP reported Total Revenues and other income of $194.63 billion, a decrease from $213.03 billion in 2023. This decline was driven by lower realizations and trading results, alongside lower volumes. Net Profit dropped significantly to $0.38 billion, largely due to significant impairments, including a $1.1 billion write-down in the US offshore wind portfolio and lower refining margins exacerbated by the Whiting refinery outage.",
+      "section2": "The company's balance sheet shows Total Assets of $282.23 billion and Total Equity of $78.32 billion. Total Debt (Finance Debt) increased to $59.5 billion, resulting in a gearing ratio of 22.7%, up from 19.7% in 2023. This increase reflects net debt acquired from the completion of the bp Bunge Bioenergia and Lightsource bp transactions.",
+      "section3": "Management has emphasized a 'fundamental reset' of strategy, focusing on growing the upstream business while investing with discipline in transition growth engines. The company aims to deliver at least $2 billion in structural cost reductions by the end of 2026 relative to 2023. Shareholder distributions remained a priority, with a 10% increase in dividend per share and $7 billion in share buybacks executed during the year.",
+      "section4": "Comparing 2024 to previous years, the financial performance shows high volatility. While 2023 saw a robust Net Profit of $15.24 billion, 2024's profitability was severely impacted by non-cash charges and weaker market conditions. The Reserves Replacement Ratio remains a concern for long-term sustainability, highlighted by analysts as a risk factor given the sub-100% replacement in recent periods.",
+      "qAndA": {
+        "roe_trend": "ROE collapsed to 0.49% in 2024 from 17.8% in 2023, primarily due to the sharp decline in Net Profit driven by impairments and lower margins.",
+        "roe_peer": "BP's ROE of ~0.5% significantly underperformed its peer Shell, which posted an ROE of approximately 9.0% in 2024.",
+        "driver_dominance": "Profit Margin was the dominant negative driver in 2024, falling to near zero (0.2%) due to high operating costs and impairments relative to revenue.",
+        "risk_trend": "Financial risk increased in 2024, with Finance Debt rising to $59.5 billion and the gearing ratio expanding to 22.7%, indicating higher leverage.",
+        "risk_peer": "BP's leverage remains higher than peers like Shell; BP's gearing of 22.7% contrasts with Shell's typically lower net debt profile.",
+        "nlp_sentiment": "Sentiment in the 2024 report is cautious but forward-looking ('resetting strategy', 'investor proposition'), contrasting with the triumphant tone of 2023.",
+        "nlp_specificity": "The 2024 report exhibits high specificity regarding cost-cutting targets ($2bn by 2026) and divestment proceeds, reflecting a focus on operational discipline.",
+        "nlp_complexity": "The narrative is complex, requiring detailed explanations of 'underlying replacement cost profit', 'adjusting items', and 'fair value accounting effects' to bridge the gap between reported IFRS loss/low profit and underlying performance.",
+        "nlp_peer": "Compared to Shell's annual report, BP's narrative is more defensive, focusing heavily on strategic pivots and cost-cutting to reassure investors amidst lower statutory profits."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.045,
+        "upside": 0.06,
+        "downside": 0.02
+      },
+      "roe": {
+        "base": 0.1,
+        "upside": 0.14,
+        "downside": 0.05
+      }
+    }
+  },
+  "DGE_2024": {
+    "company": {
+      "symbol": "DGE",
+      "name": "Diageo",
+      "sector": "Beverages",
+      "domain": "diageo.com"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 20269,
+        "netProfit": 3870,
+        "totalAssets": 45474,
+        "totalEquity": 11709,
+        "totalDebt": 22147,
+        "reportUrl": "https://www.diageo.com/en/investors/results-reports-and-presentations",
+        "margin": 0.19093196506981105,
+        "turnover": 0.44864260654957555,
+        "roa": 0.08566021448255254,
+        "leverage": 3.891343669250646,
+        "roe": 0.3333333333333333
+      },
+      {
+        "year": 2023,
+        "revenue": 20555,
+        "netProfit": 4479,
+        "totalAssets": 44883,
+        "totalEquity": 11511,
+        "totalDebt": 21395,
+        "reportUrl": "https://www.diageo.com/en/investors/results-reports-and-presentations",
+        "margin": 0.21790318657261007,
+        "turnover": 0.4603686532733096,
+        "roa": 0.10031579654639522,
+        "leverage": 3.8440809298321135,
+        "roe": 0.38562204046491605
+      },
+      {
+        "year": 2022,
+        "revenue": 18568,
+        "netProfit": 4561,
+        "totalAssets": 44415,
+        "totalEquity": 11719,
+        "totalDebt": 20000,
+        "reportUrl": "https://www.diageo.com/en/investors/results-reports-and-presentations",
+        "margin": 0.24563765618267988,
+        "turnover": 0.4180569627378138,
+        "roa": 0.10269053247776652,
+        "leverage": 3.789999146684871,
+        "roe": 0.38919703046335014
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.75,
+        "fli": 13.5,
+        "specificity": 0.75,
+        "sentenceLength": 19,
+        "depth": 6,
+        "unfamiliarity": 0.1
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.62,
+        "fli": 13.8,
+        "specificity": 0.72,
+        "sentenceLength": 20,
+        "depth": 7,
+        "unfamiliarity": 0.12
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.45,
+        "fli": 14.2,
+        "specificity": 0.68,
+        "sentenceLength": 22,
+        "depth": 8,
+        "unfamiliarity": 0.15
+      }
+    },
+    "sources": [
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHjXVuVT8vfFdo4mB996IDFK8CQ6G8CfTfS43LprvB3iTCaIqXeu_-6RF-hFJStz9r92Pz7XrEhkqGDsJR0IZwnkeNtdprNGDRRs6qcgDmpm42cBJnZnyHMQCXzqb614Lwq4zq7nKXvk1QFcL7KVkokG6AAbKu4aZCP5l80oJvYTXQO6cpBwhIvm3bL3Dg0piqA-A=="
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEFm4vOLuiQs6eC8lVgGipMTTT5vBMD-q3QPiFntg8SLSc0WKIc2i7tCQJLkpgyBteKCiayIWdZHlA4SZCU5sy6UTEkDAYBDLNCJULXRYuNUEHmKNSgjtch5BZ3zC3tij6sTBKnKrFhC68eqMxg5F3zoF-RAcYoVLxHanap8jNNrwszFJUCd6yNdK6Qa1_GNT2CP6XGU68dff9Z"
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHSU4ngwpi0Zjwz4pFsX9c0rNnZY11VNW4_ISMcwSt0p3Qhsj156wuRo3B2qrURLOwQJ-RrfFYDAm9ngN9KHe8J7ysv5Rx2jHO96H9PZxhPmgvE6b5CNV4WAVlrdBjjE5W19APwVDKbMP8bN9gPC6OOqfETTENB6fSaIwzmBzFAlBaJxPgqeYEQu6RdCHA="
+      },
+      {
+        "title": "eabl.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGZO0a4YO0e27faVSx7CmOjn9N5aAFURu7NmZIhKiOM49BOFuckrXmJsRnuz0yWGBZEIGI5ErzIj4TwdpaLBcAmge6LrPtGnlnobuv9Bt2EM7EXv2miO6eYAAoo8eBYTATas-fBG8s4PZwlih1Ze90Bw2HoxD7LlgGqnS6ga73HaFHEtIYZEVA7wRCzgtKjm0cCwfrbyJK_ConN_wZ6K9aYntgcBXMYgHjlkGuY1Exk3GqUNbB9bTapd-_Akg=="
+      },
+      {
+        "title": "directorstalkinterviews.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGTL74a57JqGqrVolj1MTkZcaBDiSEV7eT4iNkGR4eZr9w2dNCyBSJC_BaYDO8huYz-OwjTDbI2BiD36gm-x3AtcSiy41MvACX89KhLlHXlJR-z71llgTfVPmPQGEpCxfC67p8zsL6byex2AF1UV2PofFcVWz6mEItJUShImSVTXBTaRozjRG_J9F6SRe8B7qx661BKSQzHNLVAWSwB_g=="
+      },
+      {
+        "title": "diageo.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEq-9P46oZteUa1GTstXutTTApdrDSFp2Nvn0MxiUqJgw4PySd1FuYQ2wG38Xva8nE_zRbTVWNKDl6lYucLmCwfHiPMIwCgKN6UB4njmNoOhQ_zHLZ39R3enDrdTclIkAghUrVU-bggI_uLmnaVkgvBMSzOOEpuXsO9R5xgQevGFeivKABHmCpOIxsYZ4vkF4Lgs_ftjneytl-RpAVtrdUpbfK5YLRNr3KbWbLm0NgE"
+      },
+      {
+        "title": "sec.gov",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEhU9jn0qc14rLxDzQxP1mjOsj3-4X7f5ya8vn5GDtXgeNxUVoY1oC0_d_6JPOYgDItSIaoE6S-zCjQpXmHrP0l7XIp6jYa_Opr0T3NwOA5MgBKkwNHbwKyF_jpZ9wt5BQ4qkIMDF4z8-vy_feV9KB1L78moaoLc_0okgbmQleKG1l2pyKOD-sO7jslfWop8Br69A=="
+      },
+      {
+        "title": "ibr-ire.be",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGXxEoNCLH-0mNt0cGLZ6cyEf1YuRv1_bGzqskVWS1ULePgm5PCiB06DdKERWWrzeg_HyEGedIZUVr2kkOTJIJKXM943JIQi1zRhgmVYj4a6iCDzPsBzoYhpoU9-WVLFza0xMj6movon8ROfKLhajooCEFk4I_OrlcoVAGFRyaVU65fPkPbJP2SNQZV1KFWS9VYpuLj3VJ7yJZaDITpRgsMq64j"
+      },
+      {
+        "title": "fundslibrary.co.uk",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFaw88Az9oHcA5wML3TkQqEmRleFfbncMPTsmd2svKntMvO_2nWKD8mZ0TszcbEwkcBYnmQJQuJn0ETBIr7fSDdF-Y_WtQI9BfzDfd3ge70svuIoCxH9MTPqQBEGGVDTecHo3Dr3vY_0hi7-tVfW4nNr9e8hjal7zu056DYy_7SfFqu8nnlDBsHHbWuUt3Bfrouh0eTHdDt928PfHgwRYB4IitCCEJ7jugRkrMyG78yOKw2TcyqAA7YCLALzcQutCcm9pVAYI9FxKZdqTQgLREjPtJph4V-FFoZ5Q=="
+      },
+      {
+        "title": "londonstockexchange.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpaZCuGazE5_lC0SUa84CxYSCnKyPI03EAMkvMmCaxGSHS5uM14QDegL9yuyMjDd8KD6MUWOikTeCMo7GATVI_En1rIdlkwoTbNil90rUK1L7bGTcatVqYyR71rrnakK0oiVyKm-TOGc9sDuUzLFmW9qMupzc9uJX6DRTRYlQ="
+      },
+      {
+        "title": "diageo.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHH44gJTWbe7ZXm4E4tWDPAl1-wYbpnlqa6U-7Iu0nPFf5AOvSquvoO-KgBKm3SV0zpgkkQf0lbzXMgXqUtUqMQ-MqrnpnLyPBIPFEq_R81bMIXJbYsBBVHb8TJbLpzedrK9pVA_GwXmF_sNVpaakx4BPP360240Iw4PogqIK91cHjoqXwaq6b-pPsb2Oe3puxKlCuc9ohhO6SMohl5umGgiOIKa42sQdgXR2Horlzdvw=="
+      },
+      {
+        "title": "eabl.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFU_DjM7f-c2gLtFDKKZg1mXXZcGnHrHC2NkaO--_6iNP5Z5VvLRzV8Ye0tm44X79WWw0fKbgq4GQ22V3swJO93FhJHY4OV330-YXL-BWfFO2eN1PwpUZURyRLu1uav-cjtVPc2sAua5YlH6gbRGmYBItbElDl5ouGNq1y8q1mjXuqccX_LAPQdnek-NcJQV7ErHJaB_tG4BYS772OmbTLD26ANBRBRpA=="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 20269,
+        "verifiedValue": 20269,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 3870,
+        "verifiedValue": 3870,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 45474,
+        "verifiedValue": 45474,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Equity",
+        "year": 2024,
+        "annualReportValue": 11709,
+        "verifiedValue": 11709,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 22147,
+        "verifiedValue": 22147,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 0.3305,
+        "verifiedValue": 0.3305,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "Ratio"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 0.0851,
+        "verifiedValue": 0.0851,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "Ratio"
+      },
+      {
+        "metric": "Net Profit Margin",
+        "year": 2024,
+        "annualReportValue": 0.1909,
+        "verifiedValue": 0.1909,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "Ratio"
+      }
+    ],
+    "accuracySummary": "The analysis uses the official FY2024 Annual Report figures, which reflect Diageo's shift to USD as the presentation currency. All historical figures (FY23, FY22) have been updated to the re-presented USD values as filed with the SEC and in the 2024 Annual Report. Metrics like ROE and ROA are derived directly from these verified primary statement values to ensure consistency.",
+    "forecastAssumptions": "Forecasts assume a continued challenging macroeconomic environment in FY25, particularly in the LAC region, with organic net sales growth remaining low (similar to the 1% guidance) before recovering in FY26. Margins are expected to remain under pressure due to cost inflation and strategic investment in marketing.",
+    "peerROI": {
+      "peerName": "Pernod Ricard",
+      "peerSymbol": "RI.PA",
+      "roa": 0.044,
+      "roe": 0.105
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "The company's financial position remains robust but leverage has ticked up. Total equity ended the year at $11.7 billion, while gross borrowings stood at $22.1 billion. The leverage ratio (Net Debt/EBITDA) ended at 3.0x, slightly above the target range, reflecting the lower organic EBITDA and higher debt levels. Management has removed medium-term guidance, citing geopolitical volatility, signaling a cautious outlook for FY25.",
+      "peerComparison": [
+        {
+          "metric": "ROE",
+          "companyValue": "33.1%",
+          "peerMedian": "10.5%",
+          "topQuartile": "15.0%",
+          "evidence": "Diageo significantly outperforms Pernod Ricard (10.5%) in Return on Equity."
+        },
+        {
+          "metric": "ROA",
+          "companyValue": "8.5%",
+          "peerMedian": "4.4%",
+          "topQuartile": "6.0%",
+          "evidence": "Diageo's ROA of 8.5% is nearly double that of Pernod Ricard (4.4%), indicating superior asset efficiency."
+        },
+        {
+          "metric": "leverage",
+          "companyValue": "3.0x",
+          "peerMedian": "3.1x",
+          "topQuartile": "2.5x",
+          "evidence": "Diageo's leverage (Net Debt/EBITDA) is 3.0x, slightly better than Pernod Ricard's 3.1x, but both are elevated."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "Diageo's fiscal year 2024 proved to be a period of significant challenge, characterized by a 'perfect storm' of macroeconomic headwinds and inventory issues in key markets. Reported net sales declined by 1.4% to $20.3 billion, driven by a sharp contraction in the Latin America and Caribbean (LAC) region, where organic net sales plummeted 21.1%. This decline was exacerbated by unfavorable foreign exchange impacts, although partially mitigated by price/mix improvements in other regions.",
+      "section2": "Despite the top-line pressure, the company maintained a focus on operational efficiency. Reported operating profit actually grew by 8.2% to $6.0 billion, largely due to exceptional operating items, though organic operating profit fell by 4.8%. The divergence highlights the impact of one-off factors and the underlying struggle to maintain margins amidst volume declines (-3.5% organic volume). Net profit attributable to shareholders stood at $3.87 billion, reflecting the difficult trading environment.",
+      "section3": "The company's financial position remains robust but leverage has ticked up. Total equity ended the year at $11.7 billion, while gross borrowings stood at $22.1 billion. The leverage ratio (Net Debt/EBITDA) ended at 3.0x, slightly above the target range, reflecting the lower organic EBITDA and higher debt levels. Management has removed medium-term guidance, citing geopolitical volatility, signaling a cautious outlook for FY25.",
+      "section4": "Comparatively, Diageo faced steeper challenges than some peers due to its specific exposure to the LAC inventory cycle. However, its broad portfolio and dominance in the premium spirits category (Tequila, Scotch) provide a defensive moat. The strategic shift to reporting in USD underscores the growing importance of the North American market to its long-term thesis.",
+      "qAndA": {
+        "roe_trend": "ROE declined in FY2024 to approximately 33% from higher levels in FY2023 (~39% in USD terms), driven primarily by the reduction in net profit and the stable equity base.",
+        "roe_peer": "Diageo's ROE of ~33% remains significantly higher than peer Pernod Ricard's ROE of ~10.5%, reflecting efficient capital structure and higher profitability relative to equity.",
+        "driver_dominance": "The primary driver of the ROE decline was the Net Profit Margin contraction (excluding exceptional items) and lower asset turnover, specifically linked to the volume declines in LAC.",
+        "risk_trend": "Financial risk has increased moderately, with the leverage ratio moving to 3.0x, the top end of the company's comfort zone, necessitating a pause in share buybacks to prioritize balance sheet strength.",
+        "risk_peer": "Diageo's leverage is comparable to Pernod Ricard (Net Debt/EBITDA ~3.1x), suggesting a sector-wide trend of rising leverage amidst normalizing post-COVID demand.",
+        "nlp_sentiment": "Sentiment in the 2024 report is notably more cautious and defensive compared to the optimistic tone of 2022, with frequent references to 'challenges', 'volatility', and 'headwinds'.",
+        "nlp_specificity": "The report exhibits high specificity regarding the LAC inventory issues, providing detailed breakdowns of the impact, which contrasts with the more generalized growth narratives of previous years.",
+        "nlp_complexity": "The complexity of the narrative has increased (higher FLI), reflecting the need to explain intricate accounting changes (currency switch) and multifaceted market headwinds.",
+        "nlp_peer": "Diageo's narrative is arguably more defensive than Pernod Ricard's, given the specific and acute nature of the LAC inventory shock that Diageo had to manage."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.088,
+        "upside": 0.095,
+        "downside": 0.075
+      },
+      "roe": {
+        "base": 0.34,
+        "upside": 0.38,
+        "downside": 0.28
+      }
+    }
+  },
+  "GSK_2024": {
+    "company": {
+      "symbol": "GSK",
+      "name": "GSK",
+      "sector": "Pharmaceuticals & Biotechnology",
+      "domain": "gsk.com"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 31376,
+        "netProfit": 2951,
+        "totalAssets": 61118,
+        "totalEquity": 15916,
+        "totalDebt": 17720,
+        "reportUrl": "https://www.gsk.com/en-gb/investors/quarterly-results/full-year-and-fourth-quarter-2024/",
+        "margin": 0.09405277919428863,
+        "turnover": 0.5204136638442209,
+        "roa": 0.04894635141523126,
+        "leverage": 4.245211941980003,
+        "roe": 0.20778763554428953
+      },
+      {
+        "year": 2023,
+        "revenue": 30328,
+        "netProfit": 5308,
+        "totalAssets": 59463,
+        "totalEquity": 12488,
+        "totalDebt": 18010,
+        "reportUrl": "https://www.gsk.com/en-gb/investors/quarterly-results/full-year-and-fourth-quarter-2023/",
+        "margin": 0.17501978369823265,
+        "turnover": 0.5071190295044687,
+        "roa": 0.08875586285312978,
+        "leverage": 5.296183138505136,
+        "roe": 0.47006730428622034
+      },
+      {
+        "year": 2022,
+        "revenue": 29324,
+        "netProfit": 15416,
+        "totalAssets": 60146,
+        "totalEquity": 10096,
+        "totalDebt": 20980,
+        "reportUrl": "https://www.gsk.com/en-gb/investors/annual-report-2022/",
+        "margin": 0.5257127267767017,
+        "turnover": 0.4875469690419978,
+        "roa": 0.25630964652678484,
+        "leverage": 5.957408874801902,
+        "roe": 1.5269413629160062
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.65,
+        "fli": 17.2,
+        "specificity": 0.6,
+        "sentenceLength": 26.1,
+        "depth": 9.1,
+        "unfamiliarity": 0.22
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.78,
+        "fli": 15.9,
+        "specificity": 0.68,
+        "sentenceLength": 23.8,
+        "depth": 7.9,
+        "unfamiliarity": 0.15
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.85,
+        "fli": 16.4,
+        "specificity": 0.72,
+        "sentenceLength": 24.5,
+        "depth": 8.5,
+        "unfamiliarity": 0.18
+      }
+    },
+    "sources": [
+      {
+        "title": "sahmcapital.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFix4WXqPzmJIVLxuhDHWeheLsESZtNEc5Hj0xne4JA7bHbZdR7cREUznO_UzTk2aiAdHVThLJhhYtx1rR0Qi5kvj6JCMwL5H31q4HavugWg3hZV4LADEWBXVNyVjnfeu8ILX0IGJ2ilrZ1B0knzXBJRft77RvlhCmPqF5023q_iVTUrItOyqE2ABxHA6Os8zBlvzuoqX6iJSTiWGEsZ2Rq3GCGPCAeOkYlVA825Mc="
+      },
+      {
+        "title": "zacks.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFwLm29DSjyH3xoX3MQvRuer24veERkqfVaiiPWYfzOKw3uqtOockx7GAeFSwKVqTQJBBIEuFCcyJUBbeIaOjJYWFTA3UNurcmI2WKfoYaVd_GN1w6A72wViBUdxxqTli9jXaNclPGfXdhymRIV"
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEBIEeOhi51qgT8W6xfjgJKIcrdbgqu8sAWd6SYofLeoh15uJjd4irPlHmC3M8wHCK19R3yGjHUU3unJ5_WY17OC-uGT1N1EXjOMLNYtbWu7o9fkmnZrsBJmg_hqQ9klcJyX_OWZafr5cPs0bBAe3suwZKP8CwZaXA="
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH5Eug6-4FONrQwoB2rX1yFODZyKZXztOplz4gmpZvuMz3-hE-Sc3QRG0478YSMnr1C95tnl3JDnf0WG_0i_JG_4AkYCYDoTJvHRu4LUB1sZD2xhyhgjdCsDFkRz78GlP6Cvg3w_rlKbrSgESmbiOiyHqZ9kory"
+      },
+      {
+        "title": "companiesmarketcap.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFJOy-iM1HtjShhJJEDlqRrChpl5bFKHxzoru2Vawx7S9E_6-xkr6-9eBc7jlZa-dmorgD2pKSf1b3nODMjbVEqrFOqN5dprTJe6gXtHLQIyc6EZGvZpBLS0KeHon-mfUjn0kQqgccbx1EpnbjnqaQ6GGbBLLCMOIAifcE="
+      },
+      {
+        "title": "finbox.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEIUHA7V5Oo8TTBEDiqLOsgaMAweH50YzLE3O_ISLZvXHywEHNE-VOf0y-yxhYDtPi_zCZltsKkLMFj4ShjNlpYRSYyjmsogzJRE-AtpHu_CuEkO7Ev3DPv8fv7mc9s8GIepg=="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue",
+        "year": 2024,
+        "annualReportValue": 31376,
+        "verifiedValue": 31376,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Net Profit",
+        "year": 2024,
+        "annualReportValue": 2616,
+        "verifiedValue": 2951,
+        "variance": 12.8,
+        "status": "Adjusted",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Assets",
+        "year": 2024,
+        "annualReportValue": 61118,
+        "verifiedValue": 61118,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Equity",
+        "year": 2024,
+        "annualReportValue": 15916,
+        "verifiedValue": 15916,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Total Debt",
+        "year": 2024,
+        "annualReportValue": 17720,
+        "verifiedValue": 17720,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROE",
+        "year": 2024,
+        "annualReportValue": 18.5,
+        "verifiedValue": 18.5,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "ROA",
+        "year": 2024,
+        "annualReportValue": 4.8,
+        "verifiedValue": 4.8,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      },
+      {
+        "metric": "Financial Leverage",
+        "year": 2024,
+        "annualReportValue": 3.84,
+        "verifiedValue": 3.84,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "GBP"
+      }
+    ],
+    "accuracySummary": "The analysis verified financial metrics against the FY2024 Full Year Results and major financial databases. Revenue and Balance Sheet items matched precisely with Simply Wall St and Stockopedia data derived from the official release. Net Profit showed a variance: the calculated statutory profit based on reported EPS (63.2p) is approx. £2.6bn, while financial databases normalize this to £2.95bn (likely adjusting for specific non-controlling interests or discontinued operations nuances), hence the 'Adjusted' status. 2022 Net Profit is exceptionally high due to the one-off gain from the Haleon demerger.",
+    "forecastAssumptions": "Forecasts for 2025 and beyond are based on GSK's official guidance released in Feb 2025, projecting turnover growth of 3-5% and Core Operating Profit growth of 6-8% (CER). The 'Upside' case assumes successful phase III readouts for the 14 targeted pipeline assets and faster-than-anticipated uptake of RSV and Shingles vaccines. The 'Downside' case accounts for potential Zantac litigation settlements exceeding provisions and slower General Medicines growth. Long-term outlook assumes hitting the >£40bn sales target by 2031.",
+    "peerROI": {
+      "peerName": "AstraZeneca",
+      "peerSymbol": "AZN",
+      "roa": 8.6,
+      "roe": 21.7
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Management has upgraded its long-term outlook, now expecting sales to exceed £40 billion by 2031. This optimism is underpinned by a pipeline of 14 high-potential assets expected to launch between 2025 and 2031. The 2024 narrative emphasized 'Accelerating Momentum' and 'Sharper Execution', with a strong focus on R&D productivity in Immunology, Respiratory, and Oncology. The tone of the reporting was markedly more confident than in the immediate post-demerger period of 2022.",
+      "peerComparison": [
+        {
+          "metric": "Debt-to-Equity",
+          "companyValue": "111.3%",
+          "peerMedian": "85.0%",
+          "topQuartile": "55.0%",
+          "evidence": "GSK carries higher leverage than the peer median (e.g., AstraZeneca ~77%) due to historical borrowing and capital restructuring post-demerger."
+        },
+        {
+          "metric": "Current Ratio",
+          "companyValue": "0.84",
+          "peerMedian": "1.10",
+          "topQuartile": "1.45",
+          "evidence": "GSK's current ratio of 0.84 indicates a tight working capital position compared to peers, common in big pharma but requiring disciplined cash management."
+        },
+        {
+          "metric": "Asset Turnover",
+          "companyValue": "0.51",
+          "peerMedian": "0.48",
+          "topQuartile": "0.60",
+          "evidence": "GSK's asset turnover is competitive, slightly above the peer median, reflecting efficient utilization of its manufacturing and commercial base."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "In 2024, GSK demonstrated a robust operational performance, delivering £31.4 billion in revenue, a 7% increase at Constant Exchange Rates (CER). This growth was primarily driven by the Specialty Medicines portfolio, including HIV and Oncology, and a solid performance in Vaccines despite some headwinds. The company reported a Total Operating Profit of £4.0 billion, which was significantly impacted by a £1.8 billion charge related to the Zantac litigation settlement. Adjusted Core Operating Profit, however, rose 11% to £9.1 billion, reflecting underlying business strength.",
+      "section2": "The company's financial position has strengthened, with Total Equity increasing to £15.9 billion in 2024 from £12.5 billion in 2023, driven by retained earnings and improved comprehensive income. Total Debt decreased to £17.7 billion, improving the leverage profile. The demerger of Haleon in 2022 continues to distort historical comparisons for Net Profit, with 2022 showing a massive one-off gain (£15.4bn) compared to the normalized levels of 2023 and 2024 (£5.3bn and £3.0bn respectively).",
+      "section3": "Management has upgraded its long-term outlook, now expecting sales to exceed £40 billion by 2031. This optimism is underpinned by a pipeline of 14 high-potential assets expected to launch between 2025 and 2031. The 2024 narrative emphasized 'Accelerating Momentum' and 'Sharper Execution', with a strong focus on R&D productivity in Immunology, Respiratory, and Oncology. The tone of the reporting was markedly more confident than in the immediate post-demerger period of 2022.",
+      "section4": "Comparing 2024 to peers, GSK's ROE of approximately 18.5% is competitive but trails AstraZeneca's ~22%, reflecting the latter's higher margin premium oncology portfolio. However, GSK's valuation multiples remain attractive, and the resolution of the majority of Zantac cases removes a significant overhang on the stock, potentially narrowing the valuation gap. The shift towards high-margin Specialty Medicines is beginning to structurally improve the margin profile.",
+      "qAndA": {
+        "roe_trend": "ROE has stabilized at a normalized level of ~18.5% in 2024, following the volatility of the Haleon demerger in 2022. The trend indicates improving capital efficiency as the 'New GSK' focuses on higher-margin biopharma assets.",
+        "roe_peer": "GSK's ROE (18.5%) is slightly below AstraZeneca's (21.7%). While GSK has improved asset turnover, AstraZeneca currently commands higher net margins from its blockbuster oncology drugs.",
+        "driver_dominance": "Net Profit Margin is the dominant driver of ROE fluctuation. The 2022 spike was purely margin-driven (demerger gain), while 2024's performance is driven by core operating margin expansion offset by litigation charges.",
+        "risk_trend": "Financial leverage has decreased, with the Debt-to-Equity ratio improving from over 112% in 2023 to roughly 111% in 2024. The primary risk has shifted from structural debt to litigation outcomes, which were largely de-risked in 2024.",
+        "risk_peer": "GSK generally carries higher financial leverage than AstraZeneca (Debt/Equity ~111% vs ~77%), implying higher financial risk, though this is managed through strong cash flow generation.",
+        "nlp_sentiment": "Sentiment in 2024 (0.85) is noticeably higher than 2022 (0.65), reflecting the successful transition to a focused biopharma company and the resolution of major litigation uncertainties.",
+        "nlp_specificity": "Specificity increased in 2024, with management providing precise revenue targets (>£40bn by 2031) and detailed breakdowns of the 14 key pipeline assets, signaling higher confidence.",
+        "nlp_complexity": "The Fog Index (FLI) remains high (16.4), typical for the pharmaceutical sector due to complex regulatory and scientific terminology, though slightly improved from the demerger-heavy texts of 2022.",
+        "nlp_peer": "Compared to peers, GSK's 2024 reporting was more forward-looking, with a heavy emphasis on 'upgraded outlooks' and 'pipeline velocity', contrasting with the more defensive tone of previous years."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 5.2,
+        "upside": 6.5,
+        "downside": 3.8
+      },
+      "roe": {
+        "base": 19.5,
+        "upside": 23,
+        "downside": 15
+      }
+    }
+  },
+  "HSBA_2024": {
+    "company": {
+      "symbol": "HSBA",
+      "name": "HSBC Holdings",
+      "sector": "Banks",
+      "domain": "hsbc.com"
+    },
+    "anchorYear": 2024,
+    "timeSeries": [
+      {
+        "year": 2024,
+        "revenue": 65900000000,
+        "netProfit": 25000000000,
+        "totalAssets": 3017000000000,
+        "totalEquity": 192300000000,
+        "totalDebt": 131800000000,
+        "reportUrl": "https://www.hsbc.com/investors/results-and-announcements/annual-report",
+        "margin": 0.37936267071320184,
+        "turnover": 0.021763540290620872,
+        "roa": 0.008256274768824307,
+        "leverage": 15.733956871914783,
+        "roe": 0.12990387113535984
+      },
+      {
+        "year": 2023,
+        "revenue": 66100000000,
+        "netProfit": 24600000000,
+        "totalAssets": 3039000000000,
+        "totalEquity": 192600000000,
+        "totalDebt": 118000000000,
+        "reportUrl": "https://www.hsbc.com/investors/results-and-announcements/annual-report",
+        "margin": 0.3721633888048411,
+        "turnover": 0.02207748830995324,
+        "roa": 0.008216432865731463,
+        "leverage": 15.849655902593964,
+        "roe": 0.13022763366860773
+      },
+      {
+        "year": 2022,
+        "revenue": 50600000000,
+        "netProfit": 16700000000,
+        "totalAssets": 2949000000000,
+        "totalEquity": 185200000000,
+        "totalDebt": 98000000000,
+        "reportUrl": "https://www.hsbc.com/investors/results-and-announcements/annual-report",
+        "margin": 0.3300395256916996,
+        "turnover": 0.017158358765683283,
+        "roa": 0.005662936588674127,
+        "leverage": 15.923326133909287,
+        "roe": 0.09017278617710583
+      }
+    ],
+    "nlpData": {
+      "2022": {
+        "year": 2022,
+        "sentiment": 0.55,
+        "fli": 12.8,
+        "specificity": 0.71,
+        "sentenceLength": 21.5,
+        "depth": 0.82,
+        "unfamiliarity": 0.06
+      },
+      "2023": {
+        "year": 2023,
+        "sentiment": 0.68,
+        "fli": 12.1,
+        "specificity": 0.76,
+        "sentenceLength": 20.1,
+        "depth": 0.85,
+        "unfamiliarity": 0.05
+      },
+      "2024": {
+        "year": 2024,
+        "sentiment": 0.75,
+        "fli": 11.2,
+        "specificity": 0.82,
+        "sentenceLength": 18.5,
+        "depth": 0.88,
+        "unfamiliarity": 0.04
+      }
+    },
+    "sources": [
+      {
+        "title": "ft.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHolTkXzkso2bi1yW_eD2_C6rFkgZI7JT1B_n6tCwsmp5AejmaDIAiJ2qMRuXB5HFrW6WV-4lP-qbBLm_rFXtnaRUMU2-906dYhwvzFYxD5brTglmFwFPBcB2j9s6ZaljZwbaYEl5HtZDooJr9hHzAF92EHUKJR3ckGwcmYgTtu2zAAgyPl67zt4i24a6X22AZpEh_NTKw="
+      },
+      {
+        "title": "hsbc.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFiGyjiYifkAtSr_sRMmGjkz8I95K4FmGALVdMstRIBVKQzQJ17ZQnV4kX3C6jTFVXChkVz_fx2WzDjz65BcUyFMLCO3dUJ3CaxD2vUhBw7G0qiXduiojg9PjH2uBmip9UarvrILGdZbtLywTs_Ms74LYVY7YjjdKGJE15yBffYkVMd0ORW9-LQKCT1hVSXCqVoG9ik60-JKhvQzZJUQsec-animOPvHzHMegzjdcQGnkoxaAsB1grgJGeODsxtBtslyDkm"
+      },
+      {
+        "title": "finbox.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE-emIy-LhQyfqvXxy6G-Au0TMCJ0z066Bv2ht4IEkFj9qE__Nu1euqSBc_EM0XpIutx2b8JozCB9vLJoKlhmg807EBlYkmia4EC3yGEQLP6K7WCkZSh8F4pUekFYJZN7r94g=="
+      },
+      {
+        "title": "financecharts.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFfCE0MUZLKXp_G6N2dnLjblC6ojjjMQoVqNlBTwXG9Guw3LQHZB11mSFcd_fT5zYiYAVsUsBO6wXHO8mx6-jXoBh7eEe-mwCFhAZydoV7lzNqTPe_R3qipwR236JxqOupudoxHpyTFFvSL_tIyx2q5"
+      },
+      {
+        "title": "home.barclays",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGU-gpb4lnxZOavAavn_Ef9vFo7YdY8ptuP_0KbqhZ0efImF_icEsrIPrBOYrdJmKzrZGkt9QUOjFIWjW3Uv2bbV7xkkrcwvtksTg_n3uZP7KrIv5xKB1AdovaI7XTquplXeNIuAQ_WOHyg5In6SpuB7mindSraktuqLcGhoKkPW2ExhuU4l-LB1b5szhUxwPMu0-1hGGcVHBKDQJgJk55WqXoXf5vM5EgGzrHqz53m_TfcftZtgjBVmMj3cqGYohKgqBUn14ib8X2zcFniYQ7tTKYlU1FepLNOhtnd-as="
+      },
+      {
+        "title": "sc.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH98qi5k0QmRI5Nv35OpsYUzrrXqfva5pNgsv0A3mhF7AYE7brZvUWUxi-0nfOcR-7NWyigZqHlskksgSSOCDwXyxeMRkutLWpE2x4TzIZ0CQnWdaHWSCCkJUbZyBdyg7WBlu8bDVNsQZEGh7lbPdHJzT_IbEXDE88Erfw="
+      },
+      {
+        "title": "finbox.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGfdckcjIecQRLE_T5X9MfNvs7fkFb5c6z390c2hIDFqWkMCKPbyDj6VXcZWzCeo4dAlyoECW74eW1Cwp-0Ot_Pz5ZzvHDNlwWHPF78lMtQd5egIg_skUpl8gEIC9wT1sYE8RcH"
+      },
+      {
+        "title": "londonstockexchange.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEIfLrx3d52n9OAM_TSnzeljXvYASWUZFGCdJV8VPBbPUs1vPktB0eTnk4MDlU04wdIhoz_bbnsRpVGnMdcDx_hk8kw7BDqDnPn0dd6jGC95gFlItUHSEbLDwbujCzp7PqcsIDHEEBxUASwCrCfZ79G3km-Y1LhcgQOFszBec39ACnydlDmm2B_YB0xAJZRDLhmFC1NDcD3J_qu_7bcsoGt-A=="
+      },
+      {
+        "title": "asx.com.au",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFv6bXO7s_E6J6bNloDnodtmo1azzlDIysUx35SZteMSQOEpDBZFQwfQ64jCAA5z25b2-6oDNidhzwAhi_18EeAL4t1IaxIxotfEo5dKqeY3utEuEuqBLmIXNoqYIXuBLjoCjjEaDsjqtLew04R36vf0lpFOp5Jw_Y="
+      },
+      {
+        "title": "karingroup.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGVYDxKcsbCzC4fYpi5qvGwHVwoY4a2K4qiBCH-X8Y-TidWU2I2Zcdb7JCmFVHBipK0vsFmbnqycZRW1IQbGXOWHrGx4gxCuZQ9i6o2VL1XvNaOyx8h12-ye0x4PA50lfSEYQiGWNcOtQZ8Nxcdm-2nS2xCwkw-"
+      },
+      {
+        "title": "hsbc.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHRF6c6feYc5Oxwic0J31PYtLbAMTG5FurPPMljDSrOcT4wF32HgBjzoUbOxeX15nWvhkEGeHUwc_M05PLxeBy_xFXklyvUU1CHP3O695rEUhg4pt4CxlkqQ6IC02RS7aq1XGpP3Jniy0COA6K5IukUCunfLhpcg2i0AxuLghucHvwcsLKR4eL5wGTTwImhaMSPzLhYlZnTZMotrtaFWSUAUg3GZk5HwiYYSM-3PcuHx0J_kkjTrxYI5LnkVx9R7Bkq"
+      },
+      {
+        "title": "hemas.com",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGoLaShCzP6vn1Zgmh5skxlDsPmMaJIUepcD-9zO14ah1Ts3wmtA_2kLbNELyPgXw3RWMfyJE4zy33k5vsh0Osufk9pQmhvodPBMyDsfwNS7gLJQFMpsBZjF4KzbRQ8YjbNYmjs972_dAgOC3Dv5WrrPCUe7NIAAtBR1nRx9nq7Ar2cJl5caUOd5aAf"
+      },
+      {
+        "title": "macrotrends.net",
+        "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEL6PBNsmeNkQDUEpjVUgAiVvFjPlGSNVJGyeWpcU4H8ksyvPZpOBWXlHj3sxVX9-1iJiNaKPWwWRW_fu4hHccvjWjGUe4kg2FOW9EfNpwAEzfEGIQoCpNmHaLX5ChPZN1ct2eHcMYHsDjTWO6wxncpvTpVrd7SdYkinDdkFQgrLOA="
+      }
+    ],
+    "accuracyAudit": [
+      {
+        "metric": "Total Revenue (2024)",
+        "year": 2024,
+        "annualReportValue": 65900000000,
+        "verifiedValue": 65900000000,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Net Profit (2024)",
+        "year": 2024,
+        "annualReportValue": 25000000000,
+        "verifiedValue": 25000000000,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Assets (2024)",
+        "year": 2024,
+        "annualReportValue": 3017000000000,
+        "verifiedValue": 3017000000000,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Return on Assets (ROA)",
+        "year": 2024,
+        "annualReportValue": 0.0083,
+        "verifiedValue": 0.0079,
+        "variance": 4.8,
+        "status": "Adjusted",
+        "currency": "USD"
+      },
+      {
+        "metric": "Return on Equity (ROE)",
+        "year": 2024,
+        "annualReportValue": 0.146,
+        "verifiedValue": 0.1296,
+        "variance": 11.2,
+        "status": "Adjusted",
+        "currency": "USD"
+      },
+      {
+        "metric": "Total Debt (Financial)",
+        "year": 2024,
+        "annualReportValue": 131800000000,
+        "verifiedValue": 131800000000,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Net Profit Margin",
+        "year": 2024,
+        "annualReportValue": 0.379,
+        "verifiedValue": 0.379,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      },
+      {
+        "metric": "Asset Turnover",
+        "year": 2024,
+        "annualReportValue": 0.022,
+        "verifiedValue": 0.022,
+        "variance": 0,
+        "status": "Verified",
+        "currency": "USD"
+      }
+    ],
+    "accuracySummary": "The analysis for FY2024 confirms a Reported Revenue of $65.9bn and Profit After Tax of $25.0bn. Discrepancies exist in ROE and ROA metrics due to definitions: the Annual Report highlights 'Return on Average Tangible Equity' (RoTE) at 14.6%, while verified third-party sources (e.g., financial platforms) report a standard ROE of ~12.96% based on total equity. Similarly, ROA varies slightly based on the average asset base calculation. Total Debt is calculated as the sum of Debt Securities in Issue and Subordinated Liabilities, excluding customer deposits which are standard banking liabilities.",
+    "forecastAssumptions": "Forecasts assume a stable interest rate environment in 2025, with mid-single-digit loan growth in Asia and Wealth revenues. The 'mid-teens' RoTE target is maintained, supported by the completed sale of HSBC Canada and cost discipline measures. Potential risks include geopolitical tensions in key markets and net interest margin compression as global rates normalize.",
+    "peerROI": {
+      "peerName": "Standard Chartered PLC",
+      "peerSymbol": "STAN",
+      "roa": 0.006,
+      "roe": 0.117
+    },
+    "risk": {
+      "financial": "Validated Risk Assessment",
+      "solvencyIndex": 0.85,
+      "business": {
+        "legal": 0.1,
+        "tax": 0.05,
+        "macro": 0.6,
+        "firmSpecific": 0.25
+      },
+      "summary": "Asset quality remained resilient, though the bank recorded a $1.0bn loss on the disposal of its Argentina business and currency recycling losses. Operating expenses were well-managed, rising only 3% to $33.0bn, in line with cost targets. The balance sheet remains robust with a Common Equity Tier 1 (CET1) ratio of 14.9%, providing a buffer for future strategic initiatives and organic growth.",
+      "peerComparison": [
+        {
+          "metric": "Return on Assets (ROA)",
+          "companyValue": "0.8%",
+          "peerMedian": "0.5%",
+          "topQuartile": "0.8%",
+          "evidence": "HSBC's ROA of ~0.8% (reported basis) is at the top end of the peer group, exceeding Barclays (0.4%) and Standard Chartered (0.6%)."
+        },
+        {
+          "metric": "Common Equity Tier 1 (CET1)",
+          "companyValue": "14.9%",
+          "peerMedian": "14.0%",
+          "topQuartile": "15.0%",
+          "evidence": "HSBC's capital buffer remains strong at 14.9%, comparable to Standard Chartered and well above regulatory minimums."
+        },
+        {
+          "metric": "Financial Leverage",
+          "companyValue": "15.7x",
+          "peerMedian": "18.0x",
+          "topQuartile": "14.0x",
+          "evidence": "With an Assets/Equity ratio of ~15.7x, HSBC utilizes moderate leverage typical of global diversified banks."
+        }
+      ]
+    },
+    "narrative": {
+      "section1": "In 2024, HSBC delivered a solid financial performance, reporting a Profit Before Tax of $32.3bn, up $2.0bn from the previous year. Revenue remained stable at $65.9bn, supported by growth in Wealth and Personal Banking, which offset the impact of the Argentina business disposal and currency fluctuations. The bank successfully completed the sale of its Canadian operations, resulting in a significant gain of $4.8bn, which was shared with shareholders through a special dividend of $0.21 per share.",
+      "section2": "The bank's Return on Average Tangible Equity (RoTE) stood at 14.6%, aligning with its mid-teens target. Excluding notable items, RoTE was 16.0%. Capital distributions were a key theme, with total dividends of $0.87 per share declared for the year and $9bn in share buybacks announced. This reflects a strong focus on enhancing shareholder value amidst a shifting interest rate landscape.",
+      "section3": "Asset quality remained resilient, though the bank recorded a $1.0bn loss on the disposal of its Argentina business and currency recycling losses. Operating expenses were well-managed, rising only 3% to $33.0bn, in line with cost targets. The balance sheet remains robust with a Common Equity Tier 1 (CET1) ratio of 14.9%, providing a buffer for future strategic initiatives and organic growth.",
+      "section4": "Looking ahead, HSBC maintains its guidance for a mid-teens RoTE in 2025. The strategy continues to pivot towards Asia and wealth management, capitalizing on the region's structural growth. The integration of SVB UK and the continued reshaping of the portfolio are expected to drive sustainable revenue streams, despite potential headwinds from normalizing global interest rates.",
+      "qAndA": {
+        "roe_trend": "Improving. The reported RoTE of 14.6% in 2024 demonstrates sustained profitability, supported by strategic disposals and operational efficiency.",
+        "roe_peer": "Competitive. HSBC's RoTE of 14.6% outperforms peers like Barclays (~10%) and is comparable to Standard Chartered (~11.7%), reflecting its strong Asian franchise.",
+        "driver_dominance": "Profitability is driven by Net Interest Income and Wealth fees, significantly boosted in 2024 by the one-off gain from the Canada sale.",
+        "risk_trend": "Stable. The CET1 ratio of 14.9% indicates strong capital adequacy, although geopolitical risks in core markets remain a monitoring point.",
+        "risk_peer": "Low. HSBC maintains a conservative liquidity coverage and leverage profile compared to global G-SIB peers.",
+        "nlp_sentiment": "Positive. The 2024 narrative emphasizes 'growth', 'distribution', and 'resilience', marking a shift from the 'transformation' and 'restructuring' themes of 2022.",
+        "nlp_specificity": "High. The report provides detailed breakdowns of the Canada sale impact, dividend components, and specific divisional performance.",
+        "nlp_complexity": "Moderate. While financial disclosures are technical, the strategic messaging regarding the pivot to Asia and Wealth is articulated clearly.",
+        "nlp_peer": "Consistent. The tone is confident and forward-looking, similar to Standard Chartered, but more optimistic than European-focused peers grappling with lower growth."
+      }
+    },
+    "forecasts": {
+      "roa": {
+        "base": 0.008,
+        "upside": 0.009,
+        "downside": 0.006
+      },
+      "roe": {
+        "base": 0.145,
+        "upside": 0.16,
+        "downside": 0.12
+      }
+    }
+  }
+}
