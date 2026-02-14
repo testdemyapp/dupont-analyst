@@ -34,6 +34,9 @@ const App: React.FC = () => {
   const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [hasUserKey, setHasUserKey] = useState(false);
 
+  // High-performance in-memory cache for precomputed analysis
+  const [precomputedCache, setPrecomputedCache] = useState<Record<string, DuPontAnalysis>>({});
+
   // Pre-cache State
   const [preCaching, setPreCaching] = useState(false);
   const [preCacheProgress, setPreCacheProgress] = useState({ current: 0, total: FTSE100_CONSTITUENTS.length, symbol: "" });
@@ -57,7 +60,20 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Fetch precomputed data on mount
   useEffect(() => {
+    const loadPrecomputed = async () => {
+      try {
+        const response = await fetch('./precomputedData.json');
+        if (response.ok) {
+          const data = await response.json();
+          setPrecomputedCache(data);
+        }
+      } catch (err) {
+        console.warn("Failed to load precomputed data:", err);
+      }
+    };
+    loadPrecomputed();
     checkKeyStatus();
   }, [checkKeyStatus]);
 
@@ -116,8 +132,19 @@ const App: React.FC = () => {
   };
 
   const runAnalysis = async (forceRefresh: boolean = false, targetCompany: ExtendedCompany = selectedCompany, targetYear: number = anchorYear) => {
+    const cacheKey = `${targetCompany.symbol}_${targetYear}`;
+
+    // 1. Check in-memory precomputed cache first
+    if (!forceRefresh && precomputedCache[cacheKey]) {
+      const data = precomputedCache[cacheKey];
+      if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
+        setAnalysis(data);
+      }
+      return data;
+    }
+
+    // 2. Check local storage second
     const cached = getCachedAnalysis(targetCompany.symbol, targetYear);
-    
     if (cached && !forceRefresh) {
       if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
         setAnalysis(cached);
@@ -125,6 +152,7 @@ const App: React.FC = () => {
       return cached;
     }
 
+    // 3. Trigger Gemini API if both caches fail or forceRefresh is true
     const isCurrentView = targetCompany.symbol === selectedSymbol && targetYear === anchorYear;
     if (isCurrentView) {
       setLoading(true);
@@ -183,10 +211,13 @@ const App: React.FC = () => {
     for (const company of FTSE100_CONSTITUENTS) {
       if (!isPreCachingRef.current) break;
 
-      const cached = getCachedAnalysis(company.symbol, anchorYear);
+      const cacheKey = `${company.symbol}_${anchorYear}`;
+      const memoryCached = precomputedCache[cacheKey];
+      const storageCached = getCachedAnalysis(company.symbol, anchorYear);
+      
       setPreCacheProgress({ current: completed + 1, total: FTSE100_CONSTITUENTS.length, symbol: company.symbol });
       
-      if (!cached) {
+      if (!memoryCached && !storageCached) {
         try {
           await runAnalysis(false, company, anchorYear);
           await new Promise(r => setTimeout(r, 8000));
@@ -206,26 +237,71 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    const cached = getCachedAnalysis(selectedSymbol, anchorYear);
-    if (cached) {
-      setAnalysis(cached);
-    } else {
-      runAnalysis(false);
-    }
+    runAnalysis(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSymbol, anchorYear]);
+  }, [selectedSymbol, anchorYear, precomputedCache]);
 
-  const downloadReport = () => {
-    if (!analysis) return;
-    const blob = new Blob([JSON.stringify(analysis, null, 2)], { type: 'application/json' });
+  const downloadReport = async () => {
+    setLoading(true);
+    const masterExport: Record<string, DuPontAnalysis> = {};
+    let foundCount = 0;
+    let processedCount = 0;
+    const totalCount = FTSE100_CONSTITUENTS.length;
+
+    setStatusMessage("Gathering data for all 100 constituents...");
+    await new Promise(r => setTimeout(r, 500));
+
+    for (const company of FTSE100_CONSTITUENTS) {
+      processedCount++;
+      const cacheKey = `${company.symbol}_${anchorYear}`;
+      
+      // Step 1: Check in-memory precomputed cache
+      let data = precomputedCache[cacheKey];
+      
+      // Step 2: Check persistent local storage
+      if (!data) {
+        const storageCached = getCachedAnalysis(company.symbol, anchorYear);
+        if (storageCached) {
+          data = storageCached;
+        }
+      }
+
+      if (data) {
+        masterExport[cacheKey] = data;
+        foundCount++;
+      }
+
+      // Show real-time collection progress by counting gathered companies
+      setStatusMessage(`Collecting Analysis: ${processedCount}/${totalCount} constituents checked (${foundCount} matches found)...`);
+      
+      // Prevent UI blocking for better visual counting
+      if (processedCount % 4 === 0) {
+        await new Promise(r => setTimeout(r, 1));
+      }
+    }
+
+    if (foundCount === 0) {
+      alert("Gathering failed: No analysis data found in either memory or local storage. Use 'Cache All' first to perform the AI analysis for all constituents.");
+      setLoading(false);
+      setStatusMessage("");
+      return;
+    }
+
+    setStatusMessage(`Finalizing ${foundCount} records for export...`);
+    await new Promise(r => setTimeout(r, 800));
+
+    const blob = new Blob([JSON.stringify(masterExport, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `DuPont_Report_${analysis.company.symbol}_${analysis.anchorYear}.json`;
+    link.download = `precomputedData.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    
+    setLoading(false);
+    setStatusMessage("");
   };
 
   const currentExplanation = explanationId ? METRIC_DEFINITIONS[explanationId] : null;
@@ -348,7 +424,7 @@ const App: React.FC = () => {
                   <button 
                     onClick={downloadReport}
                     className="p-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all flex items-center justify-center group"
-                    title="Export Data"
+                    title="Export All Cached Data (precomputedData.json)"
                   >
                     <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -742,7 +818,7 @@ const App: React.FC = () => {
                     </div>
 
                     <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
-                       <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Reporting Diagnostics</h4>
+                       <h4 className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-4">Diagnostics</h4>
                        <div className="space-y-5 text-sm">
                           <div className="p-3 bg-white/5 rounded-xl border border-white/5">
                              <p className="font-bold text-emerald-300 mb-1">Sentiment Trend</p>
