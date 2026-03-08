@@ -68,6 +68,14 @@ export interface AccuracyAudit {
   currency: string;
 }
 
+export interface DiagnosticNarrative {
+  roe: string;
+  roa: string;
+  margin: string;
+  turnover: string;
+  overall: string;
+}
+
 export interface DuPontAnalysis {
   company: Company;
   anchorYear: number;
@@ -79,12 +87,27 @@ export interface DuPontAnalysis {
   accuracyAudit: AccuracyAudit[];
   accuracySummary: string;
   forecastAssumptions: string;
+  diagnostic?: DiagnosticNarrative;
   narrative: {
     section1: string;
     section2: string;
     section3: string;
     section4: string;
-    qAndA: Record<string, string>;
+    qAndA: {
+      roe_trend: string;
+      roe_peer: string;
+      margin_trend: string;
+      margin_peer: string;
+      turnover_trend: string;
+      turnover_peer: string;
+      driver_dominance: string;
+      risk_trend: string;
+      risk_peer: string;
+      nlp_sentiment: string;
+      nlp_specificity: string;
+      nlp_complexity: string;
+      nlp_peer: string;
+    };
   };
   forecasts: Record<string, { base: number; upside: number; downside: number }>;
 }

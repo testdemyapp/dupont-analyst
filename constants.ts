@@ -102,10 +102,10 @@ export const FTSE100_CONSTITUENTS: ExtendedCompany[] = [
   { symbol: "CONV", name: "ConvaTec Group", sector: "Health Care Equipment & Services", domain: "convatecgroup.com" },
   { symbol: "DLG", name: "Direct Line Insurance Group", sector: "Non-life Insurance", domain: "directlinegroup.co.uk" },
   { symbol: "EDV", name: "Endeavour Mining", sector: "Mining", domain: "endeavourmining.com" },
-  { symbol: "FRAS", name: "Frasers Group", sector: "General Retailers", domain: "frasers.group" },
   { symbol: "HIK", name: "Hikma Pharmaceuticals", sector: "Pharmaceuticals & Biotechnology", domain: "hikma.com" },
   { symbol: "HOWD", name: "Howden Joinery Group", sector: "Support Services", domain: "howdenjoinerygroupplc.com" },
-  { symbol: "IHG", name: "InterContinental Hotels Group", sector: "Travel & Leisure", domain: "ihgplc.com" }
+  { symbol: "SMT", name: "Scottish Mortgage Investment Trust", sector: "Equity Investment Instruments", domain: "scottishmortgage.com" },
+  { symbol: "SNN", name: "Smith & Nephew", sector: "Health Care Equipment & Services", domain: "smith-nephew.com" }
 ];
 
 export const YEARS = [2024, 2023, 2022, 2021, 2020];
@@ -169,7 +169,7 @@ export const METRIC_DEFINITIONS: Record<string, MetricDefinition> = {
   specificity: {
     label: "Information Specificity",
     formula: "Entity Density & Numeric Intensity Index",
-    explanation: "Measures how concrete the report is by tracking the frequency of numbers, specific dates, and named entities. High specificity typically indicates higher reporting quality.",
+    explanation: "Measures how concrete the report is by tracking the frequency of numbers, specific dates, and named entities. High specificity typically intelligence higher reporting quality.",
     source: "Operating Review / Segment Analysis"
   },
   sentenceLength: {

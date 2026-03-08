@@ -6,6 +6,8 @@ import { generateDuPontAnalysis } from './services/geminiService';
 import MetricCharts from './components/MetricCharts';
 import DuPontMap from './components/DuPontMap';
 import NLPTrendCharts from './components/NLPTrendCharts';
+import FloatingHelp from './components/FloatingHelp';
+import DiagnosticSection from './components/DiagnosticSection';
 
 const CACHE_PREFIX = "dupont_cache_";
 
@@ -32,7 +34,7 @@ const App: React.FC = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showMethodology, setShowMethodology] = useState(false);
   const [showProjectInfo, setShowProjectInfo] = useState(false);
-  const [hasUserKey, setHasUserKey] = useState(false);
+  const [showAccuracyAudit, setShowAccuracyAudit] = useState(false);
 
   // High-performance in-memory cache for precomputed analysis
   const [precomputedCache, setPrecomputedCache] = useState<Record<string, DuPontAnalysis>>({});
@@ -53,13 +55,6 @@ const App: React.FC = () => {
     )
   , [searchTerm]);
 
-  const checkKeyStatus = useCallback(async () => {
-    if (window.aistudio) {
-      const hasKey = await window.aistudio.hasSelectedApiKey();
-      setHasUserKey(hasKey);
-    }
-  }, []);
-
   // Fetch precomputed data on mount
   useEffect(() => {
     const loadPrecomputed = async () => {
@@ -74,15 +69,7 @@ const App: React.FC = () => {
       }
     };
     loadPrecomputed();
-    checkKeyStatus();
-  }, [checkKeyStatus]);
-
-  const handleOpenKeySelector = async () => {
-    if (window.aistudio) {
-      await window.aistudio.openSelectKey();
-      setHasUserKey(true); // Assume success per instructions
-    }
-  };
+  }, []);
 
   const getCachedAnalysis = useCallback((symbol: string, year: number): DuPontAnalysis | null => {
     const key = `${CACHE_PREFIX}${symbol}_${year}`;
@@ -116,21 +103,6 @@ const App: React.FC = () => {
     return `${currency}${formatted}`;
   };
 
-  const calculateDiscrepancy = (oldData: DuPontAnalysis, newData: DuPontAnalysis) => {
-    const oldRoe = oldData.timeSeries[0].roe;
-    const newRoe = newData.timeSeries[0].roe;
-    const oldProfit = oldData.timeSeries[0].netProfit;
-    const newProfit = newData.timeSeries[0].netProfit;
-
-    const roeDiff = Math.abs(newRoe - oldRoe) / (oldRoe || 1);
-    const profitDiff = Math.abs(newProfit - oldProfit) / (oldProfit || 1);
-
-    return {
-      significant: roeDiff > 0.01 || profitDiff > 0.01,
-      message: `ROE shifted by ${(roeDiff * 100).toFixed(2)}%, Net Profit shifted by ${(profitDiff * 100).toFixed(2)}%`
-    };
-  };
-
   const runAnalysis = async (forceRefresh: boolean = false, targetCompany: ExtendedCompany = selectedCompany, targetYear: number = anchorYear) => {
     const cacheKey = `${targetCompany.symbol}_${targetYear}`;
 
@@ -152,43 +124,29 @@ const App: React.FC = () => {
       return cached;
     }
 
-    // 3. Trigger Gemini API if both caches fail or forceRefresh is true
+    // CRITICAL UPDATE: If not forcing a refresh and data isn't in cache, STOP.
+    if (!forceRefresh) {
+      if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
+        setAnalysis(null);
+      }
+      return null;
+    }
+
+    // 3. Trigger Gemini API ONLY if forceRefresh is true
     const isCurrentView = targetCompany.symbol === selectedSymbol && targetYear === anchorYear;
     if (isCurrentView) {
       setLoading(true);
-      setStatusMessage("Validating Financial Data...");
+      setStatusMessage("Searching Precomputed Data...");
     }
     
     try {
-      let result = await generateDuPontAnalysis(targetCompany, targetYear);
-      
-      if (forceRefresh && cached) {
-        const discrepancy = calculateDiscrepancy(cached, result);
-        if (discrepancy.significant) {
-          if (isCurrentView) setStatusMessage("Significant Deviation Detected. Initializing Deep-Dive Search...");
-          result = await generateDuPontAnalysis(targetCompany, targetYear, true, discrepancy.message);
-        }
-      }
-
-      if (isCurrentView) setAnalysis(result);
-      setCachedAnalysis(targetCompany.symbol, targetYear, result);
-      return result;
-    } catch (err: any) {
-      const isQuotaError = err?.message?.includes("429") || err?.message?.includes("RESOURCE_EXHAUSTED") || err?.message?.includes("Quota");
-      
-      const msg = isQuotaError
-        ? "API limit reached. Using a personal API key is recommended for high-volume analysis."
-        : "Performance analysis is currently unavailable. Please check your connection and try again.";
-      
+      // We are no longer calling the API. If it's not in the precomputed cache, we simulate a failure or return null.
+      // Since we want to strictly use precomputedData.json, if it wasn't found in step 1, it doesn't exist.
       if (isCurrentView) {
-        if (isQuotaError) {
-          const proceed = confirm(`${msg}\n\nWould you like to select your own API key to bypass shared limits?`);
-          if (proceed) handleOpenKeySelector();
-        } else {
-          alert(msg);
-        }
+        alert(`No precomputed data found for ${targetCompany.symbol} in ${targetYear}.`);
+        setAnalysis(null);
       }
-      throw err;
+      return null;
     } finally {
       if (isCurrentView) {
         setLoading(false);
@@ -207,87 +165,106 @@ const App: React.FC = () => {
     isPreCachingRef.current = true;
     setPreCaching(true);
     let completed = 0;
+    const totalToProcess = FTSE100_CONSTITUENTS.length * YEARS.length;
 
-    for (const company of FTSE100_CONSTITUENTS) {
-      if (!isPreCachingRef.current) break;
+    for (const year of YEARS) {
+      for (const company of FTSE100_CONSTITUENTS) {
+        if (!isPreCachingRef.current) break;
 
-      const cacheKey = `${company.symbol}_${anchorYear}`;
-      const memoryCached = precomputedCache[cacheKey];
-      const storageCached = getCachedAnalysis(company.symbol, anchorYear);
-      
-      setPreCacheProgress({ current: completed + 1, total: FTSE100_CONSTITUENTS.length, symbol: company.symbol });
-      
-      if (!memoryCached && !storageCached) {
-        try {
-          await runAnalysis(false, company, anchorYear);
-          await new Promise(r => setTimeout(r, 8000));
-        } catch (e: any) {
-          console.error(`Failed to pre-cache ${company.symbol}`, e);
-          if (e?.message?.includes("429") || e?.message?.includes("RESOURCE_EXHAUSTED")) {
-            await new Promise(r => setTimeout(r, 20000));
-          }
+        const cacheKey = `${company.symbol}_${year}`;
+        const memoryCached = precomputedCache[cacheKey];
+        const storageCached = getCachedAnalysis(company.symbol, year);
+        
+        setPreCacheProgress({ current: completed + 1, total: totalToProcess, symbol: `${company.symbol} (${year})` });
+        
+        if (!memoryCached && !storageCached) {
+          // Pre-caching via API is disabled. We only use precomputedData.json.
+          console.warn(`Data for ${company.symbol} (${year}) not found in precomputed cache.`);
         }
+        completed++;
       }
-      completed++;
+      if (!isPreCachingRef.current) break;
     }
 
     isPreCachingRef.current = false;
     setPreCaching(false);
     setPreCacheProgress(prev => ({ ...prev, current: completed, symbol: "Complete" }));
+    
+    // Automatically download the report after caching is complete
+    if (completed > 0) {
+      await downloadAllData();
+    }
   };
 
   useEffect(() => {
+    // Selection change only checks cache.
     runAnalysis(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSymbol, anchorYear, precomputedCache]);
 
-  const downloadReport = async () => {
+  const downloadCurrentReport = () => {
+    if (!analysis) return;
+    const blob = new Blob([JSON.stringify(analysis, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `DuPont_Report_${analysis.company.symbol}_${analysis.anchorYear}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadAllData = async () => {
     setLoading(true);
     const masterExport: Record<string, DuPontAnalysis> = {};
-    let foundCount = 0;
-    let processedCount = 0;
-    const totalCount = FTSE100_CONSTITUENTS.length;
+    let gatheredCount = 0;
+    const totalToProcess = FTSE100_CONSTITUENTS.length * YEARS.length;
 
-    setStatusMessage("Gathering data for all 100 constituents...");
+    setStatusMessage(`Beginning data gathering for all constituents and years...`);
     await new Promise(r => setTimeout(r, 500));
 
-    for (const company of FTSE100_CONSTITUENTS) {
-      processedCount++;
-      const cacheKey = `${company.symbol}_${anchorYear}`;
-      
-      // Step 1: Check in-memory precomputed cache
-      let data = precomputedCache[cacheKey];
-      
-      // Step 2: Check persistent local storage
-      if (!data) {
-        const storageCached = getCachedAnalysis(company.symbol, anchorYear);
-        if (storageCached) {
-          data = storageCached;
+    let processed = 0;
+    for (const year of YEARS) {
+      for (let i = 0; i < FTSE100_CONSTITUENTS.length; i++) {
+        const company = FTSE100_CONSTITUENTS[i];
+        const cacheKey = `${company.symbol}_${year}`;
+        
+        // Tier 1: Memory
+        let data = precomputedCache[cacheKey];
+        
+        // Tier 2: Storage
+        if (!data) {
+          const storageCached = getCachedAnalysis(company.symbol, year);
+          if (storageCached) {
+            data = storageCached;
+          }
         }
-      }
 
-      if (data) {
-        masterExport[cacheKey] = data;
-        foundCount++;
-      }
+        if (data) {
+          masterExport[cacheKey] = data;
+          gatheredCount++;
+        }
 
-      // Show real-time collection progress by counting gathered companies
-      setStatusMessage(`Collecting Analysis: ${processedCount}/${totalCount} constituents checked (${foundCount} matches found)...`);
-      
-      // Prevent UI blocking for better visual counting
-      if (processedCount % 4 === 0) {
-        await new Promise(r => setTimeout(r, 1));
+        processed++;
+        // Show real-time counting progress
+        setStatusMessage(`Consolidating data: ${processed}/${totalToProcess} processed (${gatheredCount} analyzed records gathered).`);
+        
+        // Minor delay to show progress counting visually
+        if (processed % 10 === 0) {
+          await new Promise(r => setTimeout(r, 10));
+        }
       }
     }
 
-    if (foundCount === 0) {
-      alert("Gathering failed: No analysis data found in either memory or local storage. Use 'Cache All' first to perform the AI analysis for all constituents.");
+    if (gatheredCount === 0) {
+      alert("No analysis data found in cache. Use 'Cache All' or 'Refresh' for specific companies before exporting.");
       setLoading(false);
       setStatusMessage("");
       return;
     }
 
-    setStatusMessage(`Finalizing ${foundCount} records for export...`);
+    setStatusMessage(`Finalizing file for ${gatheredCount} records...`);
     await new Promise(r => setTimeout(r, 800));
 
     const blob = new Blob([JSON.stringify(masterExport, null, 2)], { type: 'application/json' });
@@ -302,6 +279,33 @@ const App: React.FC = () => {
     
     setLoading(false);
     setStatusMessage("");
+  };
+
+  const downloadAnnualReport = async (url: string, symbol: string, year: number) => {
+    try {
+      setStatusMessage("Downloading Annual Report...");
+      setLoading(true);
+      const response = await fetch('/api/download-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url, symbol, year })
+      });
+      
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to download report');
+      }
+      
+      alert(data.message || 'Report downloaded successfully to Annual_reports folder');
+    } catch (error: any) {
+      console.error("Download error:", error);
+      alert(`Failed to download report: ${error.message}`);
+    } finally {
+      setLoading(false);
+      setStatusMessage("");
+    }
   };
 
   const currentExplanation = explanationId ? METRIC_DEFINITIONS[explanationId] : null;
@@ -324,8 +328,8 @@ const App: React.FC = () => {
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white rounded-xl p-1.5 flex items-center justify-center shadow-md border border-slate-100 flex-shrink-0 overflow-hidden group">
                 <img 
-                  src={`https://logo.clearbit.com/${selectedCompany.domain}`} 
-                  alt=""
+                  src={selectedCompany.domain ? `https://logo.clearbit.com/${selectedCompany.domain}` : `https://ui-avatars.com/api/?name=${selectedCompany.name}&background=6366f1&color=fff&size=128&bold=true`} 
+                  alt={`${selectedCompany.name} logo`}
                   className="w-full h-full object-contain transition-transform group-hover:scale-110"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${selectedCompany.name}&background=6366f1&color=fff&size=128&bold=true`;
@@ -397,39 +401,33 @@ const App: React.FC = () => {
               </select>
 
               <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => runAnalysis(true)}
-                  disabled={loading}
-                  className="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 disabled:opacity-50 transition-all flex items-center gap-2"
-                >
-                  {loading ? 'Analyzing...' : 'Refresh'}
-                  <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357-2H15" />
-                  </svg>
-                </button>
-
-                <button 
-                  onClick={startPreCache}
-                  disabled={loading && !preCaching}
-                  className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${preCaching ? 'bg-amber-500 text-white shadow-lg shadow-amber-200' : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'}`}
-                  title="Cache all constituents locally"
-                >
-                  {preCaching ? 'Cancel Caching' : 'Cache All'}
-                  <svg className={`w-4 h-4 ${preCaching ? 'animate-pulse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </button>
-
                 {analysis && !loading && (
-                  <button 
-                    onClick={downloadReport}
-                    className="p-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all flex items-center justify-center group"
-                    title="Export All Cached Data (precomputedData.json)"
-                  >
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                  </button>
+                  <div className="relative group">
+                    <button 
+                      className="p-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all flex items-center justify-center"
+                      title="Export Data"
+                    >
+                      <svg className="w-5 h-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                    </button>
+                    <div className="absolute top-full right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-2xl w-56 overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all animate-in slide-in-from-top-2 duration-200">
+                      <button
+                        onClick={downloadCurrentReport}
+                        className="w-full text-left px-4 py-3 hover:bg-indigo-50 border-b border-slate-50 text-sm font-bold text-slate-900 transition-colors flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Current Report
+                      </button>
+                      <button
+                        onClick={downloadAllData}
+                        className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-sm font-bold text-slate-900 transition-colors flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
+                        All Cached Data
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -462,80 +460,6 @@ const App: React.FC = () => {
       )}
 
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-12">
-        {analysis && (
-          <section className="bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[120px] -mr-48 -mt-48 rounded-full" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-600/10 blur-[120px] -ml-48 -mb-48 rounded-full" />
-            
-            <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="col-span-1 lg:col-span-2">
-                <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4 leading-tight">
-                  {selectedCompany.name} <br/>
-                  <span className="text-indigo-400">Financial Performance Overview</span>
-                </h2>
-                <p className="text-indigo-100 font-medium opacity-80 max-w-lg mb-8">
-                  Decomposed 3-year performance analysis. High-fidelity verification with &lt;1% variance tolerance.
-                </p>
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md">
-                     <div className="text-center border-r border-white/10 pr-4">
-                        <span className="text-indigo-300 text-[10px] font-bold uppercase block">Sector</span>
-                        <span className="font-bold text-sm">{selectedCompany.sector}</span>
-                     </div>
-                     <div className="text-center">
-                        <span className="text-indigo-300 text-[10px] font-bold uppercase block">Anchor</span>
-                        <span className="font-bold text-sm">FY{anchorYear}</span>
-                     </div>
-                  </div>
-                  {analysis.timeSeries[0].reportUrl && (
-                    <a 
-                      href={analysis.timeSeries[0].reportUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 px-5 py-3 rounded-2xl backdrop-blur-md transition-all group"
-                    >
-                      <svg className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span className="text-xs font-bold text-white uppercase tracking-wider">Annual Report</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-center gap-6">
-                <div 
-                  onClick={() => setExplanationId('margin')}
-                  className="bg-white/10 p-5 rounded-3xl border border-white/5 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-all group"
-                >
-                   <span className="text-indigo-300 text-xs font-bold uppercase block mb-1 group-hover:text-white transition-colors">Net Profit Margin</span>
-                   <span className="text-3xl font-black">{(analysis.timeSeries[0].margin * 100).toFixed(1)}%</span>
-                </div>
-                <div 
-                  onClick={() => setExplanationId('turnover')}
-                  className="bg-white/10 p-5 rounded-3xl border border-white/5 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-all group"
-                >
-                   <span className="text-indigo-300 text-xs font-bold uppercase block mb-1 group-hover:text-white transition-colors">Asset Turnover</span>
-                   <span className="text-3xl font-black">{analysis.timeSeries[0].turnover.toFixed(2)}x</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-center gap-6">
-                <div 
-                  onClick={() => setExplanationId('roe')}
-                  className="bg-indigo-600 p-6 rounded-[2rem] border border-white/20 shadow-xl shadow-indigo-900/40 relative group overflow-hidden cursor-pointer active:scale-95 transition-all"
-                >
-                   <div className="relative z-10">
-                    <span className="text-indigo-100 text-xs font-bold uppercase block mb-1">Return on Equity</span>
-                    <span className="text-4xl font-black">{(analysis.timeSeries[0].roe * 100).toFixed(1)}%</span>
-                   </div>
-                   <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-white/10 rounded-full group-hover:scale-150 transition-transform" />
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
         {loading && (
           <div className="flex flex-col items-center justify-center py-24 space-y-6 animate-in fade-in duration-500">
              <div className="relative">
@@ -549,14 +473,125 @@ const App: React.FC = () => {
           </div>
         )}
 
+        {!analysis && !loading && (
+          <div className="flex flex-col items-center justify-center py-40 bg-white border-2 border-dashed border-slate-200 rounded-[3rem] animate-in fade-in duration-700">
+            <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+               <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+               </svg>
+            </div>
+            <h2 className="text-2xl font-black text-slate-900 mb-2">No Analysis Available</h2>
+            <p className="text-slate-500 font-medium mb-8">Please select a different company or year that has precomputed data.</p>
+          </div>
+        )}
+
         {analysis && !loading && (
           <>
-            <section>
+            <section className="bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-indigo-500/20 animate-in slide-in-from-bottom-4 duration-500">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[120px] -mr-48 -mt-48 rounded-full" />
+              <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-600/10 blur-[120px] -ml-48 -mb-48 rounded-full" />
+              
+              <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="col-span-1 lg:col-span-2">
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4 leading-tight">
+                    {selectedCompany.name} <br/>
+                    <span className="text-indigo-400">Financial Performance Overview</span>
+                  </h2>
+                  <p className="text-indigo-100 font-medium opacity-80 max-w-lg mb-8">
+                    Decomposed 3-year performance analysis. High-fidelity verification with &lt;1% variance tolerance.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md">
+                       <div className="text-center border-r border-white/10 pr-4">
+                          <span className="text-indigo-300 text-[10px] font-bold uppercase block">Sector</span>
+                          <span className="font-bold text-sm">{selectedCompany.sector}</span>
+                       </div>
+                       <div className="text-center border-r border-white/10 pr-4">
+                          <span className="text-indigo-300 text-[10px] font-bold uppercase block">Anchor</span>
+                          <span className="font-bold text-sm">FY{anchorYear}</span>
+                       </div>
+                       <div className="text-center">
+                          <a 
+                            href={`/api/report/${selectedCompany.symbol}/${anchorYear}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex flex-col items-center justify-center text-indigo-300 hover:text-white transition-colors group"
+                            title="View saved report"
+                          >
+                            <span className="text-[10px] font-bold uppercase block mb-0.5">Report</span>
+                            <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                       </div>
+                    </div>
+                    {analysis.timeSeries[0].reportUrl && (
+                      <div className="flex items-center gap-2">
+                        <a 
+                          href={analysis.timeSeries[0].reportUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 px-5 py-3 rounded-2xl backdrop-blur-md transition-all group"
+                        >
+                          <svg className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span className="text-xs font-bold text-white uppercase tracking-wider">Annual Report</span>
+                        </a>
+                        <button
+                          onClick={() => downloadAnnualReport(analysis.timeSeries[0].reportUrl!, selectedCompany.symbol, anchorYear)}
+                          className="inline-flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 px-5 py-3 rounded-2xl backdrop-blur-md transition-all group"
+                          title="Download and save to App"
+                        >
+                          <svg className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                          <span className="text-xs font-bold text-white uppercase tracking-wider">Save</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col justify-center gap-6">
+                  <div 
+                    onClick={() => setExplanationId('margin')}
+                    className="bg-white/10 p-5 rounded-3xl border border-white/5 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-all group"
+                  >
+                     <span className="text-indigo-300 text-xs font-bold uppercase block mb-1 group-hover:text-white transition-colors">Net Profit Margin</span>
+                     <span className="text-3xl font-black">{(analysis.timeSeries[0].margin * 100).toFixed(1)}%</span>
+                  </div>
+                  <div 
+                    onClick={() => setExplanationId('turnover')}
+                    className="bg-white/10 p-5 rounded-3xl border border-white/5 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-all group"
+                  >
+                     <span className="text-indigo-300 text-xs font-bold uppercase block mb-1 group-hover:text-white transition-colors">Asset Turnover</span>
+                     <span className="text-3xl font-black">{analysis.timeSeries[0].turnover.toFixed(2)}x</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col justify-center gap-6">
+                  <div 
+                    onClick={() => setExplanationId('roe')}
+                    className="bg-indigo-600 p-6 rounded-[2rem] border border-white/20 shadow-xl shadow-indigo-900/40 relative group overflow-hidden cursor-pointer active:scale-95 transition-all"
+                  >
+                     <div className="relative z-10">
+                      <span className="text-indigo-100 text-xs font-bold uppercase block mb-1">Return on Equity</span>
+                      <span className="text-4xl font-black">{(analysis.timeSeries[0].roe * 100).toFixed(1)}%</span>
+                     </div>
+                     <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-white/10 rounded-full group-hover:scale-150 transition-transform" />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="space-y-6">
               <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
                 <span className="w-2 h-8 bg-indigo-600 rounded-full" />
                 Performance Trends
               </h2>
               <MetricCharts data={analysis.timeSeries} />
+              <DiagnosticSection timeSeries={analysis.timeSeries} diagnostic={analysis.diagnostic} />
             </section>
 
             <section>
@@ -708,6 +743,22 @@ const App: React.FC = () => {
                              <p className="font-bold text-orange-100 mb-1">Primary Value Driver</p>
                              <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.driver_dominance}</p>
                           </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-orange-100 mb-1">Margin Trend</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.margin_trend}</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-orange-100 mb-1">Margin Peer Benchmark</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.margin_peer}</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-orange-100 mb-1">Turnover Trend</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.turnover_trend}</p>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                             <p className="font-bold text-orange-100 mb-1">Turnover Peer Benchmark</p>
+                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.turnover_peer}</p>
+                          </div>
                        </div>
                     </div>
                   </div>
@@ -816,28 +867,6 @@ const App: React.FC = () => {
                     <div className="prose prose-slate max-w-none">
                        <p className="text-slate-600 leading-relaxed italic text-sm border-l-4 border-slate-300 pl-4 py-1">{analysis.narrative.section4}</p>
                     </div>
-
-                    <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
-                       <h4 className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-4">Diagnostics</h4>
-                       <div className="space-y-5 text-sm">
-                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                             <p className="font-bold text-emerald-300 mb-1">Sentiment Trend</p>
-                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_sentiment}</p>
-                          </div>
-                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                             <p className="font-bold text-indigo-300 mb-1">Reporting Specificity</p>
-                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_specificity}</p>
-                          </div>
-                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                             <p className="font-bold text-orange-300 mb-1">Linguistic Complexity</p>
-                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_complexity}</p>
-                          </div>
-                          <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                             <p className="font-bold text-purple-300 mb-1">Market Benchmark</p>
-                             <p className="text-slate-400 leading-snug">{analysis.narrative.qAndA.nlp_peer}</p>
-                          </div>
-                       </div>
-                    </div>
                   </div>
                </div>
             </section>
@@ -848,6 +877,70 @@ const App: React.FC = () => {
                 Linguistic Narrative Trends
               </h2>
               <NLPTrendCharts nlpData={analysis.nlpData} />
+            </section>
+
+            <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
+               <div className="absolute top-0 left-0 w-64 h-64 bg-indigo-50 blur-3xl -ml-32 -mt-32 rounded-full opacity-50" />
+               <div className="flex items-center justify-between mb-6 relative z-10">
+                 <h2 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                   <span className="w-2 h-8 bg-indigo-600 rounded-full" />
+                   Discussion: Linguistic Narrative Trends
+                 </h2>
+                 {analysis.timeSeries[0].reportUrl && (
+                   <div className="flex items-center gap-3">
+                     <a
+                       href={analysis.timeSeries[0].reportUrl}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-sm transition-colors border border-slate-200 flex items-center gap-2"
+                     >
+                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                       </svg>
+                       View Annual Report
+                     </a>
+                     <button
+                       onClick={() => downloadAnnualReport(analysis.timeSeries[0].reportUrl!, selectedCompany.symbol, anchorYear)}
+                       className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-sm transition-colors border border-indigo-200 flex items-center gap-2"
+                     >
+                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                       </svg>
+                       Save to App
+                     </button>
+                   </div>
+                 )}
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                  <div className="space-y-6">
+                     <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 shadow-sm">
+                        <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest mb-2">Sentiment Trend</h4>
+                        <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                          {analysis.narrative.qAndA.nlp_sentiment}
+                        </p>
+                     </div>
+                     <div className="p-6 bg-indigo-50 rounded-3xl border border-indigo-100 shadow-sm">
+                        <h4 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-2">Reporting Specificity</h4>
+                        <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                          {analysis.narrative.qAndA.nlp_specificity}
+                        </p>
+                     </div>
+                  </div>
+                  <div className="space-y-6">
+                     <div className="p-6 bg-orange-50 rounded-3xl border border-orange-100 shadow-sm">
+                        <h4 className="text-xs font-black text-orange-600 uppercase tracking-widest mb-2">Linguistic Complexity</h4>
+                        <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                          {analysis.narrative.qAndA.nlp_complexity}
+                        </p>
+                     </div>
+                     <div className="p-6 bg-purple-50 rounded-3xl border border-purple-100 shadow-sm">
+                        <h4 className="text-xs font-black text-purple-600 uppercase tracking-widest mb-2">Market Benchmark</h4>
+                        <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                          {analysis.narrative.qAndA.nlp_peer}
+                        </p>
+                     </div>
+                  </div>
+               </div>
             </section>
 
             {/* Strategic Performance Forecasts Section - Improved & More Intuitive */}
@@ -904,17 +997,20 @@ const App: React.FC = () => {
                     </div>
                     
                     <div className="grid grid-cols-3 gap-3 mb-10">
-                      <div className="text-center p-3 rounded-2xl bg-rose-50 border border-rose-100">
+                      <div className="text-center p-3 rounded-2xl bg-rose-50 border border-rose-100 flex flex-col items-center justify-center">
                         <span className="text-[8px] font-black text-rose-500 uppercase block mb-1">Downside</span>
-                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roa.downside.toFixed(4)}</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{(analysis.forecasts.roa.downside * 100).toFixed(2)}%</span>
+                        <span className="text-[8px] font-bold text-slate-400 mt-1">20% Prob</span>
                       </div>
-                      <div className="text-center p-4 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-110">
+                      <div className="text-center p-4 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-110 flex flex-col items-center justify-center">
                         <span className="text-[9px] font-black text-indigo-100 uppercase block mb-1">Baseline</span>
-                        <span className="text-xl font-mono font-black">{analysis.forecasts.roa.base.toFixed(4)}</span>
+                        <span className="text-xl font-mono font-black">{(analysis.forecasts.roa.base * 100).toFixed(2)}%</span>
+                        <span className="text-[9px] font-bold text-indigo-200 mt-1">50% Prob</span>
                       </div>
-                      <div className="text-center p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
+                      <div className="text-center p-3 rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col items-center justify-center">
                         <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Upside</span>
-                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roa.upside.toFixed(4)}</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{(analysis.forecasts.roa.upside * 100).toFixed(2)}%</span>
+                        <span className="text-[8px] font-bold text-slate-400 mt-1">30% Prob</span>
                       </div>
                     </div>
                     
@@ -942,17 +1038,20 @@ const App: React.FC = () => {
                     </div>
                     
                     <div className="grid grid-cols-3 gap-3 mb-10">
-                      <div className="text-center p-3 rounded-2xl bg-rose-50 border border-rose-100">
+                      <div className="text-center p-3 rounded-2xl bg-rose-50 border border-rose-100 flex flex-col items-center justify-center">
                         <span className="text-[8px] font-black text-rose-500 uppercase block mb-1">Downside</span>
-                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roe.downside.toFixed(4)}</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{(analysis.forecasts.roe.downside * 100).toFixed(2)}%</span>
+                        <span className="text-[8px] font-bold text-slate-400 mt-1">20% Prob</span>
                       </div>
-                      <div className="text-center p-4 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-110">
+                      <div className="text-center p-4 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-110 flex flex-col items-center justify-center">
                         <span className="text-[9px] font-black text-indigo-100 uppercase block mb-1">Baseline</span>
-                        <span className="text-xl font-mono font-black">{analysis.forecasts.roe.base.toFixed(4)}</span>
+                        <span className="text-xl font-mono font-black">{(analysis.forecasts.roe.base * 100).toFixed(2)}%</span>
+                        <span className="text-[9px] font-bold text-indigo-200 mt-1">50% Prob</span>
                       </div>
-                      <div className="text-center p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
+                      <div className="text-center p-3 rounded-2xl bg-emerald-50 border border-emerald-100 flex flex-col items-center justify-center">
                         <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Upside</span>
-                        <span className="text-sm font-mono font-bold text-slate-600">{analysis.forecasts.roe.upside.toFixed(4)}</span>
+                        <span className="text-sm font-mono font-bold text-slate-600">{(analysis.forecasts.roe.upside * 100).toFixed(2)}%</span>
+                        <span className="text-[8px] font-bold text-slate-400 mt-1">30% Prob</span>
                       </div>
                     </div>
                     
@@ -970,11 +1069,23 @@ const App: React.FC = () => {
 
             <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 blur-3xl -mr-32 -mt-32 rounded-full opacity-50" />
-               <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3 relative z-10">
-                 <span className="w-2 h-8 bg-emerald-500 rounded-full" />
-                 Analysis Accuracy Audit
-               </h2>
-               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
+               <div className="flex items-center justify-between mb-6 relative z-10">
+                 <h2 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                   <span className="w-2 h-8 bg-emerald-500 rounded-full" />
+                   Analysis Accuracy Audit
+                 </h2>
+                 <button
+                   onClick={() => setShowAccuracyAudit(!showAccuracyAudit)}
+                   className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl font-bold text-sm transition-colors border border-emerald-200 flex items-center gap-2"
+                 >
+                   {showAccuracyAudit ? 'Wrap' : 'Unwrap'}
+                   <svg className={`w-4 h-4 transition-transform ${showAccuracyAudit ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                   </svg>
+                 </button>
+               </div>
+               {showAccuracyAudit && (
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10 animate-in fade-in slide-in-from-top-4 duration-300">
                   <div className="lg:col-span-1 space-y-6">
                     <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 shadow-sm">
                        <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest mb-2">Integrity Summary</h4>
@@ -1040,6 +1151,7 @@ const App: React.FC = () => {
                     </div>
                   </div>
                </div>
+               )}
             </section>
           </>
         )}
@@ -1238,6 +1350,8 @@ const App: React.FC = () => {
            </div>
         </div>
       </footer>
+
+      <FloatingHelp />
     </div>
   );
 };

@@ -12,13 +12,36 @@ async function fetchWithRetry<T>(fn: () => Promise<T>, maxRetries: number = 3, i
       return await fn();
     } catch (error: any) {
       const isRateLimit = error?.status === 429 || 
+                          error?.status === 503 ||
+                          error?.status === 500 ||
+                          error?.status === 499 ||
+                          error?.code === 429 ||
+                          error?.code === 503 ||
+                          error?.code === 500 ||
+                          error?.code === 499 ||
+                          error?.error?.code === 429 ||
+                          error?.error?.code === 503 ||
+                          error?.error?.code === 500 ||
+                          error?.error?.code === 499 ||
+                          error?.status === "Internal Server Error" ||
+                          error?.status === "CANCELLED" ||
+                          error?.error?.status === "Internal Server Error" ||
+                          error?.error?.status === "CANCELLED" ||
                           error?.message?.includes("429") || 
+                          error?.message?.includes("503") ||
+                          error?.message?.includes("500") ||
+                          error?.message?.includes("499") ||
+                          error?.message?.includes("UNAVAILABLE") ||
                           error?.message?.includes("RESOURCE_EXHAUSTED") ||
+                          error?.message?.includes("CANCELLED") ||
+                          error?.message?.includes("Internal Server Error") ||
+                          error?.error?.message?.includes("CANCELLED") ||
+                          error?.error?.message?.includes("Internal Server Error") ||
                           error?.message?.includes("Quota");
       
       if (isRateLimit && attempt < maxRetries) {
         const delay = initialDelay * Math.pow(2, attempt);
-        console.warn(`Rate limit hit. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
+        console.warn(`API limit or high demand hit. Retrying in ${delay}ms... (Attempt ${attempt + 1}/${maxRetries})`);
         await new Promise(resolve => setTimeout(resolve, delay));
         attempt++;
         continue;
@@ -35,11 +58,11 @@ export async function generateDuPontAnalysis(
   isDeepDive: boolean = false,
   discrepancyNote?: string
 ): Promise<DuPontAnalysis> {
-  const apiKey = process.env.API_KEY as string;
+  const apiKey = (process.env.GEMINI_API_KEY || process.env.API_KEY) as string;
   
   return fetchWithRetry(async () => {
     const ai = new GoogleGenAI({ apiKey });
-    const selectedModel = 'gemini-3-pro-preview';
+    const selectedModel = 'gemini-3.1-pro-preview';
 
     const prompt = `Perform a high-precision financial and NLP analysis for ${company.name} (${company.symbol}) for anchor year ${anchorYear} and the previous two years.
 
@@ -49,6 +72,9 @@ CRITICAL INSTRUCTIONS:
 3. IDENTIFY the official reported ROE, ROA, Margin, and Turnover from the report if available.
 4. CROSS-VERIFY these figures against at least three major financial platforms (FT, Yahoo, Bloomberg).
 5. DO NOT FABRICATE DATA. If a metric cannot be verified, prioritize the Annual Report value.
+6. Make sure the discussion and analysis (narrative sections) are highly detailed, comprehensive, and saved in the output.
+7. ENHANCE DIAGNOSTICS ANALYSIS: Provide a detailed analysis of each metric (ROE, Margin, Turnover, Risk, NLP) in the narrative sections and qAndA. Where peer values are available, explicitly discuss how the metric compares with that of a peer.
+8. SELL-SIDE ANALYST DIAGNOSTIC: Provide an in-depth, sell-side analyst style diagnostic narrative explaining the operational, strategic, commercial, and macroeconomic factors driving the trends in ROE, ROA, Net Profit Margin, and Asset Turnover. Draw from the annual report and internet searches. Provide a comprehensive 'overall' summary.
 
 ANALYSIS ACCURACY AUDIT REQUIREMENTS:
 - You must provide audit entries for: ROE, Financial Leverage, Net Profit Margin, Asset Turnover, Return on Assets (ROA), Total Revenue, Total Assets, and Total Debt.
@@ -156,6 +182,10 @@ Return the result in strict JSON format matching the schema.`;
                   properties: {
                     roe_trend: { type: Type.STRING },
                     roe_peer: { type: Type.STRING },
+                    margin_trend: { type: Type.STRING },
+                    margin_peer: { type: Type.STRING },
+                    turnover_trend: { type: Type.STRING },
+                    turnover_peer: { type: Type.STRING },
                     driver_dominance: { type: Type.STRING },
                     risk_trend: { type: Type.STRING },
                     risk_peer: { type: Type.STRING },
@@ -164,10 +194,21 @@ Return the result in strict JSON format matching the schema.`;
                     nlp_complexity: { type: Type.STRING },
                     nlp_peer: { type: Type.STRING }
                   },
-                  required: ["roe_trend", "roe_peer", "driver_dominance", "risk_trend", "risk_peer", "nlp_sentiment", "nlp_specificity", "nlp_complexity", "nlp_peer"]
+                  required: ["roe_trend", "roe_peer", "margin_trend", "margin_peer", "turnover_trend", "turnover_peer", "driver_dominance", "risk_trend", "risk_peer", "nlp_sentiment", "nlp_specificity", "nlp_complexity", "nlp_peer"]
                 }
               },
               required: ["section1", "section2", "section3", "section4", "qAndA"]
+            },
+            diagnostic: {
+              type: Type.OBJECT,
+              properties: {
+                roe: { type: Type.STRING },
+                roa: { type: Type.STRING },
+                margin: { type: Type.STRING },
+                turnover: { type: Type.STRING },
+                overall: { type: Type.STRING }
+              },
+              required: ["roe", "roa", "margin", "turnover", "overall"]
             },
             forecasts: {
               type: Type.OBJECT,
@@ -186,7 +227,7 @@ Return the result in strict JSON format matching the schema.`;
               required: ["roa", "roe"]
             }
           },
-          required: ["timeSeries", "accuracyAudit", "accuracySummary", "forecastAssumptions", "nlpData", "narrative", "peerRiskComparison", "peerROI", "forecasts"]
+          required: ["timeSeries", "accuracyAudit", "accuracySummary", "forecastAssumptions", "nlpData", "narrative", "peerRiskComparison", "peerROI", "forecasts", "diagnostic"]
         }
       }
     });
@@ -231,6 +272,7 @@ Return the result in strict JSON format matching the schema.`;
         peerComparison: rawData.peerRiskComparison
       },
       narrative: rawData.narrative,
+      diagnostic: rawData.diagnostic,
       forecasts: rawData.forecasts
     };
   });
