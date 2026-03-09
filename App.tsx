@@ -34,6 +34,8 @@ const App: React.FC = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showMethodology, setShowMethodology] = useState(false);
   const [showProjectInfo, setShowProjectInfo] = useState(false);
+  const [hasUserKey, setHasUserKey] = useState(false);
+  const [isCheckingKey, setIsCheckingKey] = useState(true);
   const [showAccuracyAudit, setShowAccuracyAudit] = useState(false);
 
   // High-performance in-memory cache for precomputed analysis
@@ -55,6 +57,14 @@ const App: React.FC = () => {
     )
   , [searchTerm]);
 
+  const checkKeyStatus = useCallback(async () => {
+    if (window.aistudio) {
+      const hasKey = await window.aistudio.hasSelectedApiKey();
+      setHasUserKey(hasKey);
+    }
+    setIsCheckingKey(false);
+  }, []);
+
   // Fetch precomputed data on mount
   useEffect(() => {
     const loadPrecomputed = async () => {
@@ -69,7 +79,15 @@ const App: React.FC = () => {
       }
     };
     loadPrecomputed();
-  }, []);
+    checkKeyStatus();
+  }, [checkKeyStatus]);
+
+  const handleOpenKeySelector = async () => {
+    if (window.aistudio) {
+      await window.aistudio.openSelectKey();
+      setHasUserKey(true); // Assume success per instructions
+    }
+  };
 
   const getCachedAnalysis = useCallback((symbol: string, year: number): DuPontAnalysis | null => {
     const key = `${CACHE_PREFIX}${symbol}_${year}`;
@@ -101,6 +119,21 @@ const App: React.FC = () => {
     if (absNum < 1 && absNum > 0) return num.toFixed(4);
     
     return `${currency}${formatted}`;
+  };
+
+  const calculateDiscrepancy = (oldData: DuPontAnalysis, newData: DuPontAnalysis) => {
+    const oldRoe = oldData.timeSeries[0].roe;
+    const newRoe = newData.timeSeries[0].roe;
+    const oldProfit = oldData.timeSeries[0].netProfit;
+    const newProfit = newData.timeSeries[0].netProfit;
+
+    const roeDiff = Math.abs(newRoe - oldRoe) / (oldRoe || 1);
+    const profitDiff = Math.abs(newProfit - oldProfit) / (oldProfit || 1);
+
+    return {
+      significant: roeDiff > 0.01 || profitDiff > 0.01,
+      message: `ROE shifted by ${(roeDiff * 100).toFixed(2)}%, Net Profit shifted by ${(profitDiff * 100).toFixed(2)}%`
+    };
   };
 
   const runAnalysis = async (forceRefresh: boolean = false, targetCompany: ExtendedCompany = selectedCompany, targetYear: number = anchorYear) => {
@@ -136,17 +169,42 @@ const App: React.FC = () => {
     const isCurrentView = targetCompany.symbol === selectedSymbol && targetYear === anchorYear;
     if (isCurrentView) {
       setLoading(true);
-      setStatusMessage("Searching Precomputed Data...");
+      setStatusMessage("Validating Financial Data...");
     }
     
     try {
-      // We are no longer calling the API. If it's not in the precomputed cache, we simulate a failure or return null.
-      // Since we want to strictly use precomputedData.json, if it wasn't found in step 1, it doesn't exist.
-      if (isCurrentView) {
-        alert(`No precomputed data found for ${targetCompany.symbol} in ${targetYear}.`);
-        setAnalysis(null);
+      let result = await generateDuPontAnalysis(targetCompany, targetYear);
+      
+      if (forceRefresh && cached) {
+        const discrepancy = calculateDiscrepancy(cached, result);
+        if (discrepancy.significant) {
+          if (isCurrentView) setStatusMessage("Significant Deviation Detected. Initializing Deep-Dive Search...");
+          result = await generateDuPontAnalysis(targetCompany, targetYear, true, discrepancy.message);
+        }
       }
-      return null;
+
+      if (isCurrentView) setAnalysis(result);
+      setCachedAnalysis(targetCompany.symbol, targetYear, result);
+      return result;
+    } catch (err: any) {
+      const isQuotaError = err?.message?.includes("429") || err?.message?.includes("RESOURCE_EXHAUSTED") || err?.message?.includes("Quota");
+      const isUnavailableError = err?.message?.includes("503") || err?.message?.includes("UNAVAILABLE");
+      const isKeyError = err?.message?.includes("API Key must be set") || err?.message?.includes("API key not valid");
+      
+      if (isCurrentView) {
+        if (isKeyError) {
+          const proceed = confirm(`An API key is required to use the advanced Gemini model.\n\nWould you like to select your Google Cloud API key now?`);
+          if (proceed) handleOpenKeySelector();
+        } else if (isQuotaError) {
+          const proceed = confirm(`API limit reached. Using a personal API key is recommended for high-volume analysis.\n\nWould you like to select your own API key to bypass shared limits?`);
+          if (proceed) handleOpenKeySelector();
+        } else if (isUnavailableError) {
+          alert("The AI model is currently experiencing high demand. Please try again in a few moments.");
+        } else {
+          alert("Performance analysis is currently unavailable. Please check your connection and try again.");
+        }
+      }
+      throw err;
     } finally {
       if (isCurrentView) {
         setLoading(false);
@@ -178,8 +236,28 @@ const App: React.FC = () => {
         setPreCacheProgress({ current: completed + 1, total: totalToProcess, symbol: `${company.symbol} (${year})` });
         
         if (!memoryCached && !storageCached) {
-          // Pre-caching via API is disabled. We only use precomputedData.json.
-          console.warn(`Data for ${company.symbol} (${year}) not found in precomputed cache.`);
+          try {
+            // Note: Force refresh is true here because we want the system to actually gather data
+            await runAnalysis(true, company, year);
+            await new Promise(r => setTimeout(r, 8000));
+          } catch (e: any) {
+            console.error(`Failed to pre-cache ${company.symbol} for ${year}`, e);
+            const isRateLimitOrServerError = 
+              e?.message?.includes("429") || 
+              e?.message?.includes("RESOURCE_EXHAUSTED") ||
+              e?.message?.includes("500") ||
+              e?.message?.includes("499") ||
+              e?.message?.includes("Internal Server Error") ||
+              e?.message?.includes("CANCELLED") ||
+              e?.status === 500 || e?.status === 499 ||
+              e?.code === 500 || e?.code === 499 ||
+              e?.error?.code === 500 || e?.error?.code === 499 ||
+              e?.error?.status === "Internal Server Error" || e?.error?.status === "CANCELLED";
+              
+            if (isRateLimitOrServerError) {
+              await new Promise(r => setTimeout(r, 20000));
+            }
+          }
         }
         completed++;
       }
@@ -320,6 +398,46 @@ const App: React.FC = () => {
     };
   }, [analysis]);
 
+  if (isCheckingKey && window.aistudio) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!hasUserKey && window.aistudio) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 font-sans">
+        <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-slate-100 max-w-lg w-full text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500" />
+          <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <svg className="w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-black text-slate-900 mb-4">API Key Required</h2>
+          <p className="text-slate-600 mb-8 leading-relaxed">
+            This application uses the advanced <span className="font-bold text-slate-900">Gemini 3.1 Pro</span> model for high-precision financial analysis. 
+            To continue, please select your Google Cloud API key.
+          </p>
+          <button
+            onClick={handleOpenKeySelector}
+            className="w-full py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 active:scale-95 flex items-center justify-center gap-3"
+          >
+            Select API Key
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+          <p className="mt-6 text-xs text-slate-400">
+            Your key is stored securely in your browser session.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 pb-40 font-sans selection:bg-indigo-100 selection:text-indigo-900">
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm transition-all duration-300">
@@ -401,6 +519,29 @@ const App: React.FC = () => {
               </select>
 
               <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => runAnalysis(true)}
+                  disabled={loading}
+                  className="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 disabled:opacity-50 transition-all flex items-center gap-2"
+                >
+                  {loading ? 'Analyzing...' : 'Refresh'}
+                  <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357-2H15" />
+                  </svg>
+                </button>
+
+                <button 
+                  onClick={startPreCache}
+                  disabled={loading && !preCaching}
+                  className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${preCaching ? 'bg-amber-500 text-white shadow-lg shadow-amber-200' : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'}`}
+                  title="Cache all constituents locally"
+                >
+                  {preCaching ? 'Cancel Caching' : 'Cache All'}
+                  <svg className={`w-4 h-4 ${preCaching ? 'animate-pulse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </button>
+
                 {analysis && !loading && (
                   <div className="relative group">
                     <button 
@@ -481,7 +622,16 @@ const App: React.FC = () => {
                </svg>
             </div>
             <h2 className="text-2xl font-black text-slate-900 mb-2">No Analysis Available</h2>
-            <p className="text-slate-500 font-medium mb-8">Please select a different company or year that has precomputed data.</p>
+            <p className="text-slate-500 font-medium mb-8">Hit <span className="text-indigo-600 font-bold">Refresh</span> to update analysis for this company/year.</p>
+            <button 
+              onClick={() => runAnalysis(true)}
+              className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-3"
+            >
+              Analyze {selectedCompany.symbol} Now
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
           </div>
         )}
 
@@ -886,30 +1036,6 @@ const App: React.FC = () => {
                    <span className="w-2 h-8 bg-indigo-600 rounded-full" />
                    Discussion: Linguistic Narrative Trends
                  </h2>
-                 {analysis.timeSeries[0].reportUrl && (
-                   <div className="flex items-center gap-3">
-                     <a
-                       href={analysis.timeSeries[0].reportUrl}
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className="px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-sm transition-colors border border-slate-200 flex items-center gap-2"
-                     >
-                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                       </svg>
-                       View Annual Report
-                     </a>
-                     <button
-                       onClick={() => downloadAnnualReport(analysis.timeSeries[0].reportUrl!, selectedCompany.symbol, anchorYear)}
-                       className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-sm transition-colors border border-indigo-200 flex items-center gap-2"
-                     >
-                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                       </svg>
-                       Save to App
-                     </button>
-                   </div>
-                 )}
                </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                   <div className="space-y-6">

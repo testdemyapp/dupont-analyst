@@ -75,9 +75,11 @@ CRITICAL INSTRUCTIONS:
 6. Make sure the discussion and analysis (narrative sections) are highly detailed, comprehensive, and saved in the output.
 7. ENHANCE DIAGNOSTICS ANALYSIS: Provide a detailed analysis of each metric (ROE, Margin, Turnover, Risk, NLP) in the narrative sections and qAndA. Where peer values are available, explicitly discuss how the metric compares with that of a peer.
 8. SELL-SIDE ANALYST DIAGNOSTIC: Provide an in-depth, sell-side analyst style diagnostic narrative explaining the operational, strategic, commercial, and macroeconomic factors driving the trends in ROE, ROA, Net Profit Margin, and Asset Turnover. Draw from the annual report and internet searches. Provide a comprehensive 'overall' summary.
+9. FORECAST CONSTRAINTS: Ensure that ROA and ROE forecasts (base, upside, downside) are strictly within the range of [-2 * current_value, 2 * current_value]. Do not produce forecasts larger or smaller than 2 times the current ROA and ROE.
+10. PEER BENCHMARKING: Identify the closest direct peer. Verify the accuracy of the peer's ROE and ROA using googleSearch, ensuring the values reflect their most recent financial reports.
 
 ANALYSIS ACCURACY AUDIT REQUIREMENTS:
-- You must provide audit entries for: ROE, Financial Leverage, Net Profit Margin, Asset Turnover, Return on Assets (ROA), Total Revenue, Total Assets, and Total Debt.
+- You must provide audit entries for: ROE, Financial Leverage, Net Profit Margin, Asset Turnover, Return on Assets (ROA), Total Revenue, Total Assets, Total Debt, Peer ROE, and Peer ROA.
 - For each entry:
   - 'annualReportValue': The exact value found in the official annual report/IR materials.
   - 'verifiedValue': The final value used in this analysis after cross-referencing multiple sources.
@@ -253,6 +255,27 @@ Return the result in strict JSON format matching the schema.`;
 
     const nlpMap: Record<number, NLPMeasures> = {};
     rawData.nlpData.forEach((n: any) => { nlpMap[n.year] = n; });
+
+    const currentRoa = computedTimeSeries[0].roa;
+    const currentRoe = computedTimeSeries[0].roe;
+
+    const normalizeAndClamp = (val: number, current: number) => {
+      if (Math.abs(val) > 1 && Math.abs(current) < 1) {
+        val = val / 100;
+      }
+      const max = Math.max(2 * Math.abs(current), 0.05);
+      if (val > max) return max;
+      if (val < -max) return -max;
+      return val;
+    };
+
+    rawData.forecasts.roa.base = normalizeAndClamp(rawData.forecasts.roa.base, currentRoa);
+    rawData.forecasts.roa.upside = normalizeAndClamp(rawData.forecasts.roa.upside, currentRoa);
+    rawData.forecasts.roa.downside = normalizeAndClamp(rawData.forecasts.roa.downside, currentRoa);
+    
+    rawData.forecasts.roe.base = normalizeAndClamp(rawData.forecasts.roe.base, currentRoe);
+    rawData.forecasts.roe.upside = normalizeAndClamp(rawData.forecasts.roe.upside, currentRoe);
+    rawData.forecasts.roe.downside = normalizeAndClamp(rawData.forecasts.roe.downside, currentRoe);
 
     return {
       company,
