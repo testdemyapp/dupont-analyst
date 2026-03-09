@@ -359,33 +359,6 @@ const App: React.FC = () => {
     setStatusMessage("");
   };
 
-  const downloadAnnualReport = async (url: string, symbol: string, year: number) => {
-    try {
-      setStatusMessage("Downloading Annual Report...");
-      setLoading(true);
-      const response = await fetch('/api/download-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url, symbol, year })
-      });
-      
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to download report');
-      }
-      
-      alert(data.message || 'Report downloaded successfully to Annual_reports folder');
-    } catch (error: any) {
-      console.error("Download error:", error);
-      alert(`Failed to download report: ${error.message}`);
-    } finally {
-      setLoading(false);
-      setStatusMessage("");
-    }
-  };
-
   const currentExplanation = explanationId ? METRIC_DEFINITIONS[explanationId] : null;
 
   // Calculate Historical Averages for Forecast Comparison
@@ -656,23 +629,9 @@ const App: React.FC = () => {
                           <span className="text-indigo-300 text-[10px] font-bold uppercase block">Sector</span>
                           <span className="font-bold text-sm">{selectedCompany.sector}</span>
                        </div>
-                       <div className="text-center border-r border-white/10 pr-4">
+                       <div className="text-center">
                           <span className="text-indigo-300 text-[10px] font-bold uppercase block">Anchor</span>
                           <span className="font-bold text-sm">FY{anchorYear}</span>
-                       </div>
-                       <div className="text-center">
-                          <a 
-                            href={`/api/report/${selectedCompany.symbol}/${anchorYear}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex flex-col items-center justify-center text-indigo-300 hover:text-white transition-colors group"
-                            title="View saved report"
-                          >
-                            <span className="text-[10px] font-bold uppercase block mb-0.5">Report</span>
-                            <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
                        </div>
                     </div>
                     {analysis.timeSeries[0].reportUrl && (
@@ -688,16 +647,6 @@ const App: React.FC = () => {
                           </svg>
                           <span className="text-xs font-bold text-white uppercase tracking-wider">Annual Report</span>
                         </a>
-                        <button
-                          onClick={() => downloadAnnualReport(analysis.timeSeries[0].reportUrl!, selectedCompany.symbol, anchorYear)}
-                          className="inline-flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 px-5 py-3 rounded-2xl backdrop-blur-md transition-all group"
-                          title="Download and save to App"
-                        >
-                          <svg className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                          </svg>
-                          <span className="text-xs font-bold text-white uppercase tracking-wider">Save</span>
-                        </button>
                       </div>
                     )}
                   </div>
