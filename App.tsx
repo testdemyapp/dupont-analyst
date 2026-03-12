@@ -2,26 +2,15 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { FTSE100_CONSTITUENTS, YEARS, ExtendedCompany, METRIC_DEFINITIONS } from './constants';
 import { DuPontAnalysis } from './types';
-import { generateDuPontAnalysis } from './services/geminiService';
 import MetricCharts from './components/MetricCharts';
 import DuPontMap from './components/DuPontMap';
 import NLPTrendCharts from './components/NLPTrendCharts';
 import FloatingHelp from './components/FloatingHelp';
 import DiagnosticSection from './components/DiagnosticSection';
 
+import precomputedData from './precomputedData.json';
+
 const CACHE_PREFIX = "dupont_cache_";
-
-// Interface for window.aistudio
-declare global {
-  interface AIStudio {
-    hasSelectedApiKey: () => Promise<boolean>;
-    openSelectKey: () => Promise<void>;
-  }
-
-  interface Window {
-    aistudio?: AIStudio;
-  }
-}
 
 const App: React.FC = () => {
   const [selectedSymbol, setSelectedSymbol] = useState(FTSE100_CONSTITUENTS[0].symbol);
@@ -34,17 +23,10 @@ const App: React.FC = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showMethodology, setShowMethodology] = useState(false);
   const [showProjectInfo, setShowProjectInfo] = useState(false);
-  const [hasUserKey, setHasUserKey] = useState(false);
-  const [isCheckingKey, setIsCheckingKey] = useState(true);
   const [showAccuracyAudit, setShowAccuracyAudit] = useState(false);
 
   // High-performance in-memory cache for precomputed analysis
-  const [precomputedCache, setPrecomputedCache] = useState<Record<string, DuPontAnalysis>>({});
-
-  // Pre-cache State
-  const [preCaching, setPreCaching] = useState(false);
-  const [preCacheProgress, setPreCacheProgress] = useState({ current: 0, total: FTSE100_CONSTITUENTS.length, symbol: "" });
-  const isPreCachingRef = useRef(false);
+  const [precomputedCache, setPrecomputedCache] = useState<Record<string, DuPontAnalysis>>(precomputedData as unknown as Record<string, DuPontAnalysis>);
 
   const selectedCompany = useMemo(() => 
     FTSE100_CONSTITUENTS.find(c => c.symbol === selectedSymbol) as ExtendedCompany || FTSE100_CONSTITUENTS[0]
@@ -57,38 +39,7 @@ const App: React.FC = () => {
     )
   , [searchTerm]);
 
-  const checkKeyStatus = useCallback(async () => {
-    if (window.aistudio) {
-      const hasKey = await window.aistudio.hasSelectedApiKey();
-      setHasUserKey(hasKey);
-    }
-    setIsCheckingKey(false);
-  }, []);
-
   // Fetch precomputed data on mount
-  useEffect(() => {
-    const loadPrecomputed = async () => {
-      try {
-        const response = await fetch('./precomputedData.json');
-        if (response.ok) {
-          const data = await response.json();
-          setPrecomputedCache(data);
-        }
-      } catch (err) {
-        console.warn("Failed to load precomputed data:", err);
-      }
-    };
-    loadPrecomputed();
-    checkKeyStatus();
-  }, [checkKeyStatus]);
-
-  const handleOpenKeySelector = async () => {
-    if (window.aistudio) {
-      await window.aistudio.openSelectKey();
-      setHasUserKey(true); // Assume success per instructions
-    }
-  };
-
   const getCachedAnalysis = useCallback((symbol: string, year: number): DuPontAnalysis | null => {
     const key = `${CACHE_PREFIX}${symbol}_${year}`;
     const cached = localStorage.getItem(key);
@@ -100,11 +51,6 @@ const App: React.FC = () => {
       }
     }
     return null;
-  }, []);
-
-  const setCachedAnalysis = useCallback((symbol: string, year: number, data: DuPontAnalysis) => {
-    const key = `${CACHE_PREFIX}${symbol}_${year}`;
-    localStorage.setItem(key, JSON.stringify(data));
   }, []);
 
   const formatLargeNumber = (num: number, currency: string = "£") => {
@@ -121,26 +67,11 @@ const App: React.FC = () => {
     return `${currency}${formatted}`;
   };
 
-  const calculateDiscrepancy = (oldData: DuPontAnalysis, newData: DuPontAnalysis) => {
-    const oldRoe = oldData.timeSeries[0].roe;
-    const newRoe = newData.timeSeries[0].roe;
-    const oldProfit = oldData.timeSeries[0].netProfit;
-    const newProfit = newData.timeSeries[0].netProfit;
-
-    const roeDiff = Math.abs(newRoe - oldRoe) / (oldRoe || 1);
-    const profitDiff = Math.abs(newProfit - oldProfit) / (oldProfit || 1);
-
-    return {
-      significant: roeDiff > 0.01 || profitDiff > 0.01,
-      message: `ROE shifted by ${(roeDiff * 100).toFixed(2)}%, Net Profit shifted by ${(profitDiff * 100).toFixed(2)}%`
-    };
-  };
-
   const runAnalysis = async (forceRefresh: boolean = false, targetCompany: ExtendedCompany = selectedCompany, targetYear: number = anchorYear) => {
     const cacheKey = `${targetCompany.symbol}_${targetYear}`;
 
     // 1. Check in-memory precomputed cache first
-    if (!forceRefresh && precomputedCache[cacheKey]) {
+    if (precomputedCache[cacheKey]) {
       const data = precomputedCache[cacheKey];
       if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
         setAnalysis(data);
@@ -150,59 +81,26 @@ const App: React.FC = () => {
 
     // 2. Check local storage second
     const cached = getCachedAnalysis(targetCompany.symbol, targetYear);
-    if (cached && !forceRefresh) {
+    if (cached) {
       if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
         setAnalysis(cached);
       }
       return cached;
     }
 
-    // CRITICAL UPDATE: If not forcing a refresh and data isn't in cache, STOP.
-    if (!forceRefresh) {
-      if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
-        setAnalysis(null);
-      }
-      return null;
-    }
-
-    // 3. Trigger Gemini API ONLY if forceRefresh is true
     const isCurrentView = targetCompany.symbol === selectedSymbol && targetYear === anchorYear;
     if (isCurrentView) {
       setLoading(true);
-      setStatusMessage("Validating Financial Data...");
+      setStatusMessage("Loading Financial Data...");
     }
     
     try {
-      let result = await generateDuPontAnalysis(targetCompany, targetYear);
-      
-      if (forceRefresh && cached) {
-        const discrepancy = calculateDiscrepancy(cached, result);
-        if (discrepancy.significant) {
-          if (isCurrentView) setStatusMessage("Significant Deviation Detected. Initializing Deep-Dive Search...");
-          result = await generateDuPontAnalysis(targetCompany, targetYear, true, discrepancy.message);
-        }
-      }
-
-      if (isCurrentView) setAnalysis(result);
-      setCachedAnalysis(targetCompany.symbol, targetYear, result);
-      return result;
+      // Simulate network delay for UX
+      await new Promise(resolve => setTimeout(resolve, 800));
+      throw new Error("Data not available for this company/year in the precomputed dataset.");
     } catch (err: any) {
-      const isQuotaError = err?.message?.includes("429") || err?.message?.includes("RESOURCE_EXHAUSTED") || err?.message?.includes("Quota");
-      const isUnavailableError = err?.message?.includes("503") || err?.message?.includes("UNAVAILABLE");
-      const isKeyError = err?.message?.includes("API Key must be set") || err?.message?.includes("API key not valid");
-      
       if (isCurrentView) {
-        if (isKeyError) {
-          const proceed = confirm(`An API key is required to use the advanced Gemini model.\n\nWould you like to select your Google Cloud API key now?`);
-          if (proceed) handleOpenKeySelector();
-        } else if (isQuotaError) {
-          const proceed = confirm(`API limit reached. Using a personal API key is recommended for high-volume analysis.\n\nWould you like to select your own API key to bypass shared limits?`);
-          if (proceed) handleOpenKeySelector();
-        } else if (isUnavailableError) {
-          alert("The AI model is currently experiencing high demand. Please try again in a few moments.");
-        } else {
-          alert("Performance analysis is currently unavailable. Please check your connection and try again.");
-        }
+        alert(err.message || "Performance analysis is currently unavailable.");
       }
       throw err;
     } finally {
@@ -210,67 +108,6 @@ const App: React.FC = () => {
         setLoading(false);
         setStatusMessage("");
       }
-    }
-  };
-
-  const startPreCache = async () => {
-    if (isPreCachingRef.current) {
-      isPreCachingRef.current = false;
-      setPreCaching(false);
-      return;
-    }
-
-    isPreCachingRef.current = true;
-    setPreCaching(true);
-    let completed = 0;
-    const totalToProcess = FTSE100_CONSTITUENTS.length * YEARS.length;
-
-    for (const year of YEARS) {
-      for (const company of FTSE100_CONSTITUENTS) {
-        if (!isPreCachingRef.current) break;
-
-        const cacheKey = `${company.symbol}_${year}`;
-        const memoryCached = precomputedCache[cacheKey];
-        const storageCached = getCachedAnalysis(company.symbol, year);
-        
-        setPreCacheProgress({ current: completed + 1, total: totalToProcess, symbol: `${company.symbol} (${year})` });
-        
-        if (!memoryCached && !storageCached) {
-          try {
-            // Note: Force refresh is true here because we want the system to actually gather data
-            await runAnalysis(true, company, year);
-            await new Promise(r => setTimeout(r, 8000));
-          } catch (e: any) {
-            console.error(`Failed to pre-cache ${company.symbol} for ${year}`, e);
-            const isRateLimitOrServerError = 
-              e?.message?.includes("429") || 
-              e?.message?.includes("RESOURCE_EXHAUSTED") ||
-              e?.message?.includes("500") ||
-              e?.message?.includes("499") ||
-              e?.message?.includes("Internal Server Error") ||
-              e?.message?.includes("CANCELLED") ||
-              e?.status === 500 || e?.status === 499 ||
-              e?.code === 500 || e?.code === 499 ||
-              e?.error?.code === 500 || e?.error?.code === 499 ||
-              e?.error?.status === "Internal Server Error" || e?.error?.status === "CANCELLED";
-              
-            if (isRateLimitOrServerError) {
-              await new Promise(r => setTimeout(r, 20000));
-            }
-          }
-        }
-        completed++;
-      }
-      if (!isPreCachingRef.current) break;
-    }
-
-    isPreCachingRef.current = false;
-    setPreCaching(false);
-    setPreCacheProgress(prev => ({ ...prev, current: completed, symbol: "Complete" }));
-    
-    // Automatically download the report after caching is complete
-    if (completed > 0) {
-      await downloadAllData();
     }
   };
 
@@ -293,72 +130,6 @@ const App: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
-  const downloadAllData = async () => {
-    setLoading(true);
-    const masterExport: Record<string, DuPontAnalysis> = {};
-    let gatheredCount = 0;
-    const totalToProcess = FTSE100_CONSTITUENTS.length * YEARS.length;
-
-    setStatusMessage(`Beginning data gathering for all constituents and years...`);
-    await new Promise(r => setTimeout(r, 500));
-
-    let processed = 0;
-    for (const year of YEARS) {
-      for (let i = 0; i < FTSE100_CONSTITUENTS.length; i++) {
-        const company = FTSE100_CONSTITUENTS[i];
-        const cacheKey = `${company.symbol}_${year}`;
-        
-        // Tier 1: Memory
-        let data = precomputedCache[cacheKey];
-        
-        // Tier 2: Storage
-        if (!data) {
-          const storageCached = getCachedAnalysis(company.symbol, year);
-          if (storageCached) {
-            data = storageCached;
-          }
-        }
-
-        if (data) {
-          masterExport[cacheKey] = data;
-          gatheredCount++;
-        }
-
-        processed++;
-        // Show real-time counting progress
-        setStatusMessage(`Consolidating data: ${processed}/${totalToProcess} processed (${gatheredCount} analyzed records gathered).`);
-        
-        // Minor delay to show progress counting visually
-        if (processed % 10 === 0) {
-          await new Promise(r => setTimeout(r, 10));
-        }
-      }
-    }
-
-    if (gatheredCount === 0) {
-      alert("No analysis data found in cache. Use 'Cache All' or 'Refresh' for specific companies before exporting.");
-      setLoading(false);
-      setStatusMessage("");
-      return;
-    }
-
-    setStatusMessage(`Finalizing file for ${gatheredCount} records...`);
-    await new Promise(r => setTimeout(r, 800));
-
-    const blob = new Blob([JSON.stringify(masterExport, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `precomputedData.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    setLoading(false);
-    setStatusMessage("");
-  };
-
   const currentExplanation = explanationId ? METRIC_DEFINITIONS[explanationId] : null;
 
   // Calculate Historical Averages for Forecast Comparison
@@ -370,46 +141,6 @@ const App: React.FC = () => {
       roa: analysis.timeSeries.reduce((acc, curr) => acc + curr.roa, 0) / count,
     };
   }, [analysis]);
-
-  if (isCheckingKey && window.aistudio) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
-        <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (!hasUserKey && window.aistudio) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 font-sans">
-        <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-slate-100 max-w-lg w-full text-center relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500" />
-          <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <svg className="w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-            </svg>
-          </div>
-          <h2 className="text-3xl font-black text-slate-900 mb-4">API Key Required</h2>
-          <p className="text-slate-600 mb-8 leading-relaxed">
-            This application uses the advanced <span className="font-bold text-slate-900">Gemini 3.1 Pro</span> model for high-precision financial analysis. 
-            To continue, please select your Google Cloud API key.
-          </p>
-          <button
-            onClick={handleOpenKeySelector}
-            className="w-full py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 active:scale-95 flex items-center justify-center gap-3"
-          >
-            Select API Key
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </button>
-          <p className="mt-6 text-xs text-slate-400">
-            Your key is stored securely in your browser session.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-50 pb-40 font-sans selection:bg-indigo-100 selection:text-indigo-900">
@@ -503,75 +234,22 @@ const App: React.FC = () => {
                   </svg>
                 </button>
 
-                <button 
-                  onClick={startPreCache}
-                  disabled={loading && !preCaching}
-                  className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${preCaching ? 'bg-amber-500 text-white shadow-lg shadow-amber-200' : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'}`}
-                  title="Cache all constituents locally"
-                >
-                  {preCaching ? 'Cancel Caching' : 'Cache All'}
-                  <svg className={`w-4 h-4 ${preCaching ? 'animate-pulse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </button>
-
                 {analysis && !loading && (
-                  <div className="relative group">
-                    <button 
-                      className="p-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all flex items-center justify-center"
-                      title="Export Data"
-                    >
-                      <svg className="w-5 h-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                    </button>
-                    <div className="absolute top-full right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-2xl w-56 overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all animate-in slide-in-from-top-2 duration-200">
-                      <button
-                        onClick={downloadCurrentReport}
-                        className="w-full text-left px-4 py-3 hover:bg-indigo-50 border-b border-slate-50 text-sm font-bold text-slate-900 transition-colors flex items-center gap-2"
-                      >
-                        <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                        Current Report
-                      </button>
-                      <button
-                        onClick={downloadAllData}
-                        className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-sm font-bold text-slate-900 transition-colors flex items-center gap-2"
-                      >
-                        <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
-                        All Cached Data
-                      </button>
-                    </div>
-                  </div>
+                  <button 
+                    onClick={downloadCurrentReport}
+                    className="p-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all flex items-center justify-center"
+                    title="Export Data"
+                  >
+                    <svg className="w-5 h-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                  </button>
                 )}
               </div>
             </div>
           </div>
         </div>
       </header>
-
-      {/* Pre-cache Notification Bar */}
-      {preCaching && (
-        <div className="bg-amber-50 border-b border-amber-200 py-3 px-4 animate-in slide-in-from-top duration-300">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-amber-500 rounded-full animate-ping" />
-              <span className="text-xs font-black text-amber-900 uppercase tracking-widest text-center md:text-left">
-                System Pre-caching: {preCacheProgress.current} / {preCacheProgress.total} 
-                <span className="ml-3 font-mono bg-amber-600 text-white px-2 py-0.5 rounded text-[10px]">{preCacheProgress.symbol}</span>
-                <span className="block md:inline ml-0 md:ml-3 text-amber-700 normal-case font-medium text-[10px]">Respecting API rate limits (8s delay)</span>
-              </span>
-            </div>
-            <div className="flex-1 max-w-md w-full">
-              <div className="w-full h-2 bg-amber-200 rounded-full overflow-hidden shadow-inner">
-                 <div 
-                  className="h-full bg-amber-600 transition-all duration-700 ease-out" 
-                  style={{ width: `${(preCacheProgress.current / preCacheProgress.total) * 100}%` }} 
-                 />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-12">
         {loading && (
