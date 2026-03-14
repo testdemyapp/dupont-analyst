@@ -7,6 +7,7 @@ import DuPontMap from './components/DuPontMap';
 import NLPTrendCharts from './components/NLPTrendCharts';
 import FloatingHelp from './components/FloatingHelp';
 import DiagnosticSection from './components/DiagnosticSection';
+import { generateDuPontAnalysis } from './geminiService';
 
 import precomputedData from './precomputedData.json';
 
@@ -68,36 +69,19 @@ const App: React.FC = () => {
   };
 
   const runAnalysis = async (forceRefresh: boolean = false, targetCompany: ExtendedCompany = selectedCompany, targetYear: number = anchorYear) => {
-    const cacheKey = `${targetCompany.symbol}_${targetYear}`;
-
-    // 1. Check in-memory precomputed cache first
-    if (precomputedCache[cacheKey]) {
-      const data = precomputedCache[cacheKey];
-      if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
-        setAnalysis(data);
-      }
-      return data;
-    }
-
-    // 2. Check local storage second
-    const cached = getCachedAnalysis(targetCompany.symbol, targetYear);
-    if (cached) {
-      if (targetCompany.symbol === selectedSymbol && targetYear === anchorYear) {
-        setAnalysis(cached);
-      }
-      return cached;
-    }
-
     const isCurrentView = targetCompany.symbol === selectedSymbol && targetYear === anchorYear;
+    
     if (isCurrentView) {
       setLoading(true);
       setStatusMessage("Loading Financial Data...");
     }
     
     try {
-      // Simulate network delay for UX
-      await new Promise(resolve => setTimeout(resolve, 800));
-      throw new Error("Data not available for this company/year in the precomputed dataset.");
+      const data = await generateDuPontAnalysis(targetCompany, targetYear, forceRefresh);
+      if (isCurrentView) {
+        setAnalysis(data);
+      }
+      return data;
     } catch (err: any) {
       if (isCurrentView) {
         alert(err.message || "Performance analysis is currently unavailable.");
